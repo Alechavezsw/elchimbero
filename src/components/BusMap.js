@@ -48,6 +48,15 @@ const stopCoordinates = {
   'Avenida Benavídez y Rioja': [-31.5010, -68.5220],
   'Calle Dorrego y Neuquén': [-31.4850, -68.5298],
   
+  // Hitos de Red Primaria / Troncales
+  'Estación de Transbordo Córdoba': [-31.5365, -68.5250],
+  'Plaza de Villa Krause (Rawson)': [-31.5770, -68.5370],
+  'Escuela de Policía (Chimbas)': [-31.5030, -68.5680],
+  'Calle Tomás Edison y Colón': [-31.5180, -68.4900],
+  'Plaza de Santa Lucía': [-31.5320, -68.4950],
+  'Hospital Dr. Marcial Quiroga': [-31.5280, -68.5850],
+  'Villa Villicum (Albardón)': [-31.4300, -68.5200],
+  
   // Línea 401
   'Plaza de Villa Obrera (Calle Dorrego)': [-31.4845, -68.5298],
   'Calle Ruta 40 y Neuquén': [-31.4852, -68.5305],

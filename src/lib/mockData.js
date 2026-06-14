@@ -689,6 +689,151 @@ export const initialBuses = [
     ],
     schedule: 'Lunes a Viernes de 06:00 a 22:30, Sábados con frecuencia reducida',
     created_at: new Date().toISOString()
+  },
+  {
+    id: 'b1b07384-d113-4ec5-a581-2292d3b2e511',
+    line: 'Troncal TNS',
+    description: 'Troncal Norte-Sur. Conecta la Plaza Centenario de Chimbas con la Plaza de Villa Krause en Rawson, cruzando por el microcentro de San Juan.',
+    type: 'capital_conexion',
+    frequency: 'Cada 8 minutos',
+    neighborhoods: ['Villa Paula', 'Capital Centro', 'Villa Krause'],
+    stops: [
+      'Plaza Centenario de Chimbas (Calle Mendoza)',
+      'Municipalidad de Chimbas (Calle Mendoza)',
+      'Calle Mendoza y Benavídez',
+      'Avenida Rioja y Benavídez',
+      'Avenida Rioja y Libertador',
+      'Estación de Transbordo Córdoba',
+      'Centro Cívico de San Juan',
+      'Avenida España y Arenales',
+      'Plaza de Villa Krause (Rawson)'
+    ],
+    stops_vuelta: [
+      'Plaza de Villa Krause (Rawson)',
+      'Avenida España y Arenales',
+      'Estación de Transbordo Córdoba',
+      'Avenida Rioja y Libertador',
+      'Avenida Rioja y Benavídez',
+      'Calle Mendoza y Benavídez',
+      'Municipalidad de Chimbas (Calle Mendoza)',
+      'Plaza Centenario de Chimbas (Calle Mendoza)'
+    ],
+    schedule: 'Lunes a Domingo de 04:30 a 00:30',
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'b1b07384-d113-4ec5-a581-2292d3b2e512',
+    line: 'Corredor B',
+    description: 'Corredor Benavídez. Conecta la Escuela de Policía en Chimbas Oeste con la Estación de Transbordo Córdoba por el eje vial de Av. Benavídez.',
+    type: 'capital_conexion',
+    frequency: 'Cada 10 minutos',
+    neighborhoods: ['Chimbas Oeste', 'Barrio Los Tamarindos', 'Capital Centro'],
+    stops: [
+      'Escuela de Policía (Chimbas)',
+      'Avenida Benavídez y Salta (Walmart)',
+      'Avenida Benavídez y Mendoza',
+      'Avenida Benavídez y Rioja',
+      'Avenida Benavídez y Necochea',
+      'Avenida Rawson y Córdoba',
+      'Estación de Transbordo Córdoba',
+      'Hospital Dr. Guillermo Rawson'
+    ],
+    stops_vuelta: [
+      'Hospital Dr. Guillermo Rawson',
+      'Estación de Transbordo Córdoba',
+      'Avenida Rawson y Córdoba',
+      'Avenida Benavídez y Necochea',
+      'Avenida Benavídez y Rioja',
+      'Avenida Benavídez y Mendoza',
+      'Avenida Benavídez y Salta (Walmart)',
+      'Escuela de Policía (Chimbas)'
+    ],
+    schedule: 'Lunes a Sábado de 05:00 a 23:45, Domingos de 07:00 a 22:30',
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'b1b07384-d113-4ec5-a581-2292d3b2e513',
+    line: 'Línea 30',
+    description: 'Perimetral Este. Conexión periférica directa entre la Plaza de Chimbas y la Plaza de Santa Lucía, pasando por Chimbas Este y la zona este del Gran San Juan.',
+    type: 'interno_chimbas',
+    frequency: 'Cada 15 minutos',
+    neighborhoods: ['Villa Paula', 'Chimbas Este', 'Santa Lucía Centro'],
+    stops: [
+      'Plaza Centenario de Chimbas',
+      'Calle Neuquén y Mendoza',
+      'Delegación Municipal Este',
+      'Calle Ruta 40 y Neuquén',
+      'Avenida Benavídez y Necochea',
+      'Calle Tomás Edison y Colón',
+      'Plaza de Santa Lucía'
+    ],
+    stops_vuelta: [
+      'Plaza de Santa Lucía',
+      'Calle Tomás Edison y Colón',
+      'Avenida Benavídez y Necochea',
+      'Calle Ruta 40 y Neuquén',
+      'Delegación Municipal Este',
+      'Calle Neuquén y Mendoza',
+      'Plaza Centenario de Chimbas'
+    ],
+    schedule: 'Lunes a Sábado de 06:00 a 22:30',
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'b1b07384-d113-4ec5-a581-2292d3b2e514',
+    line: 'Línea 40',
+    description: 'Perimetral Norte. Une la Plaza de Chimbas con el departamento de Rivadavia y el CUIM (Complejo Universitario) de la UNSJ, ideal para estudiantes.',
+    type: 'salud_universidad',
+    frequency: 'Cada 14 minutos',
+    neighborhoods: ['Villa Paula', 'Chimbas Oeste', 'Rivadavia Universidades'],
+    stops: [
+      'Plaza Centenario de Chimbas',
+      'Avenida Benavídez y Mendoza',
+      'Avenida Benavídez y Salta',
+      'Chimbas Oeste (Villa Observatorio)',
+      'Hospital Dr. Marcial Quiroga',
+      'Avenida Libertador (Parque de Mayo)',
+      'CUIM - UNSJ (Rivadavia)'
+    ],
+    stops_vuelta: [
+      'CUIM - UNSJ (Rivadavia)',
+      'Avenida Libertador (Parque de Mayo)',
+      'Hospital Dr. Marcial Quiroga',
+      'Chimbas Oeste (Villa Observatorio)',
+      'Avenida Benavídez y Salta',
+      'Avenida Benavídez y Mendoza',
+      'Plaza Centenario de Chimbas'
+    ],
+    schedule: 'Lunes a Viernes de 06:00 a 22:00, Sábados con frecuencia reducida',
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'b1b07384-d113-4ec5-a581-2292d3b2e515',
+    line: 'Línea 4',
+    description: 'Interurbana Norte. Conexión de larga distancia desde la Villa Villicum en Albardón hasta la Estación de Transbordo Córdoba, transitando por Ruta 40 a través de Chimbas.',
+    type: 'capital_conexion',
+    frequency: 'Cada 20 minutos',
+    neighborhoods: ['Albardón Villicum', 'Chimbas Ruta 40', 'Capital Centro'],
+    stops: [
+      'Villa Villicum (Albardón)',
+      'Portal de El Mogote',
+      'Calle Ruta 40 y Neuquén',
+      'Avenida Benavídez y Rioja',
+      'Avenida Rioja y Libertador',
+      'Estación de Transbordo Córdoba',
+      'Terminal de Ómnibus de San Juan'
+    ],
+    stops_vuelta: [
+      'Terminal de Ómnibus de San Juan',
+      'Estación de Transbordo Córdoba',
+      'Avenida Rioja y Libertador',
+      'Avenida Benavídez y Rioja',
+      'Calle Ruta 40 y Neuquén',
+      'Portal de El Mogote',
+      'Villa Villicum (Albardón)'
+    ],
+    schedule: 'Lunes a Sábado de 05:00 a 23:00, Domingos de 07:00 a 22:00',
+    created_at: new Date().toISOString()
   }
 ];
 

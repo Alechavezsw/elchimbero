@@ -468,5 +468,60 @@ VALUES
   ARRAY['Plaza Centenario de Chimbas', 'Complejo Ferial Costanera', 'Chimbas Oeste (Villa Observatorio)', 'Avenida Benavídez y Salta', 'San Juan Shopping (Avenida Benavídez)', 'Avenida Libertador (Parque de Mayo)', 'Avenida España y Libertador', 'Hospital Dr. Guillermo Rawson', 'Avenida España y Arenales', 'CUIM - UNSJ (Rivadavia)'],
   ARRAY['CUIM - UNSJ (Rivadavia)', 'Avenida España y Arenales', 'Hospital Dr. Guillermo Rawson', 'Avenida España y Libertador', 'Avenida Libertador (Parque de Mayo)', 'San Juan Shopping (Avenida Benavídez)', 'Avenida Benavídez y Salta', 'Chimbas Oeste (Villa Observatorio)', 'Complejo Ferial Costanera', 'Plaza Centenario de Chimbas'],
   'Lunes a Viernes de 06:00 a 22:30, Sábados con frecuencia reducida'
+),
+(
+  'b1b07384-d113-4ec5-a581-2292d3b2e511',
+  'Troncal TNS',
+  'Troncal Norte-Sur. Conecta la Plaza Centenario de Chimbas con la Plaza de Villa Krause en Rawson, cruzando por el microcentro de San Juan.',
+  'capital_conexion',
+  'Cada 8 minutos',
+  ARRAY['Villa Paula', 'Capital Centro', 'Villa Krause'],
+  ARRAY['Plaza Centenario de Chimbas (Calle Mendoza)', 'Municipalidad de Chimbas (Calle Mendoza)', 'Calle Mendoza y Benavídez', 'Avenida Rioja y Benavídez', 'Avenida Rioja y Libertador', 'Estación de Transbordo Córdoba', 'Centro Cívico de San Juan', 'Avenida España y Arenales', 'Plaza de Villa Krause (Rawson)'],
+  ARRAY['Plaza de Villa Krause (Rawson)', 'Avenida España y Arenales', 'Estación de Transbordo Córdoba', 'Avenida Rioja y Libertador', 'Avenida Rioja y Benavídez', 'Calle Mendoza y Benavídez', 'Municipalidad de Chimbas (Calle Mendoza)', 'Plaza Centenario de Chimbas (Calle Mendoza)'],
+  'Lunes a Domingo de 04:30 a 00:30'
+),
+(
+  'b1b07384-d113-4ec5-a581-2292d3b2e512',
+  'Corredor B',
+  'Corredor Benavídez. Conecta la Escuela de Policía en Chimbas Oeste con la Estación de Transbordo Córdoba por el eje vial de Av. Benavídez.',
+  'capital_conexion',
+  'Cada 10 minutos',
+  ARRAY['Chimbas Oeste', 'Barrio Los Tamarindos', 'Capital Centro'],
+  ARRAY['Escuela de Policía (Chimbas)', 'Avenida Benavídez y Salta (Walmart)', 'Avenida Benavídez y Mendoza', 'Avenida Benavídez y Rioja', 'Avenida Benavídez y Necochea', 'Avenida Rawson y Córdoba', 'Estación de Transbordo Córdoba', 'Hospital Dr. Guillermo Rawson'],
+  ARRAY['Hospital Dr. Guillermo Rawson', 'Estación de Transbordo Córdoba', 'Avenida Rawson y Córdoba', 'Avenida Benavídez y Necochea', 'Avenida Benavídez y Rioja', 'Avenida Benavídez y Mendoza', 'Avenida Benavídez y Salta (Walmart)', 'Escuela de Policía (Chimbas)'],
+  'Lunes a Sábado de 05:00 a 23:45, Domingos de 07:00 a 22:30'
+),
+(
+  'b1b07384-d113-4ec5-a581-2292d3b2e513',
+  'Línea 30',
+  'Perimetral Este. Conexión periférica directa entre la Plaza de Chimbas y la Plaza de Santa Lucía, pasando por Chimbas Este y la zona este del Gran San Juan.',
+  'interno_chimbas',
+  'Cada 15 minutos',
+  ARRAY['Villa Paula', 'Chimbas Este', 'Santa Lucía Centro'],
+  ARRAY['Plaza Centenario de Chimbas', 'Calle Neuquén y Mendoza', 'Delegación Municipal Este', 'Calle Ruta 40 y Neuquén', 'Avenida Benavídez y Necochea', 'Calle Tomás Edison y Colón', 'Plaza de Santa Lucía'],
+  ARRAY['Plaza de Santa Lucía', 'Calle Tomás Edison y Colón', 'Avenida Benavídez y Necochea', 'Calle Ruta 40 y Neuquén', 'Delegación Municipal Este', 'Calle Neuquén y Mendoza', 'Plaza Centenario de Chimbas'],
+  'Lunes a Sábado de 06:00 a 22:30'
+),
+(
+  'b1b07384-d113-4ec5-a581-2292d3b2e514',
+  'Línea 40',
+  'Perimetral Norte. Une la Plaza de Chimbas con el departamento de Rivadavia y el CUIM (Complejo Universitario) de la UNSJ, ideal para estudiantes.',
+  'salud_universidad',
+  'Cada 14 minutos',
+  ARRAY['Villa Paula', 'Chimbas Oeste', 'Rivadavia Universidades'],
+  ARRAY['Plaza Centenario de Chimbas', 'Avenida Benavídez y Mendoza', 'Avenida Benavídez y Salta', 'Chimbas Oeste (Villa Observatorio)', 'Hospital Dr. Marcial Quiroga', 'Avenida Libertador (Parque de Mayo)', 'CUIM - UNSJ (Rivadavia)'],
+  ARRAY['CUIM - UNSJ (Rivadavia)', 'Avenida Libertador (Parque de Mayo)', 'Hospital Dr. Marcial Quiroga', 'Chimbas Oeste (Villa Observatorio)', 'Avenida Benavídez y Salta', 'Avenida Benavídez y Mendoza', 'Plaza Centenario de Chimbas'],
+  'Lunes a Viernes de 06:00 a 22:00, Sábados con frecuencia reducida'
+),
+(
+  'b1b07384-d113-4ec5-a581-2292d3b2e515',
+  'Línea 4',
+  'Interurbana Norte. Conexión de larga distancia desde la Villa Villicum en Albardón hasta la Estación de Transbordo Córdoba, transitando por Ruta 40 a través de Chimbas.',
+  'capital_conexion',
+  'Cada 20 minutos',
+  ARRAY['Albardón Villicum', 'Chimbas Ruta 40', 'Capital Centro'],
+  ARRAY['Villa Villicum (Albardón)', 'Portal de El Mogote', 'Calle Ruta 40 y Neuquén', 'Avenida Benavídez y Rioja', 'Avenida Rioja y Libertador', 'Estación de Transbordo Córdoba', 'Terminal de Ómnibus de San Juan'],
+  ARRAY['Terminal de Ómnibus de San Juan', 'Estación de Transbordo Córdoba', 'Avenida Rioja y Libertador', 'Avenida Benavídez y Rioja', 'Calle Ruta 40 y Neuquén', 'Portal de El Mogote', 'Villa Villicum (Albardón)'],
+  'Lunes a Sábado de 05:00 a 23:00, Domingos de 07:00 a 22:00'
 )
 ON CONFLICT (id) DO NOTHING;
