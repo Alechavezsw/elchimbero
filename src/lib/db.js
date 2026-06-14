@@ -615,5 +615,183 @@ export const db = {
       const updated = jobs.filter(j => j.id !== id);
       saveMockData('chimbero_jobs', updated);
     }
+  },
+
+  // --- FUNCIONES ADICIONALES DE ADMINISTRACIÓN ---
+
+  async getAllBusinessesAdmin() {
+    if (!isMock) {
+      const { data, error } = await supabaseClient
+        .from('businesses')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      return data;
+    } else {
+      return getMockData('chimbero_businesses', initialBusinesses)
+        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    }
+  },
+
+  async updateBusinessStatus(id, status) {
+    if (!isMock) {
+      const { data, error } = await supabaseClient
+        .from('businesses')
+        .update({ status })
+        .eq('id', id)
+        .select();
+      if (error) throw error;
+      return data[0];
+    } else {
+      const businesses = getMockData('chimbero_businesses', initialBusinesses);
+      const idx = businesses.findIndex(b => b.id === id);
+      if (idx !== -1) {
+        businesses[idx].status = status;
+        saveMockData('chimbero_businesses', businesses);
+        return businesses[idx];
+      }
+      throw new Error('Comercio no encontrado');
+    }
+  },
+
+  async createPharmacy(pharmacyData) {
+    const newPharmacy = {
+      id: typeof window !== 'undefined' ? crypto.randomUUID() : Math.random().toString(),
+      name: pharmacyData.name,
+      address: pharmacyData.address,
+      phone: pharmacyData.phone,
+      latitude: parseFloat(pharmacyData.latitude) || -31.4951,
+      longitude: parseFloat(pharmacyData.longitude) || -68.5345,
+      duty_dates: pharmacyData.duty_dates || [],
+      is_open_24h: pharmacyData.is_open_24h || false,
+      created_at: new Date().toISOString()
+    };
+
+    if (!isMock) {
+      const { data, error } = await supabaseClient
+        .from('pharmacies')
+        .insert([newPharmacy])
+        .select();
+      if (error) throw error;
+      return data[0];
+    } else {
+      const pharmacies = getMockData('chimbero_pharmacies', initialPharmacies);
+      pharmacies.push(newPharmacy);
+      saveMockData('chimbero_pharmacies', pharmacies);
+      return newPharmacy;
+    }
+  },
+
+  async deletePharmacy(id) {
+    if (!isMock) {
+      const { error } = await supabaseClient
+        .from('pharmacies')
+        .delete()
+        .eq('id', id);
+      if (error) throw error;
+    } else {
+      const pharmacies = getMockData('chimbero_pharmacies', initialPharmacies);
+      const updated = pharmacies.filter(p => p.id !== id);
+      saveMockData('chimbero_pharmacies', updated);
+    }
+  },
+
+  async createKiosk(kioskData) {
+    const newKiosk = {
+      id: typeof window !== 'undefined' ? crypto.randomUUID() : Math.random().toString(),
+      name: kioskData.name,
+      address: kioskData.address,
+      neighborhood: kioskData.neighborhood,
+      phone: kioskData.phone,
+      latitude: parseFloat(kioskData.latitude) || -31.4965,
+      longitude: parseFloat(kioskData.longitude) || -68.5361,
+      is_open_24h: kioskData.is_open_24h || false,
+      hours_description: kioskData.hours_description || 'Abierto tarde',
+      created_at: new Date().toISOString()
+    };
+
+    if (!isMock) {
+      const { data, error } = await supabaseClient
+        .from('kiosks')
+        .insert([newKiosk])
+        .select();
+      if (error) throw error;
+      return data[0];
+    } else {
+      const kiosks = getMockData('chimbero_kiosks', initialKiosks);
+      kiosks.push(newKiosk);
+      saveMockData('chimbero_kiosks', kiosks);
+      return newKiosk;
+    }
+  },
+
+  async deleteKiosk(id) {
+    if (!isMock) {
+      const { error } = await supabaseClient
+        .from('kiosks')
+        .delete()
+        .eq('id', id);
+      if (error) throw error;
+    } else {
+      const kiosks = getMockData('chimbero_kiosks', initialKiosks);
+      const updated = kiosks.filter(k => k.id !== id);
+      saveMockData('chimbero_kiosks', updated);
+    }
+  },
+
+  async createBus(busData) {
+    const newBus = {
+      id: typeof window !== 'undefined' ? crypto.randomUUID() : Math.random().toString(),
+      line: busData.line,
+      description: busData.description,
+      type: busData.type || 'interno_chimbas',
+      frequency: busData.frequency || 'Cada 15 minutos',
+      neighborhoods: busData.neighborhoods || [],
+      stops: busData.stops || [],
+      schedule: busData.schedule || 'Lunes a Viernes',
+      created_at: new Date().toISOString()
+    };
+
+    if (!isMock) {
+      const { data, error } = await supabaseClient
+        .from('buses')
+        .insert([newBus])
+        .select();
+      if (error) throw error;
+      return data[0];
+    } else {
+      const buses = getMockData('chimbero_buses', initialBuses);
+      buses.push(newBus);
+      saveMockData('chimbero_buses', buses);
+      return newBus;
+    }
+  },
+
+  async deleteBus(id) {
+    if (!isMock) {
+      const { error } = await supabaseClient
+        .from('buses')
+        .delete()
+        .eq('id', id);
+      if (error) throw error;
+    } else {
+      const buses = getMockData('chimbero_buses', initialBuses);
+      const updated = buses.filter(b => b.id !== id);
+      saveMockData('chimbero_buses', updated);
+    }
+  },
+
+  async deleteEvent(id) {
+    if (!isMock) {
+      const { error } = await supabaseClient
+        .from('events')
+        .delete()
+        .eq('id', id);
+      if (error) throw error;
+    } else {
+      const events = getMockData('chimbero_events', initialEvents);
+      const updated = events.filter(e => e.id !== id);
+      saveMockData('chimbero_events', updated);
+    }
   }
 };

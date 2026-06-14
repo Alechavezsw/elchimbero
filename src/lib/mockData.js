@@ -316,49 +316,161 @@ export const initialBuses = [
   {
     id: 'b1b07384-d113-4ec5-a581-2292d3b2e501',
     line: 'Línea 400',
-    description: 'Conexión rápida entre Chimbas (Villa Paula) y la Terminal de Ómnibus / Centro de San Juan.',
+    description: 'Conecta Villa Observatorio en Chimbas Oeste con el Hospital Dr. Guillermo Rawson pasando por el centro de San Juan.',
     type: 'capital_conexion',
     frequency: 'Cada 12 minutos',
-    neighborhoods: ['Villa Paula', 'Barrio Santo Domingo', 'Capital Centro'],
+    neighborhoods: ['Villa Observatorio', 'Barrio Santo Domingo', 'Villa Paula', 'Capital Centro'],
     stops: [
-      'Plaza Centenario de Chimbas (Mendoza y Chubut)',
-      'Calle Tucumán y Benavidez',
-      'Av. Libertador y Mendoza (Capital)',
-      'Terminal de Ómnibus de San Juan'
+      'Plaza de Villa Observatorio',
+      'Plaza Centenario de Chimbas',
+      'Centro Cívico de San Juan',
+      'Hospital Dr. Guillermo Rawson'
     ],
-    schedule: 'Lunes a Sábado de 05:00 a 23:45, Domingos de 07:00 a 22:30',
+    schedule: 'Lunes a Sábado de 05:00 a 23:30, Domingos de 07:00 a 22:00',
     created_at: new Date().toISOString()
   },
   {
     id: 'b1b07384-d113-4ec5-a581-2292d3b2e502',
     line: 'Línea 401',
-    description: 'Servicio interno de Chimbas que une el sector Oeste (Villa Observatorio) con el sector Este (Villa Obrera).',
-    type: 'interno_chimbas',
-    frequency: 'Cada 18 minutos',
-    neighborhoods: ['Villa Observatorio', 'Barrio Los Tamarindos', 'Villa Paula', 'Villa Obrera'],
+    description: 'Une Villa Obrera en Chimbas Este con el Centro Cívico y el Hospital Dr. Guillermo Rawson.',
+    type: 'capital_conexion',
+    frequency: 'Cada 15 minutos',
+    neighborhoods: ['Villa Obrera', 'Villa Paula', 'Capital Centro'],
     stops: [
-      'Plaza de Villa Observatorio',
-      'Calle Benavidez (Frente a Ferretería El Caldén)',
-      'Plaza Centenario (Villa Paula)',
-      'Calle Neuquén y Ruta 40 (Villa Obrera)'
+      'Calle Ruta 40 y Dorrego (Villa Obrera)',
+      'Plaza Centenario de Chimbas',
+      'Centro Cívico de San Juan',
+      'Hospital Dr. Guillermo Rawson'
     ],
-    schedule: 'Lunes a Viernes de 05:30 a 23:00, Sábados y Domingos de 06:30 a 22:00',
+    schedule: 'Lunes a Viernes de 05:30 a 23:00, Sábados y Domingos de 06:30 a 22:30',
     created_at: new Date().toISOString()
   },
   {
     id: 'b1b07384-d113-4ec5-a581-2292d3b2e503',
+    line: 'Línea 402',
+    description: 'Conecta el Barrio Pedregal con el Hospital Dr. Guillermo Rawson y la zona céntrica.',
+    type: 'capital_conexion',
+    frequency: 'Cada 18 minutos',
+    neighborhoods: ['Barrio Pedregal', 'Villa Paula', 'Capital Centro'],
+    stops: [
+      'Barrio Pedregal',
+      'Calle Mendoza y Chubut',
+      'Centro Cívico de San Juan',
+      'Hospital Dr. Guillermo Rawson'
+    ],
+    schedule: 'Lunes a Viernes de 05:45 a 22:45, Sábados de 06:00 a 22:00',
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'b1b07384-d113-4ec5-a581-2292d3b2e504',
+    line: 'Línea 403',
+    description: 'Conexión desde Villa Paula a través del Centro Cívico hacia el Hospital Dr. Guillermo Rawson.',
+    type: 'capital_conexion',
+    frequency: 'Cada 14 minutos',
+    neighborhoods: ['Villa Paula', 'Barrio Los Tamarindos', 'Capital Centro'],
+    stops: [
+      'Plaza Centenario de Chimbas',
+      'Calle Benavídez',
+      'Centro Cívico de San Juan',
+      'Hospital Dr. Guillermo Rawson'
+    ],
+    schedule: 'Lunes a Sábado de 05:15 a 23:15, Domingos de 07:15 a 22:15',
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'b1b07384-d113-4ec5-a581-2292d3b2e505',
+    line: 'Línea 404',
+    description: 'Une el Barrio Las Calandrias con el Hospital Dr. Guillermo Rawson pasando por la Plaza de Chimbas.',
+    type: 'capital_conexion',
+    frequency: 'Cada 16 minutos',
+    neighborhoods: ['Barrio Las Calandrias', 'Villa Paula', 'Capital Centro'],
+    stops: [
+      'Barrio Las Calandrias',
+      'Plaza Centenario de Chimbas',
+      'Centro Cívico de San Juan',
+      'Hospital Dr. Guillermo Rawson'
+    ],
+    schedule: 'Lunes a Sábado de 05:30 a 23:00, Domingos de 07:00 a 22:00',
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'b1b07384-d113-4ec5-a581-2292d3b2e506',
+    line: 'Línea 405',
+    description: 'Conecta el Barrio Natania VIII en Chimbas con el Centro Cívico y el Hospital Dr. Guillermo Rawson.',
+    type: 'capital_conexion',
+    frequency: 'Cada 15 minutos',
+    neighborhoods: ['Barrio Natania VIII', 'Villa Paula', 'Capital Centro'],
+    stops: [
+      'Barrio Natania VIII',
+      'Calle Tucumán',
+      'Centro Cívico de San Juan',
+      'Hospital Dr. Guillermo Rawson'
+    ],
+    schedule: 'Lunes a Viernes de 05:00 a 23:30, Sábados y Domingos de 06:30 a 22:30',
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'b1b07384-d113-4ec5-a581-2292d3b2e507',
+    line: 'Línea 406',
+    description: 'Servicio interno de conexión entre Lote Hogar 59, Villa Paula y el Centro Cívico.',
+    type: 'interno_chimbas',
+    frequency: 'Cada 20 minutos',
+    neighborhoods: ['Lote Hogar 59', 'Villa Paula', 'Capital Centro'],
+    stops: [
+      'Lote Hogar 59',
+      'Plaza Centenario de Chimbas',
+      'Avenida Libertador',
+      'Centro Cívico de San Juan'
+    ],
+    schedule: 'Lunes a Viernes de 06:00 a 22:00, Sábados de 07:00 a 21:00',
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'b1b07384-d113-4ec5-a581-2292d3b2e508',
+    line: 'Línea 407',
+    description: 'Conecta la Villa Mariano Moreno en el noreste de Chimbas con el Hospital Dr. Guillermo Rawson.',
+    type: 'capital_conexion',
+    frequency: 'Cada 18 minutos',
+    neighborhoods: ['Villa Mariano Moreno', 'El Mogote', 'Capital Centro'],
+    stops: [
+      'Villa Mariano Moreno',
+      'El Mogote',
+      'Hospital Dr. Guillermo Rawson',
+      'Centro Cívico de San Juan'
+    ],
+    schedule: 'Lunes a Viernes de 05:30 a 22:30, Sábados de 06:30 a 21:30',
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'b1b07384-d113-4ec5-a581-2292d3b2e509',
+    line: 'Línea 408',
+    description: 'Une El Mogote y la Plaza de Chimbas con el Centro Cívico y el Hospital Dr. Guillermo Rawson.',
+    type: 'capital_conexion',
+    frequency: 'Cada 22 minutos',
+    neighborhoods: ['El Mogote', 'Villa Paula', 'Capital Centro'],
+    stops: [
+      'El Mogote',
+      'Plaza Centenario de Chimbas',
+      'Centro Cívico de San Juan',
+      'Hospital Dr. Guillermo Rawson'
+    ],
+    schedule: 'Lunes a Viernes de 05:15 a 22:30, Sábados de 06:30 a 21:30',
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'b1b07384-d113-4ec5-a581-2292d3b2e510',
     line: 'Línea 420',
-    description: 'Línea universitaria y de salud. Conecta Chimbas directamente con el Complejo Universitario Islas Malvinas (CUIM) de la UNSJ y el Hospital Rawson.',
+    description: 'Línea de salud y universitaria. Conecta Chimbas directamente con el CUIM de la UNSJ y el Hospital Dr. Guillermo Rawson.',
     type: 'salud_universidad',
     frequency: 'Cada 15 minutos',
     neighborhoods: ['Villa Paula', 'Villa Observatorio', 'Capital Rawson', 'Rivadavia CUIM'],
     stops: [
       'Plaza Centenario de Chimbas',
-      'Complejo Ferial Costanera (en días de eventos)',
+      'Complejo Ferial Costanera',
       'Hospital Guillermo Rawson (Capital)',
       'CUIM - UNSJ (Rivadavia)'
     ],
-    schedule: 'Lunes a Viernes de 06:00 a 22:30 (Frecuencia reducida los sábados)',
+    schedule: 'Lunes a Viernes de 06:00 a 22:30, Sábados con frecuencia reducida',
     created_at: new Date().toISOString()
   }
 ];

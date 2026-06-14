@@ -344,3 +344,118 @@ VALUES
   'Abierto las 24 horas. Amplia variedad de golosinas, bebidas frías, sándwiches y artículos de almacén de primera necesidad.'
 )
 ON CONFLICT (id) DO NOTHING;
+
+
+-- 6. Insertar Colectivos (RedTulum)
+INSERT INTO public.buses (
+  id,
+  line,
+  description,
+  type,
+  frequency,
+  neighborhoods,
+  stops,
+  schedule
+)
+VALUES 
+(
+  'b1b07384-d113-4ec5-a581-2292d3b2e501',
+  'Línea 400',
+  'Conecta Villa Observatorio en Chimbas Oeste con el Hospital Dr. Guillermo Rawson pasando por el centro de San Juan.',
+  'capital_conexion',
+  'Cada 12 minutos',
+  ARRAY['Villa Observatorio', 'Barrio Santo Domingo', 'Villa Paula', 'Capital Centro'],
+  ARRAY['Plaza de Villa Observatorio', 'Plaza Centenario de Chimbas', 'Centro Cívico de San Juan', 'Hospital Dr. Guillermo Rawson'],
+  'Lunes a Sábado de 05:00 a 23:30, Domingos de 07:00 a 22:00'
+),
+(
+  'b1b07384-d113-4ec5-a581-2292d3b2e502',
+  'Línea 401',
+  'Une Villa Obrera en Chimbas Este con el Centro Cívico y el Hospital Dr. Guillermo Rawson.',
+  'capital_conexion',
+  'Cada 15 minutos',
+  ARRAY['Villa Obrera', 'Villa Paula', 'Capital Centro'],
+  ARRAY['Calle Ruta 40 y Dorrego (Villa Obrera)', 'Plaza Centenario de Chimbas', 'Centro Cívico de San Juan', 'Hospital Dr. Guillermo Rawson'],
+  'Lunes a Viernes de 05:30 a 23:00, Sábados y Domingos de 06:30 a 22:30'
+),
+(
+  'b1b07384-d113-4ec5-a581-2292d3b2e503',
+  'Línea 402',
+  'Conecta el Barrio Pedregal con el Hospital Dr. Guillermo Rawson y la zona céntrica.',
+  'capital_conexion',
+  'Cada 18 minutos',
+  ARRAY['Barrio Pedregal', 'Villa Paula', 'Capital Centro'],
+  ARRAY['Barrio Pedregal', 'Calle Mendoza y Chubut', 'Centro Cívico de San Juan', 'Hospital Dr. Guillermo Rawson'],
+  'Lunes a Viernes de 05:45 a 22:45, Sábados de 06:00 a 22:00'
+),
+(
+  'b1b07384-d113-4ec5-a581-2292d3b2e504',
+  'Línea 403',
+  'Conexión desde Villa Paula a través del Centro Cívico hacia el Hospital Dr. Guillermo Rawson.',
+  'capital_conexion',
+  'Cada 14 minutos',
+  ARRAY['Villa Paula', 'Barrio Los Tamarindos', 'Capital Centro'],
+  ARRAY['Plaza Centenario de Chimbas', 'Calle Benavídez', 'Centro Cívico de San Juan', 'Hospital Dr. Guillermo Rawson'],
+  'Lunes a Sábado de 05:15 a 23:15, Domingos de 07:15 a 22:15'
+),
+(
+  'b1b07384-d113-4ec5-a581-2292d3b2e505',
+  'Línea 404',
+  'Une el Barrio Las Calandrias con el Hospital Dr. Guillermo Rawson pasando por la Plaza de Chimbas.',
+  'capital_conexion',
+  'Cada 16 minutos',
+  ARRAY['Barrio Las Calandrias', 'Villa Paula', 'Capital Centro'],
+  ARRAY['Barrio Las Calandrias', 'Plaza Centenario de Chimbas', 'Centro Cívico de San Juan', 'Hospital Dr. Guillermo Rawson'],
+  'Lunes a Sábado de 05:30 a 23:00, Domingos de 07:00 a 22:00'
+),
+(
+  'b1b07384-d113-4ec5-a581-2292d3b2e506',
+  'Línea 405',
+  'Conecta el Barrio Natania VIII en Chimbas con el Centro Cívico y el Hospital Dr. Guillermo Rawson.',
+  'capital_conexion',
+  'Cada 15 minutos',
+  ARRAY['Barrio Natania VIII', 'Villa Paula', 'Capital Centro'],
+  ARRAY['Barrio Natania VIII', 'Calle Tucumán', 'Centro Cívico de San Juan', 'Hospital Dr. Guillermo Rawson'],
+  'Lunes a Viernes de 05:00 a 23:30, Sábados y Domingos de 06:30 a 22:30'
+),
+(
+  'b1b07384-d113-4ec5-a581-2292d3b2e507',
+  'Línea 406',
+  'Servicio interno de conexión entre Lote Hogar 59, Villa Paula y el Centro Cívico.',
+  'interno_chimbas',
+  'Cada 20 minutos',
+  ARRAY['Lote Hogar 59', 'Villa Paula', 'Capital Centro'],
+  ARRAY['Lote Hogar 59', 'Plaza Centenario de Chimbas', 'Avenida Libertador', 'Centro Cívico de San Juan'],
+  'Lunes a Viernes de 06:00 a 22:00, Sábados de 07:00 a 21:00'
+),
+(
+  'b1b07384-d113-4ec5-a581-2292d3b2e508',
+  'Línea 407',
+  'Conecta la Villa Mariano Moreno en el noreste de Chimbas con el Hospital Dr. Guillermo Rawson.',
+  'capital_conexion',
+  'Cada 18 minutos',
+  ARRAY['Villa Mariano Moreno', 'El Mogote', 'Capital Centro'],
+  ARRAY['Villa Mariano Moreno', 'El Mogote', 'Hospital Dr. Guillermo Rawson', 'Centro Cívico de San Juan'],
+  'Lunes a Viernes de 05:30 a 22:30, Sábados de 06:30 a 21:30'
+),
+(
+  'b1b07384-d113-4ec5-a581-2292d3b2e509',
+  'Línea 408',
+  'Une El Mogote y la Plaza de Chimbas con el Centro Cívico y el Hospital Dr. Guillermo Rawson.',
+  'capital_conexion',
+  'Cada 22 minutos',
+  ARRAY['El Mogote', 'Villa Paula', 'Capital Centro'],
+  ARRAY['El Mogote', 'Plaza Centenario de Chimbas', 'Centro Cívico de San Juan', 'Hospital Dr. Guillermo Rawson'],
+  'Lunes a Viernes de 05:15 a 22:30, Sábados de 06:30 a 21:30'
+),
+(
+  'b1b07384-d113-4ec5-a581-2292d3b2e510',
+  'Línea 420',
+  'Línea de salud y universitaria. Conecta Chimbas directamente con el CUIM de la UNSJ y el Hospital Dr. Guillermo Rawson.',
+  'salud_universidad',
+  'Cada 15 minutos',
+  ARRAY['Villa Paula', 'Villa Observatorio', 'Capital Rawson', 'Rivadavia CUIM'],
+  ARRAY['Plaza Centenario de Chimbas', 'Complejo Ferial Costanera', 'Hospital Guillermo Rawson (Capital)', 'CUIM - UNSJ (Rivadavia)'],
+  'Lunes a Viernes de 06:00 a 22:30, Sábados con frecuencia reducida'
+)
+ON CONFLICT (id) DO NOTHING;
