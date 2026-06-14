@@ -52,7 +52,7 @@ export default function AdminDashboard() {
   // Estados para formularios de creación
   const [pharmacyForm, setPharmacyForm] = useState({ name: '', address: '', phone: '', latitude: '', longitude: '', duty_dates: '', is_open_24h: false });
   const [kioskForm, setKioskForm] = useState({ name: '', address: '', neighborhood: '', phone: '', latitude: '', longitude: '', is_open_24h: true, hours_description: '' });
-  const [busForm, setBusForm] = useState({ line: '', description: '', type: 'interno_chimbas', frequency: '', neighborhoods: '', stops: '', schedule: '' });
+  const [busForm, setBusForm] = useState({ line: '', description: '', type: 'interno_chimbas', frequency: '', neighborhoods: '', stops: '', stops_vuelta: '', schedule: '' });
   const [eventForm, setEventForm] = useState({ title: '', description: '', date: '', time: '', location: '', category: 'Cultura', image_url: '', price: '0' });
   const [jobForm, setJobForm] = useState({ title: '', description: '', type: 'oferta_laboral', category: '', price: '0', company: '', contact_name: '', whatsapp: '' });
   const [businessForm, setBusinessForm] = useState({ name: '', description: '', category: 'Gastronomía', address: '', neighborhood: '', phone: '', whatsapp: '', latitude: '', longitude: '', image_url: '', hours_lunes_viernes: '09:00 - 13:00, 17:00 - 21:00', hours_sabado_domingo: 'Cerrado' });
@@ -234,15 +234,17 @@ export default function AdminDashboard() {
       // Formatear barrios y paradas
       const neighborhoodsArray = busForm.neighborhoods.split(',').map(n => n.trim()).filter(Boolean);
       const stopsArray = busForm.stops.split(',').map(s => s.trim()).filter(Boolean);
+      const stopsVueltaArray = busForm.stops_vuelta.split(',').map(s => s.trim()).filter(Boolean);
 
       await db.createBus({
         ...busForm,
         neighborhoods: neighborhoodsArray,
-        stops: stopsArray
+        stops: stopsArray,
+        stops_vuelta: stopsVueltaArray
       });
       showFeedback('success', 'Línea de colectivo registrada.');
       setShowModal(null);
-      setBusForm({ line: '', description: '', type: 'interno_chimbas', frequency: '', neighborhoods: '', stops: '', schedule: '' });
+      setBusForm({ line: '', description: '', type: 'interno_chimbas', frequency: '', neighborhoods: '', stops: '', stops_vuelta: '', schedule: '' });
       loadAllData();
     } catch (error) {
       showFeedback('error', 'Error al registrar la línea de colectivo.');
@@ -720,8 +722,13 @@ export default function AdminDashboard() {
                           <strong>Zonas:</strong> {bus.neighborhoods.join(', ')}
                         </p>
                         <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                          <strong>Paradas clave:</strong> {bus.stops.join(' ➔ ')}
+                          <strong>Paradas clave (Ida):</strong> {bus.stops.join(' ➔ ')}
                         </p>
+                        {bus.stops_vuelta && bus.stops_vuelta.length > 0 && (
+                          <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                            <strong>Paradas clave (Vuelta):</strong> {bus.stops_vuelta.join(' ➔ ')}
+                          </p>
+                        )}
                       </div>
                       
                       <button 
@@ -1088,8 +1095,13 @@ export default function AdminDashboard() {
                 </div>
 
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.4rem', fontWeight: 700 }}>Paradas Clave *</label>
+                  <label style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.4rem', fontWeight: 700 }}>Paradas Clave (Ida) *</label>
                   <input required type="text" placeholder="Ej: Plaza de Chimbas, Calle Benavidez, Hospital Rawson (separados por coma)" style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-glass)', color: 'white' }} value={busForm.stops} onChange={e => setBusForm({...busForm, stops: e.target.value})} />
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.4rem', fontWeight: 700 }}>Paradas de Vuelta (Opcional)</label>
+                  <input type="text" placeholder="Ej: Hospital Rawson, Terminal de Ómnibus, Plaza de Chimbas (vacío para invertir Ida)" style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-glass)', color: 'white' }} value={busForm.stops_vuelta} onChange={e => setBusForm({...busForm, stops_vuelta: e.target.value})} />
                 </div>
 
                 <button type="submit" className="btn btn-primary" style={{ padding: '0.75rem', fontWeight: 700, marginTop: '0.5rem', background: 'var(--primary-gradient)' }}>

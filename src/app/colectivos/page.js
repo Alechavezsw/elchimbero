@@ -14,6 +14,7 @@ import {
   Navigation
 } from 'lucide-react';
 import styles from './colectivos.module.css';
+import BusMap from '@/components/BusMap';
 
 export default function ColectivosPage() {
   const [buses, setBuses] = useState([]);
@@ -21,6 +22,7 @@ export default function ColectivosPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterType, setFilterType] = useState('all');
   const [selectedBus, setSelectedBus] = useState(null);
+  const [direction, setDirection] = useState('ida'); // 'ida' | 'vuelta'
 
   useEffect(() => {
     async function loadBuses() {
@@ -30,6 +32,7 @@ export default function ColectivosPage() {
         // Seleccionar la primera por defecto
         if (data.length > 0) {
           setSelectedBus(data[0]);
+          setDirection('ida');
         }
       } catch (err) {
         console.error('Error al cargar colectivos:', err);
@@ -54,6 +57,7 @@ export default function ColectivosPage() {
 
   const handleSelectBus = (bus) => {
     setSelectedBus(bus);
+    setDirection('ida');
   };
 
   const getTypeName = (type) => {
@@ -246,41 +250,105 @@ export default function ColectivosPage() {
                   </div>
                 </div>
 
-                {/* CRONOGRAMA DE HORARIOS */}
-                <div style={{ margin: '1.5rem 0', background: 'rgba(255,255,255,0.01)', border: '1px solid var(--border-glass)', padding: '1rem', borderRadius: '8px' }}>
-                  <h4 style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                    <Clock size={16} /> Horarios de Operación
-                  </h4>
-                  <p style={{ fontSize: '0.875rem', fontWeight: 500, color: 'var(--text-primary)' }}>{selectedBus.schedule}</p>
-                </div>
-
-                {/* CRONOGRAMA DE PARADAS (TIMELINE) */}
-                <div style={{ marginTop: '2rem' }}>
-                  <h4 style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                    <Route size={18} style={{ color: 'var(--secondary)' }} />
-                    Estaciones y Paradas Clave
-                  </h4>
-                  
-                  <div className={styles.timeline}>
-                    {selectedBus.stops.map((stop, idx) => {
-                      const isFirst = idx === 0;
-                      const isLast = idx === selectedBus.stops.length - 1;
-                      return (
-                        <div key={idx} className={styles.timelineItem}>
-                          <div className={`${styles.timelineDot} ${isFirst ? styles.firstDot : isLast ? styles.lastDot : ''}`}>
-                            <div className={styles.dotInside} />
-                          </div>
-                          <div className={styles.timelineContent}>
-                            <span className={styles.stopNumber}>
-                              {isFirst ? '🟢 Terminal de Origen' : isLast ? '🔴 Terminal de Destino' : `Parada ${idx + 1}`}
-                            </span>
-                            <p className={styles.stopName}>{stop}</p>
-                          </div>
-                        </div>
-                      );
-                    })}
+                {/* SELECTOR DE SENTIDO (IDA / VUELTA) */}
+                <div style={{ margin: '1.5rem 0' }}>
+                  <h4 style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '0.65rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Sentido del Recorrido</h4>
+                  <div className="glass" style={{ display: 'flex', padding: '0.25rem', borderRadius: '8px', border: '1px solid var(--border-glass)' }}>
+                    <button 
+                      onClick={() => setDirection('ida')}
+                      className="btn"
+                      style={{ 
+                        flex: 1, 
+                        background: direction === 'ida' ? 'var(--primary-gradient)' : 'none',
+                        color: direction === 'ida' ? 'white' : 'var(--text-secondary)',
+                        padding: '0.5rem', 
+                        fontSize: '0.85rem', 
+                        fontWeight: 700, 
+                        borderRadius: '6px',
+                        border: 'none',
+                        boxShadow: 'none',
+                        transition: 'var(--transition-smooth)'
+                      }}
+                    >
+                      🟢 Ida
+                    </button>
+                    <button 
+                      onClick={() => setDirection('vuelta')}
+                      className="btn"
+                      style={{ 
+                        flex: 1, 
+                        background: direction === 'vuelta' ? 'var(--primary-gradient)' : 'none',
+                        color: direction === 'vuelta' ? 'white' : 'var(--text-secondary)',
+                        padding: '0.5rem', 
+                        fontSize: '0.85rem', 
+                        fontWeight: 700, 
+                        borderRadius: '6px',
+                        border: 'none',
+                        boxShadow: 'none',
+                        transition: 'var(--transition-smooth)'
+                      }}
+                    >
+                      🔄 Vuelta
+                    </button>
                   </div>
                 </div>
+
+                {/* MAPA DE RECORRIDO DE OPENSTREETMAP */}
+                {(() => {
+                  const displayedStops = direction === 'ida' 
+                    ? selectedBus.stops 
+                    : (selectedBus.stops_vuelta && selectedBus.stops_vuelta.length > 0 ? selectedBus.stops_vuelta : [...selectedBus.stops].reverse());
+                  return (
+                    <>
+                      <div style={{ margin: '1.5rem 0' }}>
+                        <h4 style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                          Mapa de Recorrido ({direction === 'ida' ? 'Ida' : 'Vuelta'})
+                        </h4>
+                        <BusMap 
+                          lineName={selectedBus.line} 
+                          stops={displayedStops} 
+                          busType={selectedBus.type} 
+                        />
+                      </div>
+
+                      {/* CRONOGRAMA DE HORARIOS */}
+                      <div style={{ margin: '1.5rem 0', background: 'rgba(255,255,255,0.01)', border: '1px solid var(--border-glass)', padding: '1rem', borderRadius: '8px' }}>
+                        <h4 style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                          <Clock size={16} /> Horarios de Operación
+                        </h4>
+                        <p style={{ fontSize: '0.875rem', fontWeight: 500, color: 'var(--text-primary)' }}>{selectedBus.schedule}</p>
+                      </div>
+
+                      {/* CRONOGRAMA DE PARADAS (TIMELINE) */}
+                      <div style={{ marginTop: '2rem' }}>
+                        <h4 style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                          <Route size={18} style={{ color: 'var(--secondary)' }} />
+                          Estaciones y Paradas Clave ({direction === 'ida' ? 'Sentido de Ida' : 'Sentido de Vuelta'})
+                        </h4>
+                        
+                        <div className={styles.timeline}>
+                          {displayedStops.map((stop, idx) => {
+                            const isFirst = idx === 0;
+                            const isLast = idx === displayedStops.length - 1;
+                            return (
+                              <div key={idx} className={styles.timelineItem}>
+                                <div className={`${styles.timelineDot} ${isFirst ? styles.firstDot : isLast ? styles.lastDot : ''}`}>
+                                  <div className={styles.dotInside} />
+                                </div>
+                                <div className={styles.timelineContent}>
+                                  <span className={styles.stopNumber}>
+                                    {isFirst ? '🟢 Terminal de Origen' : isLast ? '🔴 Terminal de Destino' : `Parada ${idx + 1}`}
+                                  </span>
+                                  <p style={{ margin: 0 }} className={styles.stopName}>{stop}</p>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </>
+                  );
+                })()}
 
                 {/* ENLACE GOOGLE MAPS SIMULADO */}
                 <div style={{ marginTop: '2.5rem', display: 'flex', gap: '1rem' }}>

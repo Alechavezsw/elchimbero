@@ -35,6 +35,7 @@ CREATE TABLE IF NOT EXISTS public.buses (
     frequency TEXT,
     neighborhoods TEXT[] NOT NULL,
     stops TEXT[] NOT NULL,
+    stops_vuelta TEXT[] DEFAULT '{}'::TEXT[] NOT NULL,
     schedule TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );

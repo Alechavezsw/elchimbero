@@ -331,6 +331,19 @@ export const initialBuses = [
       'Teatro del Bicentenario (Las Heras)',
       'Hospital Dr. Guillermo Rawson (Avenida Rawson)'
     ],
+    stops_vuelta: [
+      'Hospital Dr. Guillermo Rawson (Avenida Rawson)',
+      'Terminal de Ómnibus de San Juan',
+      'Teatro del Bicentenario (Las Heras)',
+      'Centro Cívico de San Juan (Avenida España)',
+      'Avenida España y 25 de Mayo',
+      'Avenida Benavídez y Tucumán',
+      'Municipalidad de Chimbas (Calle Mendoza)',
+      'Plaza Centenario de Chimbas (Calle Mendoza)',
+      'Avenida Benavídez y Salta (Walmart)',
+      'Calle Salta y Centenario (Comisaría 30ª)',
+      'Plaza de Villa Observatorio (Calle Pellegrini)'
+    ],
     schedule: 'Lunes a Sábado de 05:00 a 23:30, Domingos de 07:00 a 22:00',
     created_at: new Date().toISOString()
   },
@@ -352,6 +365,18 @@ export const initialBuses = [
       'Centro Cívico de San Juan',
       'Avenida 25 de Mayo y Rawson',
       'Hospital Dr. Guillermo Rawson'
+    ],
+    stops_vuelta: [
+      'Hospital Dr. Guillermo Rawson',
+      'Avenida Rawson y Santa Fe',
+      'Avenida Libertador General San Martín y Rioja',
+      'Centro Cívico de San Juan',
+      'Avenida Rioja y Corrientes',
+      'Calle Mendoza y Benavídez',
+      'Plaza Centenario de Chimbas',
+      'Delegación Municipal Este',
+      'Calle Ruta 40 y Neuquén',
+      'Plaza de Villa Obrera (Calle Dorrego)'
     ],
     schedule: 'Lunes a Viernes de 05:30 a 23:00, Sábados y Domingos de 06:30 a 22:30',
     created_at: new Date().toISOString()
@@ -375,6 +400,18 @@ export const initialBuses = [
       'Avenida Rawson y Santa Fe',
       'Hospital Dr. Guillermo Rawson'
     ],
+    stops_vuelta: [
+      'Hospital Dr. Guillermo Rawson',
+      'Avenida Rawson y Santa Fe',
+      'Centro Cívico de San Juan',
+      'Avenida España y Libertador',
+      'San Juan Shopping (Avenida Benavídez)',
+      'Avenida Benavídez y Salta',
+      'Avenida Benavídez y Mendoza',
+      'Plaza Centenario de Chimbas',
+      'Calle Mendoza y Centenario',
+      'Barrio Pedregal (Calle Rodríguez)'
+    ],
     schedule: 'Lunes a Viernes de 05:45 a 22:45, Sábados de 06:00 a 22:00',
     created_at: new Date().toISOString()
   },
@@ -396,6 +433,18 @@ export const initialBuses = [
       'Avenida Rioja y Mitre',
       'Terminal de Ómnibus de San Juan',
       'Hospital Dr. Guillermo Rawson'
+    ],
+    stops_vuelta: [
+      'Hospital Dr. Guillermo Rawson',
+      'Terminal de Ómnibus de San Juan',
+      'Avenida Rioja y Mitre',
+      'Centro Cívico de San Juan',
+      'Parque de Mayo (Avenida Libertador)',
+      'Avenida España y San Isidro',
+      'Calle Salta y Benavídez',
+      'Calle Mendoza y Benavídez',
+      'Calle Mendoza y Chubut',
+      'Plaza Centenario de Chimbas (Villa Paula)'
     ],
     schedule: 'Lunes a Sábado de 05:15 a 23:15, Domingos de 07:15 a 22:15',
     created_at: new Date().toISOString()
@@ -419,6 +468,18 @@ export const initialBuses = [
       'Avenida Rawson y Córdoba',
       'Hospital Dr. Guillermo Rawson'
     ],
+    stops_vuelta: [
+      'Hospital Dr. Guillermo Rawson',
+      'Avenida Rawson y Córdoba',
+      'Centro Cívico de San Juan',
+      'Avenida España y 25 de Mayo',
+      'Calle Mendoza y Benavídez',
+      'Plaza Centenario de Chimbas (Municipalidad)',
+      'Calle Mendoza y Neuquén',
+      'Complejo Ferial Costanera',
+      'Costanera Alta (Frente a Río San Juan)',
+      'Barrio Las Calandrias (Calle Oro)'
+    ],
     schedule: 'Lunes a Sábado de 05:30 a 23:00, Domingos de 07:00 a 22:00',
     created_at: new Date().toISOString()
   },
@@ -441,6 +502,18 @@ export const initialBuses = [
       'Avenida Rawson y Santa Fe',
       'Hospital Dr. Guillermo Rawson'
     ],
+    stops_vuelta: [
+      'Hospital Dr. Guillermo Rawson',
+      'Avenida Rawson y Santa Fe',
+      'Centro Cívico de San Juan',
+      'Plaza 25 de Mayo (Capital)',
+      'Avenida Rioja y Libertador',
+      'Avenida Rioja y Benavídez',
+      'Calle Tucumán y Benavídez',
+      'Plaza Centenario de Chimbas',
+      'Calle Tucumán y Centenario',
+      'Barrio Natania VIII'
+    ],
     schedule: 'Lunes a Viernes de 05:00 a 23:30, Sábados y Domingos de 06:30 a 22:30',
     created_at: new Date().toISOString()
   },
@@ -460,6 +533,16 @@ export const initialBuses = [
       'Avenida Rioja y Corrientes',
       'Parque de Mayo (Avenida Libertador)',
       'Centro Cívico de San Juan (Terminus)'
+    ],
+    stops_vuelta: [
+      'Centro Cívico de San Juan (Terminus)',
+      'Parque de Mayo (Avenida Libertador)',
+      'Avenida Rioja y Corrientes',
+      'Calle Mendoza y Benavídez',
+      'Municipalidad de Chimbas',
+      'Plaza Centenario de Chimbas',
+      'Calle Centenario y Mendoza',
+      'Lote Hogar 59'
     ],
     schedule: 'Lunes a Viernes de 06:00 a 22:00, Sábados de 07:00 a 21:00',
     created_at: new Date().toISOString()
@@ -482,6 +565,17 @@ export const initialBuses = [
       'Terminal de Ómnibus de San Juan',
       'Centro Cívico de San Juan'
     ],
+    stops_vuelta: [
+      'Centro Cívico de San Juan',
+      'Terminal de Ómnibus de San Juan',
+      'Hospital Dr. Guillermo Rawson',
+      'Avenida Libertador y Rioja',
+      'Avenida Rioja y 25 de Mayo',
+      'Calle Mendoza y Benavídez',
+      'Plaza Centenario de Chimbas',
+      'Calle Rodríguez y Mendoza',
+      'Villa Mariano Moreno (Calle Pellegrini)'
+    ],
     schedule: 'Lunes a Viernes de 05:30 a 22:30, Sábados de 06:30 a 21:30',
     created_at: new Date().toISOString()
   },
@@ -503,6 +597,17 @@ export const initialBuses = [
       'Avenida Rioja y Santa Fe',
       'Hospital Dr. Guillermo Rawson'
     ],
+    stops_vuelta: [
+      'Hospital Dr. Guillermo Rawson',
+      'Avenida Rioja y Santa Fe',
+      'Centro Cívico de San Juan',
+      'Avenida España y Benavídez',
+      'Calle Mendoza y Benavídez',
+      'Plaza Centenario de Chimbas',
+      'Calle Neuquén y Mendoza',
+      'Portal de El Mogote',
+      'El Mogote (Calle Rodríguez)'
+    ],
     schedule: 'Lunes a Viernes de 05:15 a 22:30, Sábados de 06:30 a 21:30',
     created_at: new Date().toISOString()
   },
@@ -522,6 +627,16 @@ export const initialBuses = [
       'Hospital Dr. Guillermo Rawson',
       'Avenida España y Arenales',
       'CUIM - UNSJ (Rivadavia)'
+    ],
+    stops_vuelta: [
+      'CUIM - UNSJ (Rivadavia)',
+      'Avenida España y Arenales',
+      'Hospital Dr. Guillermo Rawson',
+      'Avenida Libertador (Parque de Mayo)',
+      'Avenida Benavídez y Salta',
+      'Chimbas Oeste (Villa Observatorio)',
+      'Complejo Ferial Costanera',
+      'Plaza Centenario de Chimbas'
     ],
     schedule: 'Lunes a Viernes de 06:00 a 22:30, Sábados con frecuencia reducida',
   }

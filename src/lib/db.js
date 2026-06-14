@@ -69,7 +69,7 @@ const initMockDB = () => {
     setStorageItem('chimbero_events', initialEvents);
   }
   const storedBuses = getStorageItem('chimbero_buses', []);
-  const needsStopsUpdate = storedBuses[0] && (!storedBuses[0].stops || storedBuses[0].stops.length < 8);
+  const needsStopsUpdate = storedBuses[0] && (!storedBuses[0].stops || storedBuses[0].stops.length < 8 || !storedBuses[0].hasOwnProperty('stops_vuelta'));
   if (!window.localStorage.getItem('chimbero_buses') || storedBuses.length < initialBuses.length || needsStopsUpdate) {
     setStorageItem('chimbero_buses', initialBuses);
   }
@@ -750,6 +750,7 @@ export const db = {
       frequency: busData.frequency || 'Cada 15 minutos',
       neighborhoods: busData.neighborhoods || [],
       stops: busData.stops || [],
+      stops_vuelta: busData.stops_vuelta || [],
       schedule: busData.schedule || 'Lunes a Viernes',
       created_at: new Date().toISOString()
     };
