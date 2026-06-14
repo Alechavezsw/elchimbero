@@ -1,0 +1,105 @@
+.header {
+  padding: 3rem 0 2rem 0;
+  border-bottom: 1px solid var(--border-glass);
+  margin-bottom: 2.5rem;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+}
+
+.subtitle {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+}
+
+.layoutGrid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+.listSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.mapSection {
+  position: sticky;
+  top: 90px;
+  height: 500px;
+}
+
+.pharmacyCard {
+  padding: 1.75rem;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.activeCard {
+  border-color: rgba(16, 185, 129, 0.3);
+  background: rgba(16, 185, 129, 0.03);
+  box-shadow: 0 10px 25px -10px rgba(0, 0, 0, 0.5), var(--shadow-emerald);
+}
+
+.activeCard:hover {
+  border-color: rgba(16, 185, 129, 0.5);
+  transform: translateY(-2px);
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.pharmacyName {
+  font-size: 1.35rem;
+  font-weight: 700;
+}
+
+.dutyBadge {
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--color-open);
+  border: 1px solid var(--color-open);
+  padding: 0.35rem 0.75rem;
+  border-radius: 50px;
+  font-size: 0.725rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.addressRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+}
+
+.contactRow {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 1.25rem;
+}
+
+@media (max-width: 968px) {
+  .layoutGrid {
+    grid-template-columns: 1fr;
+  }
+  .mapSection {
+    position: static;
+    height: 350px;
+  }
+}

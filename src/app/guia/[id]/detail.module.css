@@ -1,0 +1,188 @@
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+.backLink:hover {
+  color: var(--text-primary);
+  transform: translateX(-2px);
+}
+
+.mainGrid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
+  align-items: start;
+  margin-bottom: 4rem;
+}
+
+/* Left Column: Business Profile */
+.profileCard {
+  overflow: hidden;
+}
+
+.imageBanner {
+  height: 350px;
+  position: relative;
+  overflow: hidden;
+}
+
+.imageBanner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.categoryBadge {
+  position: absolute;
+  top: 1.5rem;
+  left: 1.5rem;
+  background: rgba(8, 12, 20, 0.85);
+  backdrop-filter: blur(8px);
+}
+
+.profileInfo {
+  padding: 2.5rem;
+}
+
+.businessName {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+}
+
+.addressRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+  font-size: 1rem;
+}
+
+.descriptionSection {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-glass);
+}
+
+.sectionTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.descriptionText {
+  color: var(--text-secondary);
+  line-height: 1.6;
+  font-size: 1.05rem;
+}
+
+/* Contact info panel */
+.contactGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.contactItem {
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: var(--border-radius-sm);
+  border: 1px solid var(--border-glass);
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.contactLabel {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.contactValue {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* Right Column: Sidebar Map & Hours */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.mapCard {
+  padding: 1.5rem;
+}
+
+.mapWrapper {
+  height: 250px;
+  border-radius: var(--border-radius-sm);
+  overflow: hidden;
+  margin-top: 1rem;
+  border: 1px solid var(--border-glass);
+}
+
+.hoursCard {
+  padding: 1.75rem;
+}
+
+.hoursList {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.hoursItem {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.hoursItem:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.dayName {
+  color: var(--text-secondary);
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.dayTime {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+@media (max-width: 968px) {
+  .mainGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .imageBanner {
+    height: 200px;
+  }
+  .profileInfo {
+    padding: 1.5rem;
+  }
+  .businessName {
+    font-size: 2rem;
+  }
+}

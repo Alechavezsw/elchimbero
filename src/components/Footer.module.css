@@ -1,0 +1,77 @@
+.footer {
+  margin-top: auto;
+  background-color: var(--bg-deep);
+  border-top: 1px solid var(--border-glass);
+  padding: 4rem 0 2rem 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 3rem;
+  margin-bottom: 3rem;
+}
+
+.brandCol {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.logoText {
+  font-size: 1.4rem;
+  font-weight: 800;
+}
+
+.tagline {
+  line-height: 1.6;
+}
+
+.title {
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 1.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.linksList {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.linkItem a:hover {
+  color: var(--text-primary);
+  transform: translateX(4px);
+}
+
+.bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--border-glass);
+  padding-top: 2rem;
+  font-size: 0.8rem;
+}
+
+.heart {
+  color: var(--accent-pink);
+  display: inline-block;
+  animation: beat 1s infinite alternate;
+}
+
+@keyframes beat {
+  to { transform: scale(1.15); }
+}
+
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}

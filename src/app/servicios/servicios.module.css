@@ -1,0 +1,303 @@
+.tabContainer {
+  display: flex;
+  gap: 0.75rem;
+  border-bottom: 1px solid var(--border-glass);
+  padding-bottom: 1rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.tabContainer::-webkit-scrollbar {
+  display: none;
+}
+
+.tabBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-glass);
+  color: var(--text-secondary);
+  border-radius: var(--border-radius-sm);
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  white-space: nowrap;
+}
+
+.tabBtn:hover {
+  background: var(--bg-glass-hover);
+  color: var(--text-primary);
+}
+
+.activeTabBtn {
+  background: var(--primary);
+  color: #090a0f;
+  border-color: var(--primary);
+  box-shadow: 0 4px 14px rgba(175, 255, 0, 0.2);
+}
+
+.activeTabBtn:hover {
+  background: var(--primary);
+  color: #090a0f;
+}
+
+.tabContent {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+/* RECOLECCIÓN TAB */
+.recoleccionLayout {
+  display: grid;
+  grid-template-columns: 4fr 5fr;
+  gap: 2rem;
+}
+
+@media (max-width: 900px) {
+  .recoleccionLayout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.selectorCard {
+  padding: 2rem;
+  border-radius: var(--border-radius-lg);
+  background: linear-gradient(#0e1017, #0e1017) padding-box,
+              linear-gradient(135deg, var(--primary) 0%, rgba(255, 255, 255, 0.02) 100%) border-box;
+  border: 1px solid transparent;
+  box-shadow: var(--shadow-card), 0 0 25px rgba(175, 255, 0, 0.03);
+}
+
+.scheduleInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.scheduleRow {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.scheduleLabel {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.scheduleVal {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.tipsCard {
+  padding: 2rem;
+  border-radius: var(--border-radius-lg);
+  background: linear-gradient(#141310, #141310) padding-box,
+              linear-gradient(135deg, var(--color-warning) 0%, rgba(255, 255, 255, 0.02) 100%) border-box;
+  border: 1px solid transparent;
+}
+
+.tipsList {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  list-style: none;
+}
+
+.tipsList li {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  position: relative;
+  padding-left: 1.25rem;
+}
+
+.tipsList li::before {
+  content: '•';
+  color: var(--primary);
+  font-size: 1.5rem;
+  position: absolute;
+  left: 0;
+  top: -0.15rem;
+}
+
+/* CORTES TAB */
+.cortesLayout {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.outageCard {
+  padding: 2rem;
+  border-radius: var(--border-radius-lg);
+  background: linear-gradient(#120c12, #120c12) padding-box,
+              linear-gradient(135deg, var(--accent-pink) 0%, rgba(255, 255, 255, 0.02) 100%) border-box;
+  border: 1px solid transparent;
+  box-shadow: var(--shadow-card), 0 0 25px rgba(255, 0, 127, 0.03);
+}
+
+.outageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 1rem;
+  border-bottom: 1px solid var(--border-glass);
+  padding-bottom: 1rem;
+}
+
+.providerBadge {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.providerBadge svg {
+  flex-shrink: 0;
+}
+
+.providerName {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  display: block;
+}
+
+.outageTitle {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-top: 0.15rem;
+}
+
+.outageDesc {
+  font-size: 0.925rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-top: 1.25rem;
+}
+
+.outageMetaLabel {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+
+.outageZoneTag {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-glass);
+  border-radius: 4px;
+  padding: 0.25rem 0.6rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.outageTime {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.01);
+  border: 1px solid var(--border-glass);
+  padding: 0.75rem 1rem;
+  border-radius: var(--border-radius-sm);
+  width: fit-content;
+}
+
+.outageTime svg {
+  color: var(--text-muted);
+}
+
+/* CAMPAÑAS TAB */
+.campaniasLayout {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+}
+
+.campaignCard {
+  padding: 2rem;
+  border-radius: var(--border-radius-lg);
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(#0e1017, #0e1017) padding-box,
+              linear-gradient(135deg, var(--secondary) 0%, rgba(255, 255, 255, 0.02) 100%) border-box;
+  border: 1px solid transparent;
+  box-shadow: var(--shadow-card), 0 0 25px rgba(0, 240, 255, 0.03);
+}
+
+.campaignHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  border-bottom: 1px solid var(--border-glass);
+  padding-bottom: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.campaignOrganizer {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  display: block;
+}
+
+.campaignTitle {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-top: 0.15rem;
+  line-height: 1.4;
+}
+
+.campaignDesc {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.campaignMetaGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  border-top: 1px solid var(--border-glass);
+  padding-top: 1.25rem;
+  margin-top: auto;
+}
+
+.campMetaItem {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.campMetaItem svg {
+  flex-shrink: 0;
+}
+
+.campMetaItem span {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.campMetaItem strong {
+  font-size: 0.85rem;
+  color: var(--text-primary);
+}
