@@ -28,9 +28,11 @@ const stopCoordinates = {
   'Calle Mendoza y Rodríguez': [-31.4780, -68.5338],
   'Calle Mendoza y Chile': [-31.5150, -68.5338],
   'Calle Mendoza y 25 de Mayo': [-31.5270, -68.5338],
+  'Calle Pellegrini y Mendoza': [-31.4920, -68.5338],
   'Calle Salta y Oro': [-31.4700, -68.5500],
   'Calle Salta y Rodríguez': [-31.4780, -68.5500],
   'Calle Salta y Sargento Cabral': [-31.5150, -68.5500],
+  'Calle Pellegrini y Salta': [-31.5040, -68.5550],
   'Calle Tucumán y Oro': [-31.4700, -68.5180],
   'Calle Tucumán y Rodríguez': [-31.4780, -68.5180],
   'Calle Tucumán y Chaco': [-31.5100, -68.5180],
@@ -44,6 +46,7 @@ const stopCoordinates = {
   'Calle Las Heras y Córdoba': [-31.5320, -68.5270],
   'Avenida Benavídez y Necochea': [-31.5012, -68.4980],
   'Avenida Benavídez y Rioja': [-31.5010, -68.5220],
+  'Calle Dorrego y Neuquén': [-31.4850, -68.5298],
   
   // Línea 401
   'Plaza de Villa Obrera (Calle Dorrego)': [-31.4845, -68.5298],
