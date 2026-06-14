@@ -305,7 +305,6 @@ export const initialEvents = [
     date: '2026-06-22',
     time: '16:00',
     location: 'Punto Digital Chimbas (Delegación Oeste)',
-    category: 'Talleres',
     image_url: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=800&q=80',
     price: 0,
     created_at: new Date().toISOString()
@@ -321,10 +320,16 @@ export const initialBuses = [
     frequency: 'Cada 12 minutos',
     neighborhoods: ['Villa Observatorio', 'Barrio Santo Domingo', 'Villa Paula', 'Capital Centro'],
     stops: [
-      'Plaza de Villa Observatorio',
-      'Plaza Centenario de Chimbas',
-      'Centro Cívico de San Juan',
-      'Hospital Dr. Guillermo Rawson'
+      'Plaza de Villa Observatorio (Calle Pellegrini)',
+      'Calle Salta y Centenario (Comisaría 30ª)',
+      'Avenida Benavídez y Salta (Walmart)',
+      'Plaza Centenario de Chimbas (Calle Mendoza)',
+      'Municipalidad de Chimbas (Calle Mendoza)',
+      'Avenida Benavídez y Tucumán',
+      'Avenida España y 25 de Mayo',
+      'Centro Cívico de San Juan (Avenida España)',
+      'Teatro del Bicentenario (Las Heras)',
+      'Hospital Dr. Guillermo Rawson (Avenida Rawson)'
     ],
     schedule: 'Lunes a Sábado de 05:00 a 23:30, Domingos de 07:00 a 22:00',
     created_at: new Date().toISOString()
@@ -337,9 +342,15 @@ export const initialBuses = [
     frequency: 'Cada 15 minutos',
     neighborhoods: ['Villa Obrera', 'Villa Paula', 'Capital Centro'],
     stops: [
-      'Calle Ruta 40 y Dorrego (Villa Obrera)',
+      'Plaza de Villa Obrera (Calle Dorrego)',
+      'Calle Ruta 40 y Neuquén',
+      'Delegación Municipal Este',
       'Plaza Centenario de Chimbas',
+      'Calle Mendoza y Benavídez',
+      'Avenida Rioja y Corrientes',
+      'Avenida Libertador General San Martín y Rioja',
       'Centro Cívico de San Juan',
+      'Avenida 25 de Mayo y Rawson',
       'Hospital Dr. Guillermo Rawson'
     ],
     schedule: 'Lunes a Viernes de 05:30 a 23:00, Sábados y Domingos de 06:30 a 22:30',
@@ -353,9 +364,15 @@ export const initialBuses = [
     frequency: 'Cada 18 minutos',
     neighborhoods: ['Barrio Pedregal', 'Villa Paula', 'Capital Centro'],
     stops: [
-      'Barrio Pedregal',
-      'Calle Mendoza y Chubut',
+      'Barrio Pedregal (Calle Rodríguez)',
+      'Calle Mendoza y Centenario',
+      'Plaza Centenario de Chimbas',
+      'Avenida Benavídez y Mendoza',
+      'Avenida Benavídez y Salta',
+      'San Juan Shopping (Avenida Benavídez)',
+      'Avenida España y Libertador',
       'Centro Cívico de San Juan',
+      'Avenida Rawson y Santa Fe',
       'Hospital Dr. Guillermo Rawson'
     ],
     schedule: 'Lunes a Viernes de 05:45 a 22:45, Sábados de 06:00 a 22:00',
@@ -369,9 +386,15 @@ export const initialBuses = [
     frequency: 'Cada 14 minutos',
     neighborhoods: ['Villa Paula', 'Barrio Los Tamarindos', 'Capital Centro'],
     stops: [
-      'Plaza Centenario de Chimbas',
-      'Calle Benavídez',
+      'Plaza Centenario de Chimbas (Villa Paula)',
+      'Calle Mendoza y Chubut',
+      'Calle Mendoza y Benavídez',
+      'Calle Salta y Benavídez',
+      'Avenida España y San Isidro',
+      'Parque de Mayo (Avenida Libertador)',
       'Centro Cívico de San Juan',
+      'Avenida Rioja y Mitre',
+      'Terminal de Ómnibus de San Juan',
       'Hospital Dr. Guillermo Rawson'
     ],
     schedule: 'Lunes a Sábado de 05:15 a 23:15, Domingos de 07:15 a 22:15',
@@ -385,9 +408,15 @@ export const initialBuses = [
     frequency: 'Cada 16 minutos',
     neighborhoods: ['Barrio Las Calandrias', 'Villa Paula', 'Capital Centro'],
     stops: [
-      'Barrio Las Calandrias',
-      'Plaza Centenario de Chimbas',
+      'Barrio Las Calandrias (Calle Oro)',
+      'Costanera Alta (Frente a Río San Juan)',
+      'Complejo Ferial Costanera',
+      'Calle Mendoza y Neuquén',
+      'Plaza Centenario de Chimbas (Municipalidad)',
+      'Calle Mendoza y Benavídez',
+      'Avenida España y 25 de Mayo',
       'Centro Cívico de San Juan',
+      'Avenida Rawson y Córdoba',
       'Hospital Dr. Guillermo Rawson'
     ],
     schedule: 'Lunes a Sábado de 05:30 a 23:00, Domingos de 07:00 a 22:00',
@@ -402,8 +431,14 @@ export const initialBuses = [
     neighborhoods: ['Barrio Natania VIII', 'Villa Paula', 'Capital Centro'],
     stops: [
       'Barrio Natania VIII',
-      'Calle Tucumán',
+      'Calle Tucumán y Centenario',
+      'Plaza Centenario de Chimbas',
+      'Calle Tucumán y Benavídez',
+      'Avenida Rioja y Benavídez',
+      'Avenida Rioja y Libertador',
+      'Plaza 25 de Mayo (Capital)',
       'Centro Cívico de San Juan',
+      'Avenida Rawson y Santa Fe',
       'Hospital Dr. Guillermo Rawson'
     ],
     schedule: 'Lunes a Viernes de 05:00 a 23:30, Sábados y Domingos de 06:30 a 22:30',
@@ -418,9 +453,13 @@ export const initialBuses = [
     neighborhoods: ['Lote Hogar 59', 'Villa Paula', 'Capital Centro'],
     stops: [
       'Lote Hogar 59',
+      'Calle Centenario y Mendoza',
       'Plaza Centenario de Chimbas',
-      'Avenida Libertador',
-      'Centro Cívico de San Juan'
+      'Municipalidad de Chimbas',
+      'Calle Mendoza y Benavídez',
+      'Avenida Rioja y Corrientes',
+      'Parque de Mayo (Avenida Libertador)',
+      'Centro Cívico de San Juan (Terminus)'
     ],
     schedule: 'Lunes a Viernes de 06:00 a 22:00, Sábados de 07:00 a 21:00',
     created_at: new Date().toISOString()
@@ -433,9 +472,14 @@ export const initialBuses = [
     frequency: 'Cada 18 minutos',
     neighborhoods: ['Villa Mariano Moreno', 'El Mogote', 'Capital Centro'],
     stops: [
-      'Villa Mariano Moreno',
-      'El Mogote',
+      'Villa Mariano Moreno (Calle Pellegrini)',
+      'Calle Rodríguez y Mendoza',
+      'Plaza Centenario de Chimbas',
+      'Calle Mendoza y Benavídez',
+      'Avenida Rioja y 25 de Mayo',
+      'Avenida Libertador y Rioja',
       'Hospital Dr. Guillermo Rawson',
+      'Terminal de Ómnibus de San Juan',
       'Centro Cívico de San Juan'
     ],
     schedule: 'Lunes a Viernes de 05:30 a 22:30, Sábados de 06:30 a 21:30',
@@ -449,9 +493,14 @@ export const initialBuses = [
     frequency: 'Cada 22 minutos',
     neighborhoods: ['El Mogote', 'Villa Paula', 'Capital Centro'],
     stops: [
-      'El Mogote',
+      'El Mogote (Calle Rodríguez)',
+      'Portal de El Mogote',
+      'Calle Neuquén y Mendoza',
       'Plaza Centenario de Chimbas',
+      'Calle Mendoza y Benavídez',
+      'Avenida España y Benavídez',
       'Centro Cívico de San Juan',
+      'Avenida Rioja y Santa Fe',
       'Hospital Dr. Guillermo Rawson'
     ],
     schedule: 'Lunes a Viernes de 05:15 a 22:30, Sábados de 06:30 a 21:30',
@@ -467,11 +516,14 @@ export const initialBuses = [
     stops: [
       'Plaza Centenario de Chimbas',
       'Complejo Ferial Costanera',
-      'Hospital Guillermo Rawson (Capital)',
+      'Chimbas Oeste (Villa Observatorio)',
+      'Avenida Benavídez y Salta',
+      'Avenida Libertador (Parque de Mayo)',
+      'Hospital Dr. Guillermo Rawson',
+      'Avenida España y Arenales',
       'CUIM - UNSJ (Rivadavia)'
     ],
     schedule: 'Lunes a Viernes de 06:00 a 22:30, Sábados con frecuencia reducida',
-    created_at: new Date().toISOString()
   }
 ];
 

@@ -82,14 +82,38 @@
   padding: 1.25rem;
   border-radius: var(--border-radius-md);
   cursor: pointer;
-  transition: var(--transition-smooth);
+  background: rgba(255, 255, 255, 0.01);
+  border: 1px solid var(--border-glass);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.busCard:hover {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px -10px rgba(0, 0, 0, 0.5);
 }
 
 .selectedBusCard {
-  background: linear-gradient(90deg, rgba(0, 240, 255, 0.06) 0%, rgba(255, 255, 255, 0.01) 100%) padding-box,
-              linear-gradient(90deg, var(--secondary) 0%, rgba(255, 255, 255, 0.02) 100%) border-box;
   border: 1px solid transparent !important;
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.8), 0 0 25px rgba(0, 240, 255, 0.15) !important;
+}
+
+.selected_capital_conexion {
+  background: linear-gradient(90deg, rgba(139, 92, 246, 0.08) 0%, rgba(255, 255, 255, 0.01) 100%) padding-box,
+              linear-gradient(90deg, #a78bfa 0%, rgba(255, 255, 255, 0.02) 100%) border-box;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.8), 0 0 25px rgba(139, 92, 246, 0.2) !important;
+}
+
+.selected_interno_chimbas {
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0.08) 0%, rgba(255, 255, 255, 0.01) 100%) padding-box,
+              linear-gradient(90deg, #10b981 0%, rgba(255, 255, 255, 0.02) 100%) border-box;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.8), 0 0 25px rgba(16, 185, 129, 0.2) !important;
+}
+
+.selected_salud_universidad {
+  background: linear-gradient(90deg, rgba(0, 240, 255, 0.08) 0%, rgba(255, 255, 255, 0.01) 100%) padding-box,
+              linear-gradient(90deg, var(--secondary) 0%, rgba(255, 255, 255, 0.02) 100%) border-box;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.8), 0 0 25px rgba(0, 240, 255, 0.2) !important;
 }
 
 .busCardHeader {
@@ -207,12 +231,18 @@
   top: 8px;
   bottom: 8px;
   width: 2px;
-  background: var(--border-glass);
+  background: linear-gradient(to bottom, #10b981 0%, var(--secondary) 50%, #ef4444 100%);
+  box-shadow: 0 0 8px rgba(0, 240, 255, 0.2);
 }
 
 .timelineItem {
   position: relative;
   margin-bottom: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.timelineItem:hover {
+  transform: translateX(3px);
 }
 
 .timelineItem:last-child {
@@ -226,27 +256,37 @@
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background: var(--bg-deep);
+  background: #0e1017;
   border: 2px solid var(--border-glass);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 2;
+  transition: all 0.3s ease;
 }
 
-.timelineItem:first-child .timelineDot, 
-.timelineItem:last-child .timelineDot {
-  border-color: var(--secondary);
+.firstDot {
+  border-color: #10b981 !important;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+}
+
+.firstDot .dotInside {
+  background-color: #10b981 !important;
+}
+
+.lastDot {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
+}
+
+.lastDot .dotInside {
+  background-color: #ef4444 !important;
 }
 
 .dotInside {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-}
-
-.timelineItem:first-child .dotInside, 
-.timelineItem:last-child .dotInside {
   background-color: var(--secondary);
 }
 
@@ -254,17 +294,27 @@
   display: flex;
   flex-direction: column;
   gap: 0.15rem;
+  background: rgba(255, 255, 255, 0.01);
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.02);
+}
+
+.timelineItem:hover .timelineContent {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(0, 240, 255, 0.1);
 }
 
 .stopNumber {
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   font-weight: 700;
   color: var(--text-muted);
   text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .stopName {
-  font-size: 0.925rem;
+  font-size: 0.9rem;
   font-weight: 600;
   color: var(--text-primary);
 }

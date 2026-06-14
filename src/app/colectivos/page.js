@@ -150,7 +150,7 @@ export default function ColectivosPage() {
                 {filteredBuses.map((bus) => (
                   <div 
                     key={bus.id} 
-                    className={`${styles.busCard} glass ${selectedBus?.id === bus.id ? styles.selectedBusCard : ''}`}
+                    className={`${styles.busCard} glass ${selectedBus?.id === bus.id ? `${styles.selectedBusCard} ${styles['selected_' + bus.type]}` : ''}`}
                     onClick={() => handleSelectBus(bus)}
                   >
                     <div className={styles.busCardHeader}>
@@ -215,6 +215,37 @@ export default function ColectivosPage() {
                   </div>
                 </div>
 
+                {/* SIMULADOR DE ARRIBO EN TIEMPO REAL */}
+                <div style={{ margin: '1.5rem 0', background: 'rgba(0, 240, 255, 0.02)', border: '1px solid rgba(0, 240, 255, 0.1)', padding: '1.25rem', borderRadius: '12px', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <h4 style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '0.35rem', margin: 0, fontWeight: 700 }}>
+                      <Clock size={16} style={{ color: 'var(--secondary)' }} /> Estado de Frecuencia (En Vivo)
+                    </h4>
+                    <span className="badge badge-open" style={{ background: 'rgba(16, 185, 129, 0.15)', color: '#34d399', border: 'none', display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.725rem', padding: '0.2rem 0.6rem', fontWeight: 700 }}>
+                      <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#10b981', display: 'inline-block', animation: 'pulse 1.5s infinite' }} /> En Servicio
+                    </span>
+                  </div>
+                  
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginTop: '0.25rem' }}>
+                    <div className="glass" style={{ padding: '0.75rem', borderRadius: '8px', textAlign: 'center', background: 'rgba(255,255,255,0.01)', border: '1px solid var(--border-glass)' }}>
+                      <span style={{ display: 'block', fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.15rem' }}>Próximo Colectivo</span>
+                      <strong style={{ fontSize: '1.35rem', color: 'var(--secondary)', textShadow: '0 0 12px rgba(0,240,255,0.4)' }}>
+                        {/* Generamos un tiempo ficticio basado en el minuto actual */}
+                        {typeof window !== 'undefined' ? `${(new Date().getMinutes() % 12) + 3} min` : '7 min'}
+                      </strong>
+                    </div>
+                    <div className="glass" style={{ padding: '0.75rem', borderRadius: '8px', textAlign: 'center', background: 'rgba(255,255,255,0.01)', border: '1px solid var(--border-glass)' }}>
+                      <span style={{ display: 'block', fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.15rem' }}>Frecuencia Promedio</span>
+                      <strong style={{ fontSize: '1.35rem', color: 'white' }}>{selectedBus.frequency.replace('Cada ', '')}</strong>
+                    </div>
+                  </div>
+                  
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--text-muted)', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '0.5rem', marginTop: '0.25rem' }}>
+                    <span>Unidad: <strong>Coche RT-{selectedBus.line.match(/\d+/)?.[0] || '400'}-{Math.floor(Math.random() * 20) + 10}</strong></span>
+                    <span>Accesibilidad: ♿ Rampa / ❄️ Aire</span>
+                  </div>
+                </div>
+
                 {/* CRONOGRAMA DE HORARIOS */}
                 <div style={{ margin: '1.5rem 0', background: 'rgba(255,255,255,0.01)', border: '1px solid var(--border-glass)', padding: '1rem', borderRadius: '8px' }}>
                   <h4 style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
@@ -231,17 +262,23 @@ export default function ColectivosPage() {
                   </h4>
                   
                   <div className={styles.timeline}>
-                    {selectedBus.stops.map((stop, idx) => (
-                      <div key={idx} className={styles.timelineItem}>
-                        <div className={styles.timelineDot}>
-                          <div className={styles.dotInside} />
+                    {selectedBus.stops.map((stop, idx) => {
+                      const isFirst = idx === 0;
+                      const isLast = idx === selectedBus.stops.length - 1;
+                      return (
+                        <div key={idx} className={styles.timelineItem}>
+                          <div className={`${styles.timelineDot} ${isFirst ? styles.firstDot : isLast ? styles.lastDot : ''}`}>
+                            <div className={styles.dotInside} />
+                          </div>
+                          <div className={styles.timelineContent}>
+                            <span className={styles.stopNumber}>
+                              {isFirst ? '🟢 Terminal de Origen' : isLast ? '🔴 Terminal de Destino' : `Parada ${idx + 1}`}
+                            </span>
+                            <p className={styles.stopName}>{stop}</p>
+                          </div>
                         </div>
-                        <div className={styles.timelineContent}>
-                          <span className={styles.stopNumber}>Parada {idx + 1}</span>
-                          <p className={styles.stopName}>{stop}</p>
-                        </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
 

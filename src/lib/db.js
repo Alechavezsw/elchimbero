@@ -69,7 +69,8 @@ const initMockDB = () => {
     setStorageItem('chimbero_events', initialEvents);
   }
   const storedBuses = getStorageItem('chimbero_buses', []);
-  if (!window.localStorage.getItem('chimbero_buses') || storedBuses.length < initialBuses.length) {
+  const needsStopsUpdate = storedBuses[0] && (!storedBuses[0].stops || storedBuses[0].stops.length < 8);
+  if (!window.localStorage.getItem('chimbero_buses') || storedBuses.length < initialBuses.length || needsStopsUpdate) {
     setStorageItem('chimbero_buses', initialBuses);
   }
   if (!window.localStorage.getItem('chimbero_jobs')) {
