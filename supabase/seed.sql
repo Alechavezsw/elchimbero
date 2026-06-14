@@ -366,8 +366,8 @@ VALUES
   'capital_conexion',
   'Cada 12 minutos',
   ARRAY['Villa Observatorio', 'Barrio Santo Domingo', 'Villa Paula', 'Capital Centro'],
-  ARRAY['Plaza de Villa Observatorio', 'Plaza Centenario de Chimbas', 'Centro Cívico de San Juan', 'Hospital Dr. Guillermo Rawson'],
-  ARRAY['Hospital Dr. Guillermo Rawson', 'Terminal de Ómnibus de San Juan', 'Centro Cívico de San Juan', 'Plaza Centenario de Chimbas', 'Plaza de Villa Observatorio'],
+  ARRAY['Plaza de Villa Observatorio (Calle Pellegrini)', 'Calle Pellegrini y Salta', 'Calle Salta y Rodríguez', 'Calle Salta y Centenario (Comisaría 30ª)', 'Avenida Benavídez y Salta (Walmart)', 'Avenida Benavídez y Mendoza', 'Plaza Centenario de Chimbas (Calle Mendoza)', 'Municipalidad de Chimbas (Calle Mendoza)', 'Calle Mendoza y Chile', 'Calle Mendoza y 25 de Mayo', 'Avenida España y 25 de Mayo', 'Centro Cívico de San Juan (Avenida España)', 'Calle Las Heras y Córdoba', 'Teatro del Bicentenario (Las Heras)', 'Avenida Libertador y Mendoza', 'Hospital Dr. Guillermo Rawson (Avenida Rawson)'],
+  ARRAY['Hospital Dr. Guillermo Rawson (Avenida Rawson)', 'Terminal de Ómnibus de San Juan', 'Avenida Libertador y General Acha', 'Teatro del Bicentenario (Las Heras)', 'Centro Cívico de San Juan (Avenida España)', 'Avenida España y 25 de Mayo', 'Calle Mendoza y Chile', 'Municipalidad de Chimbas (Calle Mendoza)', 'Plaza Centenario de Chimbas (Calle Mendoza)', 'Avenida Benavídez y Tucumán', 'Avenida Benavídez y Salta (Walmart)', 'Calle Salta y Centenario (Comisaría 30ª)', 'Calle Salta y Rodríguez', 'Plaza de Villa Observatorio (Calle Pellegrini)'],
   'Lunes a Sábado de 05:00 a 23:30, Domingos de 07:00 a 22:00'
 ),
 (
@@ -377,8 +377,8 @@ VALUES
   'capital_conexion',
   'Cada 15 minutos',
   ARRAY['Villa Obrera', 'Villa Paula', 'Capital Centro'],
-  ARRAY['Calle Ruta 40 y Dorrego (Villa Obrera)', 'Plaza Centenario de Chimbas', 'Centro Cívico de San Juan', 'Hospital Dr. Guillermo Rawson'],
-  ARRAY['Hospital Dr. Guillermo Rawson', 'Centro Cívico de San Juan', 'Plaza Centenario de Chimbas', 'Calle Ruta 40 y Dorrego (Villa Obrera)'],
+  ARRAY['Plaza de Villa Obrera (Calle Dorrego)', 'Calle Dorrego y Neuquén', 'Calle Ruta 40 y Neuquén', 'Delegación Municipal Este', 'Calle Neuquén y Mendoza', 'Plaza Centenario de Chimbas', 'Calle Mendoza y Benavídez', 'Avenida Rioja y Benavídez', 'Avenida Rioja y Corrientes', 'Avenida Rioja y 25 de Mayo', 'Avenida Libertador General San Martín y Rioja', 'Centro Cívico de San Juan', 'Avenida 25 de Mayo y Rawson', 'Hospital Dr. Guillermo Rawson'],
+  ARRAY['Hospital Dr. Guillermo Rawson', 'Avenida Rawson y Santa Fe', 'Avenida Libertador General San Martín y Rioja', 'Centro Cívico de San Juan', 'Avenida Rioja y Corrientes', 'Avenida Rioja y Benavídez', 'Calle Mendoza y Benavídez', 'Plaza Centenario de Chimbas', 'Calle Neuquén y Mendoza', 'Delegación Municipal Este', 'Calle Ruta 40 y Neuquén', 'Plaza de Villa Obrera (Calle Dorrego)'],
   'Lunes a Viernes de 05:30 a 23:00, Sábados y Domingos de 06:30 a 22:30'
 ),
 (
@@ -388,8 +388,8 @@ VALUES
   'capital_conexion',
   'Cada 18 minutos',
   ARRAY['Barrio Pedregal', 'Villa Paula', 'Capital Centro'],
-  ARRAY['Barrio Pedregal', 'Calle Mendoza y Chubut', 'Centro Cívico de San Juan', 'Hospital Dr. Guillermo Rawson'],
-  ARRAY['Hospital Dr. Guillermo Rawson', 'Centro Cívico de San Juan', 'Calle Mendoza y Chubut', 'Barrio Pedregal'],
+  ARRAY['Barrio Pedregal (Calle Rodríguez)', 'Calle Rodríguez y Mendoza', 'Calle Mendoza y Oro', 'Calle Mendoza y Rodríguez', 'Calle Mendoza y Centenario', 'Plaza Centenario de Chimbas', 'Avenida Benavídez y Mendoza', 'Avenida Benavídez y Salta', 'San Juan Shopping (Avenida Benavídez)', 'Avenida Benavídez y Tucumán', 'Avenida España y Libertador', 'Centro Cívico de San Juan', 'Avenida Rawson y Santa Fe', 'Hospital Dr. Guillermo Rawson'],
+  ARRAY['Hospital Dr. Guillermo Rawson', 'Avenida Rawson y Santa Fe', 'Centro Cívico de San Juan', 'Avenida España y Libertador', 'Avenida Benavídez y Tucumán', 'San Juan Shopping (Avenida Benavídez)', 'Avenida Benavídez y Salta', 'Avenida Benavídez y Mendoza', 'Plaza Centenario de Chimbas', 'Calle Mendoza y Centenario', 'Calle Mendoza y Rodríguez', 'Calle Mendoza y Oro', 'Calle Rodríguez y Mendoza', 'Barrio Pedregal (Calle Rodríguez)'],
   'Lunes a Viernes de 05:45 a 22:45, Sábados de 06:00 a 22:00'
 ),
 (
@@ -399,8 +399,8 @@ VALUES
   'capital_conexion',
   'Cada 14 minutos',
   ARRAY['Villa Paula', 'Barrio Los Tamarindos', 'Capital Centro'],
-  ARRAY['Plaza Centenario de Chimbas', 'Calle Benavídez', 'Centro Cívico de San Juan', 'Hospital Dr. Guillermo Rawson'],
-  ARRAY['Hospital Dr. Guillermo Rawson', 'Centro Cívico de San Juan', 'Calle Benavídez', 'Plaza Centenario de Chimbas'],
+  ARRAY['Plaza Centenario de Chimbas (Villa Paula)', 'Calle Mendoza y Chubut', 'Calle Mendoza y Benavídez', 'Avenida Benavídez y Tucumán', 'Calle Salta y Benavídez', 'Calle Salta y Sargento Cabral', 'Avenida España y San Isidro', 'Parque de Mayo (Avenida Libertador)', 'Centro Cívico de San Juan', 'Avenida Rioja y Mitre', 'Terminal de Ómnibus de San Juan', 'Hospital Dr. Guillermo Rawson'],
+  ARRAY['Hospital Dr. Guillermo Rawson', 'Terminal de Ómnibus de San Juan', 'Avenida Rioja y Mitre', 'Centro Cívico de San Juan', 'Parque de Mayo (Avenida Libertador)', 'Avenida España y San Isidro', 'Calle Salta y Sargento Cabral', 'Calle Salta y Benavídez', 'Avenida Benavídez y Tucumán', 'Calle Mendoza y Benavídez', 'Calle Mendoza y Chubut', 'Plaza Centenario de Chimbas (Villa Paula)'],
   'Lunes a Sábado de 05:15 a 23:15, Domingos de 07:15 a 22:15'
 ),
 (
@@ -410,8 +410,8 @@ VALUES
   'capital_conexion',
   'Cada 16 minutos',
   ARRAY['Barrio Las Calandrias', 'Villa Paula', 'Capital Centro'],
-  ARRAY['Barrio Las Calandrias', 'Plaza Centenario de Chimbas', 'Centro Cívico de San Juan', 'Hospital Dr. Guillermo Rawson'],
-  ARRAY['Hospital Dr. Guillermo Rawson', 'Centro Cívico de San Juan', 'Plaza Centenario de Chimbas', 'Barrio Las Calandrias'],
+  ARRAY['Barrio Las Calandrias (Calle Oro)', 'Costanera Alta (Frente a Río San Juan)', 'Complejo Ferial Costanera', 'Calle Tucumán y Oro', 'Calle Mendoza y Oro', 'Calle Mendoza y Neuquén', 'Plaza Centenario de Chimbas (Municipalidad)', 'Calle Mendoza y Benavídez', 'Avenida España y 25 de Mayo', 'Centro Cívico de San Juan', 'Avenida Rawson y Córdoba', 'Hospital Dr. Guillermo Rawson'],
+  ARRAY['Hospital Dr. Guillermo Rawson', 'Avenida Rawson y Córdoba', 'Centro Cívico de San Juan', 'Avenida España y 25 de Mayo', 'Calle Mendoza y Benavídez', 'Plaza Centenario de Chimbas (Municipalidad)', 'Calle Mendoza y Neuquén', 'Calle Mendoza y Oro', 'Calle Tucumán y Oro', 'Complejo Ferial Costanera', 'Costanera Alta (Frente a Río San Juan)', 'Barrio Las Calandrias (Calle Oro)'],
   'Lunes a Sábado de 05:30 a 23:00, Domingos de 07:00 a 22:00'
 ),
 (
@@ -421,8 +421,8 @@ VALUES
   'capital_conexion',
   'Cada 15 minutos',
   ARRAY['Barrio Natania VIII', 'Villa Paula', 'Capital Centro'],
-  ARRAY['Barrio Natania VIII', 'Calle Tucumán', 'Centro Cívico de San Juan', 'Hospital Dr. Guillermo Rawson'],
-  ARRAY['Hospital Dr. Guillermo Rawson', 'Centro Cívico de San Juan', 'Calle Tucumán', 'Barrio Natania VIII'],
+  ARRAY['Barrio Natania VIII', 'Calle Tucumán y Centenario', 'Plaza Centenario de Chimbas', 'Calle Mendoza y Benavídez', 'Calle Tucumán y Benavídez', 'Avenida Rioja y Benavídez', 'Avenida Rioja y Libertador', 'Plaza 25 de Mayo (Capital)', 'Centro Cívico de San Juan', 'Avenida Rawson y Santa Fe', 'Hospital Dr. Guillermo Rawson'],
+  ARRAY['Hospital Dr. Guillermo Rawson', 'Avenida Rawson y Santa Fe', 'Centro Cívico de San Juan', 'Plaza 25 de Mayo (Capital)', 'Avenida Rioja y Libertador', 'Avenida Rioja y Benavídez', 'Calle Tucumán y Benavídez', 'Calle Mendoza y Benavídez', 'Plaza Centenario de Chimbas', 'Calle Tucumán y Centenario', 'Barrio Natania VIII'],
   'Lunes a Viernes de 05:00 a 23:30, Sábados y Domingos de 06:30 a 22:30'
 ),
 (
@@ -432,8 +432,8 @@ VALUES
   'interno_chimbas',
   'Cada 20 minutos',
   ARRAY['Lote Hogar 59', 'Villa Paula', 'Capital Centro'],
-  ARRAY['Lote Hogar 59', 'Plaza Centenario de Chimbas', 'Avenida Libertador', 'Centro Cívico de San Juan'],
-  ARRAY['Centro Cívico de San Juan', 'Avenida Libertador', 'Plaza Centenario de Chimbas', 'Lote Hogar 59'],
+  ARRAY['Lote Hogar 59', 'Calle Centenario y Mendoza', 'Plaza Centenario de Chimbas', 'Municipalidad de Chimbas', 'Calle Mendoza y Benavídez', 'Calle Mendoza y Chile', 'Calle Mendoza y 25 de Mayo', 'Avenida Rioja y Corrientes', 'Parque de Mayo (Avenida Libertador)', 'Centro Cívico de San Juan (Terminus)'],
+  ARRAY['Centro Cívico de San Juan (Terminus)', 'Parque de Mayo (Avenida Libertador)', 'Avenida Rioja y Corrientes', 'Calle Mendoza y 25 de Mayo', 'Calle Mendoza y Chile', 'Calle Mendoza y Benavídez', 'Municipalidad de Chimbas', 'Plaza Centenario de Chimbas', 'Calle Centenario y Mendoza', 'Lote Hogar 59'],
   'Lunes a Viernes de 06:00 a 22:00, Sábados de 07:00 a 21:00'
 ),
 (
@@ -443,8 +443,8 @@ VALUES
   'capital_conexion',
   'Cada 18 minutos',
   ARRAY['Villa Mariano Moreno', 'El Mogote', 'Capital Centro'],
-  ARRAY['Villa Mariano Moreno', 'El Mogote', 'Hospital Dr. Guillermo Rawson', 'Centro Cívico de San Juan'],
-  ARRAY['Centro Cívico de San Juan', 'Hospital Dr. Guillermo Rawson', 'El Mogote', 'Villa Mariano Moreno'],
+  ARRAY['Villa Mariano Moreno (Calle Pellegrini)', 'Calle Pellegrini y Mendoza', 'Calle Mendoza y Oro', 'Calle Mendoza y Rodríguez', 'Calle Rodríguez y Mendoza', 'Plaza Centenario de Chimbas', 'Calle Mendoza y Benavídez', 'Avenida Rioja y 25 de Mayo', 'Avenida Libertador y Rioja', 'Hospital Dr. Guillermo Rawson', 'Terminal de Ómnibus de San Juan', 'Centro Cívico de San Juan'],
+  ARRAY['Centro Cívico de San Juan', 'Terminal de Ómnibus de San Juan', 'Hospital Dr. Guillermo Rawson', 'Avenida Libertador y Rioja', 'Avenida Rioja y 25 de Mayo', 'Calle Mendoza y Benavídez', 'Plaza Centenario de Chimbas', 'Calle Rodríguez y Mendoza', 'Calle Mendoza y Rodríguez', 'Calle Mendoza y Oro', 'Calle Pellegrini y Mendoza', 'Villa Mariano Moreno (Calle Pellegrini)'],
   'Lunes a Viernes de 05:30 a 22:30, Sábados de 06:30 a 21:30'
 ),
 (
@@ -454,8 +454,8 @@ VALUES
   'capital_conexion',
   'Cada 22 minutos',
   ARRAY['El Mogote', 'Villa Paula', 'Capital Centro'],
-  ARRAY['El Mogote', 'Plaza Centenario de Chimbas', 'Centro Cívico de San Juan', 'Hospital Dr. Guillermo Rawson'],
-  ARRAY['Hospital Dr. Guillermo Rawson', 'Centro Cívico de San Juan', 'Plaza Centenario de Chimbas', 'El Mogote'],
+  ARRAY['El Mogote (Calle Rodríguez)', 'Portal de El Mogote', 'Calle Tucumán y Rodríguez', 'Calle Neuquén y Mendoza', 'Plaza Centenario de Chimbas', 'Calle Mendoza y Benavídez', 'Avenida España y Benavídez', 'Centro Cívico de San Juan', 'Avenida Rioja y Santa Fe', 'Hospital Dr. Guillermo Rawson'],
+  ARRAY['Hospital Dr. Guillermo Rawson', 'Avenida Rioja y Santa Fe', 'Centro Cívico de San Juan', 'Avenida España y Benavídez', 'Calle Mendoza y Benavídez', 'Plaza Centenario de Chimbas', 'Calle Neuquén y Mendoza', 'Calle Tucumán y Rodríguez', 'Portal de El Mogote', 'El Mogote (Calle Rodríguez)'],
   'Lunes a Viernes de 05:15 a 22:30, Sábados de 06:30 a 21:30'
 ),
 (
@@ -465,8 +465,8 @@ VALUES
   'salud_universidad',
   'Cada 15 minutos',
   ARRAY['Villa Paula', 'Villa Observatorio', 'Capital Rawson', 'Rivadavia CUIM'],
-  ARRAY['Plaza Centenario de Chimbas', 'Complejo Ferial Costanera', 'Hospital Guillermo Rawson (Capital)', 'CUIM - UNSJ (Rivadavia)'],
-  ARRAY['CUIM - UNSJ (Rivadavia)', 'Hospital Guillermo Rawson (Capital)', 'Complejo Ferial Costanera', 'Plaza Centenario de Chimbas'],
+  ARRAY['Plaza Centenario de Chimbas', 'Complejo Ferial Costanera', 'Chimbas Oeste (Villa Observatorio)', 'Avenida Benavídez y Salta', 'San Juan Shopping (Avenida Benavídez)', 'Avenida Libertador (Parque de Mayo)', 'Avenida España y Libertador', 'Hospital Dr. Guillermo Rawson', 'Avenida España y Arenales', 'CUIM - UNSJ (Rivadavia)'],
+  ARRAY['CUIM - UNSJ (Rivadavia)', 'Avenida España y Arenales', 'Hospital Dr. Guillermo Rawson', 'Avenida España y Libertador', 'Avenida Libertador (Parque de Mayo)', 'San Juan Shopping (Avenida Benavídez)', 'Avenida Benavídez y Salta', 'Chimbas Oeste (Villa Observatorio)', 'Complejo Ferial Costanera', 'Plaza Centenario de Chimbas'],
   'Lunes a Viernes de 06:00 a 22:30, Sábados con frecuencia reducida'
 )
 ON CONFLICT (id) DO NOTHING;

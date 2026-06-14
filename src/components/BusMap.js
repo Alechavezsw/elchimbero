@@ -23,6 +23,28 @@ const stopCoordinates = {
   'Hospital Dr. Guillermo Rawson': [-31.5350, -68.5140],
   'Hospital Guillermo Rawson (Capital)': [-31.5350, -68.5140],
   
+  // Intersecciones adicionales para paradas detalladas
+  'Calle Mendoza y Oro': [-31.4700, -68.5338],
+  'Calle Mendoza y Rodríguez': [-31.4780, -68.5338],
+  'Calle Mendoza y Chile': [-31.5150, -68.5338],
+  'Calle Mendoza y 25 de Mayo': [-31.5270, -68.5338],
+  'Calle Salta y Oro': [-31.4700, -68.5500],
+  'Calle Salta y Rodríguez': [-31.4780, -68.5500],
+  'Calle Salta y Sargento Cabral': [-31.5150, -68.5500],
+  'Calle Tucumán y Oro': [-31.4700, -68.5180],
+  'Calle Tucumán y Rodríguez': [-31.4780, -68.5180],
+  'Calle Tucumán y Chaco': [-31.5100, -68.5180],
+  'Calle Tucumán y Corrientes': [-31.5180, -68.5180],
+  'Calle Tucumán y Libertador': [-31.5295, -68.5180],
+  'Avenida Libertador y General Acha': [-31.5295, -68.5240],
+  'Avenida Libertador y Mendoza': [-31.5295, -68.5338],
+  'Avenida Libertador y España': [-31.5295, -68.5300],
+  'Calle Las Heras y Libertador': [-31.5295, -68.5270],
+  'Calle Las Heras y 25 de Mayo': [-31.5270, -68.5270],
+  'Calle Las Heras y Córdoba': [-31.5320, -68.5270],
+  'Avenida Benavídez y Necochea': [-31.5012, -68.4980],
+  'Avenida Benavídez y Rioja': [-31.5010, -68.5220],
+  
   // Línea 401
   'Plaza de Villa Obrera (Calle Dorrego)': [-31.4845, -68.5298],
   'Calle Ruta 40 y Neuquén': [-31.4852, -68.5305],
