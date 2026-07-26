@@ -19,9 +19,23 @@ export default function RootLayout({ children }) {
   return (
     <html lang="es">
       <body>
+        <div className="bg-aurora" />
+        <div className="bg-stars" />
+        <div className="bg-scanline" />
+        <div className="bg-vignette" />
         <div className="neon-orb orb-violet" />
         <div className="neon-orb orb-pink" />
         <div className="neon-orb orb-teal" />
+        <div className="neon-orb orb-purple" />
+        <div className="shooting-star shooting-star-1" />
+        <div className="shooting-star shooting-star-2" />
+        <div className="shooting-star shooting-star-3" />
+        <div className="firefly firefly-1" />
+        <div className="firefly firefly-2" />
+        <div className="firefly firefly-3" />
+        <div className="firefly firefly-4" />
+        <div className="firefly firefly-5" />
+        <div className="firefly firefly-6" />
         <AuthProvider>
           <Navbar />
           <main style={{ flex: 1, display: 'flex', flexDirection: 'column', position: 'relative', zIndex: 1 }}>

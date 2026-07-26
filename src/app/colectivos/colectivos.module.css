@@ -1,10 +1,272 @@
+/* ============ HERO ============ */
+.hero {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--border-radius-lg);
+  border: 1px solid rgba(0, 240, 255, 0.12);
+  background:
+    linear-gradient(135deg, rgba(0, 240, 255, 0.06) 0%, rgba(139, 92, 246, 0.05) 45%, rgba(255, 255, 255, 0.01) 100%);
+  padding: 2.25rem 2rem 3.4rem 2rem;
+  margin-bottom: 2rem;
+  box-shadow: var(--shadow-card), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+/* Trama de puntos estilo mapa dentro del hero */
+.heroPattern {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1.4px);
+  background-size: 24px 24px;
+  -webkit-mask-image: radial-gradient(ellipse 75% 95% at 78% 15%, black 0%, transparent 72%);
+  mask-image: radial-gradient(ellipse 75% 95% at 78% 15%, black 0%, transparent 72%);
+  pointer-events: none;
+}
+
+/* Ruta punteada decorativa con paradas (esquina superior derecha) */
+.heroRoute {
+  position: absolute;
+  top: 6%;
+  right: 2%;
+  width: min(320px, 38%);
+  height: auto;
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.heroRoutePath {
+  stroke: rgba(0, 240, 255, 0.55);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: 6 11;
+  filter: drop-shadow(0 0 6px rgba(0, 240, 255, 0.45));
+  animation: routeFlow 26s linear infinite;
+}
+
+@keyframes routeFlow {
+  to { stroke-dashoffset: -680; }
+}
+
+.heroStopStart {
+  fill: #10b981;
+  filter: drop-shadow(0 0 5px rgba(16, 185, 129, 0.8));
+}
+
+.heroStopMid {
+  fill: #a78bfa;
+  filter: drop-shadow(0 0 5px rgba(167, 139, 250, 0.8));
+}
+
+.heroStopEnd {
+  fill: #ff007f;
+  filter: drop-shadow(0 0 5px rgba(255, 0, 127, 0.8));
+}
+
+/* Carretera animada al pie del hero */
+.heroRoad {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 32px;
+  background: linear-gradient(180deg, transparent 0%, rgba(0, 240, 255, 0.05) 100%);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.roadLines {
+  position: absolute;
+  left: 0;
+  right: -48px;
+  top: 50%;
+  height: 2px;
+  margin-top: -1px;
+  background: repeating-linear-gradient(90deg,
+    rgba(255, 255, 255, 0.22) 0 20px,
+    transparent 20px 48px);
+  opacity: 0.55;
+  animation: roadMove 1.1s linear infinite;
+}
+
+@keyframes roadMove {
+  to { transform: translateX(-48px); }
+}
+
+.roadBus {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-58%);
+  color: var(--secondary);
+  filter: drop-shadow(0 0 7px rgba(0, 240, 255, 0.8));
+  animation: busDrive 10s linear infinite;
+}
+
+@keyframes busDrive {
+  0% { left: -4%; }
+  100% { left: 103%; }
+}
+
+.heroGlow {
+  position: absolute;
+  top: -55%;
+  right: -8%;
+  width: 440px;
+  height: 440px;
+  background: radial-gradient(circle, rgba(0, 240, 255, 0.16) 0%, rgba(139, 92, 246, 0.08) 45%, transparent 70%);
+  filter: blur(45px);
+  pointer-events: none;
+}
+
+.heroContent {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 1.25rem;
+}
+
+.heroIcon {
+  flex-shrink: 0;
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 18px;
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.16), rgba(139, 92, 246, 0.14));
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  color: var(--secondary);
+  box-shadow: 0 0 28px rgba(0, 240, 255, 0.18), inset 0 0 14px rgba(0, 240, 255, 0.08);
+  animation: heroFloat 4s ease-in-out infinite;
+}
+
+@keyframes heroFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.heroBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--secondary);
+  background: rgba(0, 240, 255, 0.08);
+  border: 1px solid rgba(0, 240, 255, 0.2);
+  padding: 0.3rem 0.8rem;
+  border-radius: 50px;
+}
+
+.liveDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--secondary);
+  box-shadow: 0 0 8px rgba(0, 240, 255, 0.8);
+  animation: livePulse 1.6s infinite ease-in-out;
+}
+
+@keyframes livePulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.8); }
+}
+
+.heroTitle {
+  font-size: clamp(1.9rem, 4vw, 2.6rem);
+  font-weight: 800;
+  line-height: 1.1;
+  margin: 0.5rem 0 0.35rem 0;
+}
+
+.heroSubtitle {
+  color: var(--text-secondary);
+  max-width: 560px;
+  font-size: 0.95rem;
+}
+
+.heroStats {
+  position: relative;
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-top: 1.5rem;
+}
+
+.statChip {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 130px;
+  padding: 0.65rem 1.1rem;
+  background: rgba(9, 10, 15, 0.5);
+  border: 1px solid var(--border-glass);
+  border-radius: 12px;
+  backdrop-filter: blur(8px);
+  transition: var(--transition-smooth);
+}
+
+.statChip:hover {
+  border-color: rgba(0, 240, 255, 0.25);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px -8px rgba(0, 0, 0, 0.6), 0 0 15px rgba(0, 240, 255, 0.08);
+}
+
+.statChip strong {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--secondary);
+  text-shadow: 0 0 14px rgba(0, 240, 255, 0.35);
+}
+
+.statChip span {
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+}
+
+@media (max-width: 640px) {
+  .hero {
+    padding: 1.5rem 1.25rem 2.9rem 1.25rem;
+  }
+  .heroContent {
+    flex-direction: column;
+  }
+  .statChip {
+    flex: 1 1 40%;
+    min-width: 0;
+  }
+  .heroRoute {
+    opacity: 0.25;
+    width: 55%;
+    top: 2%;
+  }
+}
+
 .filterBar {
+  position: relative;
+  overflow: hidden;
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
   justify-content: space-between;
   align-items: center;
   border-radius: var(--border-radius-md);
+}
+
+/* Lavado de color sutil sobre la barra de filtros */
+.filterBar::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg,
+    rgba(0, 240, 255, 0.05) 0%,
+    rgba(255, 255, 255, 0.0) 40%,
+    rgba(139, 92, 246, 0.05) 100%);
+  pointer-events: none;
 }
 
 .searchBox {
@@ -34,6 +296,9 @@
 }
 
 .filterTab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
   padding: 0.5rem 1rem;
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid var(--border-glass);
@@ -49,6 +314,47 @@
   background: var(--bg-glass-hover);
   border-color: var(--secondary);
   color: var(--text-primary);
+}
+
+.activeTab {
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.12);
+}
+
+.tabDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.dot_capital_conexion {
+  background: #a78bfa;
+  box-shadow: 0 0 6px rgba(167, 139, 250, 0.7);
+}
+
+.dot_interno_chimbas {
+  background: #10b981;
+  box-shadow: 0 0 6px rgba(16, 185, 129, 0.7);
+}
+
+.dot_salud_universidad {
+  background: var(--secondary);
+  box-shadow: 0 0 6px rgba(0, 240, 255, 0.7);
+}
+
+.tabCount {
+  font-size: 0.7rem;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 20px;
+  padding: 0.05rem 0.5rem;
+  color: var(--text-muted);
+}
+
+.activeTab .tabCount {
+  background: rgba(0, 240, 255, 0.12);
+  color: var(--secondary);
 }
 
 .mainLayout {
@@ -78,6 +384,19 @@
   padding-right: 0.5rem;
 }
 
+.busList::-webkit-scrollbar {
+  width: 5px;
+}
+
+.busList::-webkit-scrollbar-thumb {
+  background: rgba(0, 240, 255, 0.15);
+  border-radius: 3px;
+}
+
+.busList::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 240, 255, 0.3);
+}
+
 .busCard {
   padding: 1.25rem;
   border-radius: var(--border-radius-md);
@@ -85,6 +404,18 @@
   background: rgba(255, 255, 255, 0.01);
   border: 1px solid var(--border-glass);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: cardIn 0.45s cubic-bezier(0.25, 1, 0.5, 1) backwards;
+}
+
+@keyframes cardIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .busCard:hover {
@@ -135,6 +466,206 @@
   color: var(--secondary);
 }
 
+/* ============ LINE PLATES ============ */
+.busIdentity {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  min-width: 0;
+}
+
+.busIdentityText {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.3rem;
+  min-width: 0;
+}
+
+.busLineName {
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--text-primary);
+  line-height: 1.1;
+}
+
+.linePlate {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 52px;
+  height: 44px;
+  padding: 0 0.6rem;
+  border-radius: 10px;
+  font-weight: 800;
+  font-size: 1.05rem;
+  letter-spacing: 0.02em;
+  border: 1px solid;
+  flex-shrink: 0;
+  transition: var(--transition-smooth);
+}
+
+.busCard:hover .linePlate {
+  transform: scale(1.05);
+}
+
+.linePlateLg {
+  min-width: 68px;
+  height: 58px;
+  font-size: 1.35rem;
+  border-radius: 14px;
+}
+
+.plate_capital_conexion {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.22), rgba(139, 92, 246, 0.05));
+  color: #c4b5fd;
+  border-color: rgba(139, 92, 246, 0.4);
+  box-shadow: 0 0 16px rgba(139, 92, 246, 0.15), inset 0 0 10px rgba(139, 92, 246, 0.08);
+  text-shadow: 0 0 10px rgba(167, 139, 250, 0.5);
+}
+
+.plate_interno_chimbas {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.22), rgba(16, 185, 129, 0.05));
+  color: #6ee7b7;
+  border-color: rgba(16, 185, 129, 0.4);
+  box-shadow: 0 0 16px rgba(16, 185, 129, 0.15), inset 0 0 10px rgba(16, 185, 129, 0.08);
+  text-shadow: 0 0 10px rgba(52, 211, 153, 0.5);
+}
+
+.plate_salud_universidad {
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.18), rgba(0, 240, 255, 0.04));
+  color: #67e8f9;
+  border-color: rgba(0, 240, 255, 0.4);
+  box-shadow: 0 0 16px rgba(0, 240, 255, 0.15), inset 0 0 10px rgba(0, 240, 255, 0.08);
+  text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+}
+
+/* ============ ROUTE PREVIEW (origen → destino) ============ */
+.routePreview {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  margin: 0.85rem 0 0.75rem 0;
+  padding: 0.6rem 0.75rem;
+  background: rgba(9, 10, 15, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 10px;
+}
+
+.routePreview::before {
+  content: '';
+  position: absolute;
+  left: calc(0.75rem + 3.5px);
+  top: 1.2rem;
+  bottom: 1.2rem;
+  width: 0;
+  border-left: 1px dashed rgba(255, 255, 255, 0.18);
+}
+
+.routeRow {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-width: 0;
+}
+
+.routeDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  z-index: 1;
+}
+
+.routeDotStart {
+  background: #10b981;
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+}
+
+.routeDotEnd {
+  background: #ef4444;
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
+}
+
+.routeStop {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.busCardFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  border-top: 1px solid var(--border-glass);
+  padding-top: 0.65rem;
+}
+
+.freqChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-glass);
+  border-radius: 50px;
+  padding: 0.25rem 0.7rem;
+}
+
+.freqChip svg {
+  color: var(--secondary);
+}
+
+.viewRouteLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: var(--secondary);
+  font-weight: 700;
+  transition: var(--transition-smooth);
+}
+
+.busCard:hover .viewRouteLink {
+  gap: 0.5rem;
+  text-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
+}
+
+/* ============ LOADING SKELETONS ============ */
+.skeletonCard,
+.skeletonDetail {
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--border-glass);
+  background: linear-gradient(100deg,
+    rgba(255, 255, 255, 0.02) 40%,
+    rgba(0, 240, 255, 0.05) 50%,
+    rgba(255, 255, 255, 0.02) 60%);
+  background-size: 200% 100%;
+  animation: shimmer 1.6s infinite linear;
+}
+
+.skeletonCard {
+  height: 150px;
+  margin-bottom: 1rem;
+}
+
+.skeletonDetail {
+  height: 600px;
+  border-radius: var(--border-radius-lg);
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
 .typeTag {
   font-size: 0.7rem;
   font-weight: 700;
@@ -170,8 +701,13 @@
 .detailCard {
   padding: 2rem;
   border-radius: var(--border-radius-lg);
-  background: linear-gradient(#0e1017, #0e1017) padding-box,
-              linear-gradient(135deg, var(--secondary) 0%, rgba(255, 255, 255, 0.02) 100%) border-box;
+  /* Capas: trama de puntos + glow de esquina + base oscura + borde degradado */
+  background:
+    radial-gradient(rgba(0, 240, 255, 0.045) 1px, transparent 1.5px) 0 0 / 26px 26px padding-box,
+    radial-gradient(ellipse 55% 35% at 100% 0%, rgba(0, 240, 255, 0.07) 0%, transparent 70%) padding-box,
+    radial-gradient(ellipse 50% 30% at 0% 100%, rgba(139, 92, 246, 0.06) 0%, transparent 70%) padding-box,
+    linear-gradient(#0e1017, #0e1017) padding-box,
+    linear-gradient(135deg, var(--secondary) 0%, rgba(255, 255, 255, 0.02) 100%) border-box;
   border: 1px solid transparent;
   box-shadow: var(--shadow-card), 0 0 35px rgba(0, 240, 255, 0.06);
 }
@@ -216,20 +752,50 @@
   color: var(--text-primary);
 }
 
+/* ============ EMPTY STATE ============ */
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 2.5rem 2rem;
+  text-align: center;
+}
+
+.emptyState svg {
+  color: var(--text-muted);
+  opacity: 0.5;
+  margin-bottom: 0.25rem;
+}
+
+.emptyState p {
+  margin: 0;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.emptyState span {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
 /* TIMELINE STYLES */
 .timeline {
   display: flex;
   flex-direction: column;
   position: relative;
-  padding-left: 1.5rem;
+  padding: 0.75rem 0.75rem 0.75rem 1.5rem;
+  border-radius: 12px;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1.4px);
+  background-size: 20px 20px;
 }
 
 .timeline::before {
   content: '';
   position: absolute;
   left: 5px;
-  top: 8px;
-  bottom: 8px;
+  top: calc(0.75rem + 8px);
+  bottom: calc(0.75rem + 8px);
   width: 2px;
   background: linear-gradient(to bottom, #10b981 0%, var(--secondary) 50%, #ef4444 100%);
   box-shadow: 0 0 8px rgba(0, 240, 255, 0.2);

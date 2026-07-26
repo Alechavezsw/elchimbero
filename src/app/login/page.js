@@ -94,7 +94,7 @@ function LoginContent() {
 
         {/* MENSAJE DE DEMO */}
         <div className="badge badge-warning" style={{ width: '100%', display: 'flex', justifyContent: 'center', padding: '0.5rem', borderRadius: '8px', marginBottom: '1.5rem', textTransform: 'none', letterSpacing: 'normal', fontSize: '0.8rem' }}>
-          💡 Modo Demo: Podés registrarte o usar el usuario de prueba <strong>test@elchimbero.com</strong> con clave <strong>chimbero123</strong>.
+          💡 Demo: <strong>test@elchimbero.com</strong> / <strong>chimbero123</strong> (vecino) · <strong>admin@elchimbero.com</strong> / <strong>chimbero123</strong> (admin)
         </div>
 
         {error && (

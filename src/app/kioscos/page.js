@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import { db } from '@/lib/db';
 import styles from './kioscos.module.css';
@@ -26,7 +26,6 @@ const Map = dynamic(() => import('@/components/Map'), {
 
 export default function KioscosAbiertos() {
   const [kiosks, setKiosks] = useState([]);
-  const [filteredKiosks, setFilteredKiosks] = useState([]);
   const [selectedNeighborhood, setSelectedNeighborhood] = useState('Todos');
   const [only24h, setOnly24h] = useState(false);
   const [neighborhoods, setNeighborhoods] = useState(['Todos']);
@@ -54,7 +53,7 @@ export default function KioscosAbiertos() {
   }, []);
 
   // Filtrar kioscos
-  useEffect(() => {
+  const filteredKiosks = useMemo(() => {
     let result = [...kiosks];
 
     if (selectedNeighborhood !== 'Todos') {
@@ -65,7 +64,7 @@ export default function KioscosAbiertos() {
       result = result.filter(k => k.is_open_24h);
     }
 
-    setFilteredKiosks(result);
+    return result;
   }, [kiosks, selectedNeighborhood, only24h]);
 
   const handleCardClick = (lat, lon) => {

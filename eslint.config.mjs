@@ -10,6 +10,7 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    "modern-gen-z-energy-drink-landing-page-with-lenis-smooth-scroll-and-framer-motion/**",
   ]),
 ]);
 

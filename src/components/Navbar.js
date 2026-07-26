@@ -146,15 +146,17 @@ export default function Navbar() {
                   </span>
                 </Link>
 
-                <Link 
-                  href="/admin" 
-                  className={`${styles.navLink} ${isActive('/admin') ? styles.activeLink : ''}`}
-                >
-                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', color: 'var(--accent-pink)' }}>
-                    <LayoutDashboard size={18} />
-                    Admin
-                  </span>
-                </Link>
+                {(user.is_admin || user.email === 'admin@elchimbero.com') && (
+                  <Link 
+                    href="/admin" 
+                    className={`${styles.navLink} ${isActive('/admin') ? styles.activeLink : ''}`}
+                  >
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', color: 'var(--accent-pink)' }}>
+                      <LayoutDashboard size={18} />
+                      Admin
+                    </span>
+                  </Link>
+                )}
                 
                 <div className={styles.userBadge}>
                   <div className={styles.userAvatar} />
@@ -229,15 +231,17 @@ export default function Navbar() {
               Panel de Control
             </Link>
 
-            <Link 
-              href="/admin" 
-              className="btn btn-secondary" 
-              onClick={() => setMobileMenuOpen(false)}
-              style={{ justifyContent: 'flex-start', color: 'var(--accent-pink)', borderColor: 'rgba(236, 72, 153, 0.2)' }}
-            >
-              <LayoutDashboard size={18} />
-              Administración
-            </Link>
+            {(user.is_admin || user.email === 'admin@elchimbero.com') && (
+              <Link 
+                href="/admin" 
+                className="btn btn-secondary" 
+                onClick={() => setMobileMenuOpen(false)}
+                style={{ justifyContent: 'flex-start', color: 'var(--accent-pink)', borderColor: 'rgba(236, 72, 153, 0.2)' }}
+              >
+                <LayoutDashboard size={18} />
+                Administración
+              </Link>
+            )}
             
             <button 
               onClick={handleSignOut} 

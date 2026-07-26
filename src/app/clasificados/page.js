@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect, useMemo, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { db } from '@/lib/db';
@@ -21,7 +21,6 @@ function ClasificadosContent() {
   const initialCategory = searchParams.get('category') || 'Todos';
 
   const [ads, setAds] = useState([]);
-  const [filteredAds, setFilteredAds] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
   const [selectedCondition, setSelectedCondition] = useState('Todos');
@@ -45,7 +44,7 @@ function ClasificadosContent() {
   }, []);
 
   // Filtrar y ordenar anuncios
-  useEffect(() => {
+  const filteredAds = useMemo(() => {
     let result = [...ads];
 
     // Filtrar por categoría
@@ -84,7 +83,7 @@ function ClasificadosContent() {
       result.sort((a, b) => b.price - a.price);
     }
 
-    setFilteredAds(result);
+    return result;
   }, [ads, searchQuery, selectedCategory, selectedCondition, maxPrice, sortBy]);
 
   const getCategoryLabel = (val) => {

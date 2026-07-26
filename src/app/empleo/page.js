@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { db } from '@/lib/db';
 import { useAuth } from '@/components/AuthProvider';
@@ -18,12 +19,16 @@ import {
 } from 'lucide-react';
 import styles from './empleo.module.css';
 
-export default function EmpleoPage() {
+function EmpleoContent() {
   const { user } = useAuth();
+  const searchParams = useSearchParams();
+  const initialSearch = searchParams.get('search') || '';
+  const initialType = searchParams.get('type') || 'oferta_laboral';
+
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [activeTab, setActiveTab] = useState('oferta_laboral'); // 'oferta_laboral' o 'servicio_vecinal'
+  const [searchQuery, setSearchQuery] = useState(initialSearch);
+  const [activeTab, setActiveTab] = useState(initialType);
   const [selectedCategory, setSelectedCategory] = useState('all');
   
   // Modal State
@@ -53,6 +58,7 @@ export default function EmpleoPage() {
   }
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadJobs();
   }, []);
 
@@ -237,7 +243,7 @@ export default function EmpleoPage() {
           No hay publicaciones que coincidan con los filtros seleccionados.
           {user && (
             <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>
-              ¡Sé el primero en publicar una oferta o servicio hoy haciendo clic en "Publicar"!
+              ¡Sé el primero en publicar una oferta o servicio hoy haciendo clic en &quot;Publicar&quot;!
             </p>
           )}
         </div>
@@ -452,5 +458,17 @@ export default function EmpleoPage() {
       )}
 
     </div>
+  );
+}
+
+export default function EmpleoPage() {
+  return (
+    <Suspense fallback={
+      <div className="container" style={{ padding: '4rem 2rem', textAlign: 'center' }}>
+        <h2 style={{ fontSize: '1.5rem', fontWeight: 700 }}>Cargando Bolsa de Empleo...</h2>
+      </div>
+    }>
+      <EmpleoContent />
+    </Suspense>
   );
 }

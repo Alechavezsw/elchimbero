@@ -5,7 +5,7 @@ import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { db } from '@/lib/db';
 import styles from './detail.module.css';
-import { ArrowLeft, MapPin, Phone, MessageCircle, Clock, Calendar, User } from 'lucide-react';
+import { ArrowLeft, MapPin, Phone, MessageCircle, Clock, Calendar, User, Store } from 'lucide-react';
 
 // Cargar el mapa de forma dinámica (solo en cliente) para evitar errores de SSR
 const Map = dynamic(() => import('@/components/Map'), {

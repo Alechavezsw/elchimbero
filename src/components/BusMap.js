@@ -4,134 +4,630 @@ import { useEffect, useRef } from 'react';
 
 // Diccionario de coordenadas para puntos de parada reales y cruces viales en Chimbas/San Juan
 const stopCoordinates = {
-  // Puntos Generales / Hitos
-  'Plaza Centenario de Chimbas (Calle Mendoza)': [-31.4965, -68.5361],
-  'Plaza Centenario de Chimbas': [-31.4965, -68.5361],
-  'Municipalidad de Chimbas (Calle Mendoza)': [-31.4960, -68.5361],
-  'Plaza de Villa Observatorio (Calle Pellegrini)': [-31.5058, -68.5591],
-  'Plaza de Villa Observatorio': [-31.5058, -68.5591],
-  'Calle Salta y Centenario (Comisaría 30ª)': [-31.5030, -68.5550],
-  'Avenida Benavídez y Salta (Walmart)': [-31.5015, -68.5500],
-  'Avenida Benavídez y Salta': [-31.5015, -68.5500],
-  'San Juan Shopping (Avenida Benavídez)': [-31.5012, -68.5245],
-  'Avenida Benavídez y Tucumán': [-31.5010, -68.5180],
-  'Avenida España y 25 de Mayo': [-31.5270, -68.5300],
-  'Centro Cívico de San Juan (Avenida España)': [-31.5309, -68.5286],
-  'Centro Cívico de San Juan': [-31.5309, -68.5286],
-  'Teatro del Bicentenario (Las Heras)': [-31.5320, -68.5270],
-  'Hospital Dr. Guillermo Rawson (Avenida Rawson)': [-31.5350, -68.5140],
-  'Hospital Dr. Guillermo Rawson': [-31.5350, -68.5140],
-  'Hospital Guillermo Rawson (Capital)': [-31.5350, -68.5140],
-  
-  // Intersecciones adicionales para paradas detalladas
-  'Calle Mendoza y Oro': [-31.4700, -68.5338],
-  'Calle Mendoza y Rodríguez': [-31.4780, -68.5338],
-  'Calle Mendoza y Chile': [-31.5150, -68.5338],
-  'Calle Mendoza y 25 de Mayo': [-31.5270, -68.5338],
-  'Calle Pellegrini y Mendoza': [-31.4920, -68.5338],
-  'Calle Salta y Oro': [-31.4700, -68.5500],
-  'Calle Salta y Rodríguez': [-31.4780, -68.5500],
-  'Calle Salta y Sargento Cabral': [-31.5150, -68.5500],
-  'Calle Pellegrini y Salta': [-31.5040, -68.5550],
-  'Calle Tucumán y Oro': [-31.4700, -68.5180],
-  'Calle Tucumán y Rodríguez': [-31.4780, -68.5180],
-  'Calle Tucumán y Chaco': [-31.5100, -68.5180],
-  'Calle Tucumán y Corrientes': [-31.5180, -68.5180],
-  'Calle Tucumán y Libertador': [-31.5295, -68.5180],
-  'Avenida Libertador y General Acha': [-31.5295, -68.5240],
-  'Avenida Libertador y Mendoza': [-31.5295, -68.5338],
-  'Avenida Libertador y España': [-31.5295, -68.5300],
-  'Calle Las Heras y Libertador': [-31.5295, -68.5270],
-  'Calle Las Heras y 25 de Mayo': [-31.5270, -68.5270],
-  'Calle Las Heras y Córdoba': [-31.5320, -68.5270],
-  'Avenida Benavídez y Necochea': [-31.5012, -68.4980],
-  'Avenida Benavídez y Rioja': [-31.5010, -68.5220],
-  'Calle Dorrego y Neuquén': [-31.4850, -68.5298],
-  
-  // Hitos de Red Primaria / Troncales
-  'Estación de Transbordo Córdoba': [-31.5365, -68.5250],
-  'Plaza de Villa Krause (Rawson)': [-31.5770, -68.5370],
-  'Escuela de Policía (Chimbas)': [-31.5030, -68.5680],
-  'Calle Tomás Edison y Colón': [-31.5180, -68.4900],
-  'Plaza de Santa Lucía': [-31.5320, -68.4950],
-  'Hospital Dr. Marcial Quiroga': [-31.5280, -68.5850],
-  'Villa Villicum (Albardón)': [-31.4300, -68.5200],
-  
-  // Línea 401
-  'Plaza de Villa Obrera (Calle Dorrego)': [-31.4845, -68.5298],
-  'Calle Ruta 40 y Neuquén': [-31.4852, -68.5305],
-  'Delegación Municipal Este': [-31.4880, -68.5250],
-  'Calle Mendoza y Benavídez': [-31.5010, -68.5338],
-  'Avenida Rioja y Corrientes': [-31.5180, -68.5230],
-  'Avenida Libertador General San Martín y Rioja': [-31.5295, -68.5220],
-  'Avenida 25 de Mayo y Rawson': [-31.5280, -68.5140],
-
-  // Línea 402
-  'Barrio Pedregal (Calle Rodríguez)': [-31.4720, -68.5320],
-  'Calle Mendoza y Centenario': [-31.4965, -68.5330],
-  'Avenida Benavídez y Mendoza': [-31.5010, -68.5338],
-  'Avenida España y Libertador': [-31.5300, -68.5290],
-  'Avenida Rawson y Santa Fe': [-31.5340, -68.5140],
-
-  // Línea 403
-  'Plaza Centenario de Chimbas (Villa Paula)': [-31.4965, -68.5361],
-  'Calle Mendoza y Chubut': [-31.4965, -68.5361],
-  'Calle Salta y Benavídez': [-31.5015, -68.5500],
-  'Avenida España y San Isidro': [-31.5150, -68.5310],
-  'Parque de Mayo (Avenida Libertador)': [-31.5280, -68.5350],
-  'Avenida Rioja y Mitre': [-31.5320, -68.5210],
-  'Terminal de Ómnibus de San Juan': [-31.5330, -68.5190],
-
-  // Línea 404
-  'Barrio Las Calandrias (Calle Oro)': [-31.4650, -68.5520],
-  'Costanera Alta (Frente a Río San Juan)': [-31.4680, -68.5550],
-  'Complejo Ferial Costanera': [-31.4785, -68.5451],
-  'Calle Mendoza y Neuquén': [-31.4880, -68.5338],
-  'Avenida Rawson y Córdoba': [-31.5320, -68.5140],
-
-  // Línea 405
-  'Barrio Natania VIII': [-31.5050, -68.5220],
-  'Calle Tucumán y Centenario': [-31.4950, -68.5180],
-  'Calle Tucumán y Benavídez': [-31.5010, -68.5180],
-  'Avenida Rioja y Benavídez': [-31.5010, -68.5220],
-  'Avenida Rioja y Libertador': [-31.5295, -68.5220],
-  'Plaza 25 de Mayo (Capital)': [-31.5375, -68.5250],
-
-  // Línea 406
-  'Lote Hogar 59': [-31.5110, -68.5420],
-  'Calle Centenario y Mendoza': [-31.4965, -68.5338],
-  'Avenida Libertador': [-31.5295, -68.5220],
-  'Centro Cívico de San Juan (Terminus)': [-31.5309, -68.5286],
-
-  // Línea 407
-  'Villa Mariano Moreno (Calle Pellegrini)': [-31.4650, -68.5200],
-  'Calle Rodríguez y Mendoza': [-31.4780, -68.5338],
-  'Avenida Rioja y 25 de Mayo': [-31.5280, -68.5220],
-  'Avenida Libertador y Rioja': [-31.5295, -68.5220],
-
-  // Línea 408
-  'El Mogote (Calle Rodríguez)': [-31.4680, -68.5080],
-  'Portal de El Mogote': [-31.4700, -68.5100],
-  'Calle Neuquén y Mendoza': [-31.4852, -68.5338],
-  'Avenida España y Benavídez': [-31.5015, -68.5300],
-  'Avenida Rioja y Santa Fe': [-31.5335, -68.5220],
-
-  // Línea 420
-  'Chimbas Oeste (Villa Observatorio)': [-31.5058, -68.5591],
-  'Avenida España y Arenales': [-31.5450, -68.5300],
-  'CUIM - UNSJ (Rivadavia)': [-31.5395, -68.5780],
+  "Plaza Centenario de Chimbas (Calle Mendoza)": [
+    -31.4965,
+    -68.5361
+  ],
+  "Plaza Centenario de Chimbas": [
+    -31.4965,
+    -68.5361
+  ],
+  "Plaza Centenario de Chimbas (Villa Paula)": [
+    -31.4965,
+    -68.5361
+  ],
+  "Municipalidad de Chimbas (Calle Mendoza)": [
+    -31.496,
+    -68.5361
+  ],
+  "Municipalidad de Chimbas": [
+    -31.496,
+    -68.5361
+  ],
+  "Plaza Centenario de Chimbas (Municipalidad)": [
+    -31.4965,
+    -68.5361
+  ],
+  "Plaza de Villa Observatorio (Calle Pellegrini)": [
+    -31.5058,
+    -68.5591
+  ],
+  "Plaza de Villa Observatorio": [
+    -31.5058,
+    -68.5591
+  ],
+  "Chimbas Oeste (Villa Observatorio)": [
+    -31.5058,
+    -68.5591
+  ],
+  "Plaza de Villa Obrera (Calle Dorrego)": [
+    -31.4845,
+    -68.5298
+  ],
+  "Plaza de Villa Obrera": [
+    -31.4845,
+    -68.5298
+  ],
+  "Estación de Transbordo Córdoba": [
+    -31.5365,
+    -68.525
+  ],
+  "Plaza de Villa Krause (Rawson)": [
+    -31.577,
+    -68.537
+  ],
+  "Escuela de Policía (Chimbas)": [
+    -31.503,
+    -68.568
+  ],
+  "Plaza de Santa Lucía": [
+    -31.532,
+    -68.495
+  ],
+  "Hospital Dr. Marcial Quiroga": [
+    -31.528,
+    -68.585
+  ],
+  "Villa Villicum (Albardón)": [
+    -31.43,
+    -68.52
+  ],
+  "Teatro del Bicentenario (Las Heras)": [
+    -31.532,
+    -68.527
+  ],
+  "Teatro del Bicentenario": [
+    -31.532,
+    -68.527
+  ],
+  "Centro Cívico de San Juan (Avenida España)": [
+    -31.5309,
+    -68.5286
+  ],
+  "Centro Cívico de San Juan": [
+    -31.5309,
+    -68.5286
+  ],
+  "Centro Cívico de San Juan (Terminus)": [
+    -31.5309,
+    -68.5286
+  ],
+  "Hospital Dr. Guillermo Rawson (Avenida Rawson)": [
+    -31.535,
+    -68.514
+  ],
+  "Hospital Dr. Guillermo Rawson": [
+    -31.535,
+    -68.514
+  ],
+  "Hospital Guillermo Rawson (Capital)": [
+    -31.535,
+    -68.514
+  ],
+  "Terminal de Ómnibus de San Juan": [
+    -31.533,
+    -68.519
+  ],
+  "Parque de Mayo (Avenida Libertador)": [
+    -31.528,
+    -68.535
+  ],
+  "Avenida Libertador (Parque de Mayo)": [
+    -31.528,
+    -68.535
+  ],
+  "Plaza 25 de Mayo (Capital)": [
+    -31.5375,
+    -68.525
+  ],
+  "CUIM - UNSJ (Rivadavia)": [
+    -31.5395,
+    -68.578
+  ],
+  "Lote Hogar 59": [
+    -31.511,
+    -68.542
+  ],
+  "Barrio Pedregal (Calle Rodríguez)": [
+    -31.472,
+    -68.532
+  ],
+  "Barrio Pedregal": [
+    -31.472,
+    -68.532
+  ],
+  "Barrio Las Calandrias (Calle Oro)": [
+    -31.465,
+    -68.552
+  ],
+  "Costanera Alta (Frente a Río San Juan)": [
+    -31.468,
+    -68.555
+  ],
+  "Complejo Ferial Costanera": [
+    -31.4785,
+    -68.5451
+  ],
+  "Barrio Natania VIII": [
+    -31.505,
+    -68.522
+  ],
+  "Villa Mariano Moreno (Calle Pellegrini)": [
+    -31.465,
+    -68.52
+  ],
+  "El Mogote (Calle Rodríguez)": [
+    -31.468,
+    -68.508
+  ],
+  "Portal de El Mogote": [
+    -31.47,
+    -68.51
+  ],
+  "Delegación Municipal Este": [
+    -31.488,
+    -68.525
+  ],
+  "San Juan Shopping (Avenida Benavídez)": [
+    -31.5012,
+    -68.5245
+  ],
+  "Calle Mendoza y Rivero": [
+    -31.465,
+    -68.5338
+  ],
+  "Calle Mendoza y Oro": [
+    -31.47,
+    -68.5338
+  ],
+  "Calle Mendoza y Saavedra": [
+    -31.475,
+    -68.5338
+  ],
+  "Calle Mendoza y Rodríguez": [
+    -31.478,
+    -68.5338
+  ],
+  "Calle Mendoza y Sabatini": [
+    -31.48,
+    -68.5338
+  ],
+  "Calle Mendoza y San Martín": [
+    -31.485,
+    -68.5338
+  ],
+  "Calle Mendoza y Neuquén": [
+    -31.488,
+    -68.5338
+  ],
+  "Calle Mendoza y Jorge Newbery": [
+    -31.49,
+    -68.5338
+  ],
+  "Calle Mendoza y Pellegrini": [
+    -31.492,
+    -68.5338
+  ],
+  "Calle Mendoza y Cabildo": [
+    -31.494,
+    -68.5338
+  ],
+  "Calle Mendoza y Chubut": [
+    -31.4955,
+    -68.5338
+  ],
+  "Calle Mendoza y Centenario": [
+    -31.4965,
+    -68.5338
+  ],
+  "Calle Mendoza y 9 de Julio": [
+    -31.4985,
+    -68.5338
+  ],
+  "Calle Mendoza y Benavídez": [
+    -31.501,
+    -68.5338
+  ],
+  "Calle Rodríguez y Mendoza": [
+    -31.478,
+    -68.5338
+  ],
+  "Calle Pellegrini y Mendoza": [
+    -31.492,
+    -68.5338
+  ],
+  "Calle Neuquén y Mendoza": [
+    -31.488,
+    -68.5338
+  ],
+  "Calle Centenario y Mendoza": [
+    -31.4965,
+    -68.5338
+  ],
+  "Calle Tucumán y Rivero": [
+    -31.465,
+    -68.518
+  ],
+  "Calle Tucumán y Oro": [
+    -31.47,
+    -68.518
+  ],
+  "Calle Tucumán y Saavedra": [
+    -31.475,
+    -68.518
+  ],
+  "Calle Tucumán y Rodríguez": [
+    -31.478,
+    -68.518
+  ],
+  "Calle Tucumán y San Martín": [
+    -31.485,
+    -68.518
+  ],
+  "Calle Tucumán y Neuquén": [
+    -31.488,
+    -68.518
+  ],
+  "Calle Tucumán y Jorge Newbery": [
+    -31.49,
+    -68.518
+  ],
+  "Calle Tucumán y Centenario": [
+    -31.495,
+    -68.518
+  ],
+  "Calle Tucumán y Benavídez": [
+    -31.501,
+    -68.518
+  ],
+  "Calle Tucumán y Chaco": [
+    -31.51,
+    -68.518
+  ],
+  "Calle Tucumán y Corrientes": [
+    -31.518,
+    -68.518
+  ],
+  "Calle Tucumán y 25 de Mayo": [
+    -31.527,
+    -68.518
+  ],
+  "Calle Tucumán y Libertador": [
+    -31.5295,
+    -68.518
+  ],
+  "Calle Tucumán y Santa Fe": [
+    -31.534,
+    -68.518
+  ],
+  "Calle Tucumán y Córdoba": [
+    -31.5365,
+    -68.518
+  ],
+  "Calle Salta y Oro": [
+    -31.47,
+    -68.55
+  ],
+  "Calle Salta y Rodríguez": [
+    -31.478,
+    -68.55
+  ],
+  "Calle Salta y San Martín": [
+    -31.485,
+    -68.55
+  ],
+  "Calle Salta y Neuquén": [
+    -31.488,
+    -68.55
+  ],
+  "Calle Salta y Centenario": [
+    -31.4965,
+    -68.55
+  ],
+  "Calle Salta y Centenario (Comisaría 30ª)": [
+    -31.503,
+    -68.555
+  ],
+  "Calle Salta y Benavídez": [
+    -31.5015,
+    -68.55
+  ],
+  "Calle Salta y Sargento Cabral": [
+    -31.515,
+    -68.55
+  ],
+  "Calle Salta y 25 de Mayo": [
+    -31.527,
+    -68.55
+  ],
+  "Calle Salta y Libertador": [
+    -31.5295,
+    -68.55
+  ],
+  "Calle Salta y Córdoba": [
+    -31.5365,
+    -68.55
+  ],
+  "Calle Salta y San Isidro": [
+    -31.51,
+    -68.55
+  ],
+  "Calle Salta y Pellegrini": [
+    -31.504,
+    -68.555
+  ],
+  "Calle Pellegrini y Salta": [
+    -31.504,
+    -68.555
+  ],
+  "Avenida Benavídez y Salta": [
+    -31.5015,
+    -68.55
+  ],
+  "Avenida Benavídez y Salta (Walmart)": [
+    -31.5015,
+    -68.55
+  ],
+  "Avenida Benavídez y España": [
+    -31.5013,
+    -68.53
+  ],
+  "Avenida Benavídez y Mendoza": [
+    -31.501,
+    -68.5338
+  ],
+  "Avenida Benavídez y Rioja": [
+    -31.501,
+    -68.522
+  ],
+  "Avenida Benavídez y Tucumán": [
+    -31.501,
+    -68.518
+  ],
+  "Avenida Benavídez y Ruta 40": [
+    -31.5012,
+    -68.5305
+  ],
+  "Avenida Benavídez y Necochea": [
+    -31.5012,
+    -68.498
+  ],
+  "Avenida Benavídez y Colón": [
+    -31.5012,
+    -68.49
+  ],
+  "Calle Mendoza y Chile": [
+    -31.515,
+    -68.5338
+  ],
+  "Calle Mendoza y San Isidro": [
+    -31.518,
+    -68.5338
+  ],
+  "Calle Mendoza y 25 de Mayo": [
+    -31.527,
+    -68.5338
+  ],
+  "Calle Mendoza y Libertador": [
+    -31.5295,
+    -68.5338
+  ],
+  "Calle Mendoza y Santa Fe": [
+    -31.534,
+    -68.5338
+  ],
+  "Calle Mendoza y Córdoba": [
+    -31.5365,
+    -68.5338
+  ],
+  "Avenida Rioja y Chile": [
+    -31.515,
+    -68.522
+  ],
+  "Avenida Rioja y San Isidro": [
+    -31.518,
+    -68.522
+  ],
+  "Avenida Rioja y Corrientes": [
+    -31.518,
+    -68.523
+  ],
+  "Avenida Rioja y Benavídez": [
+    -31.501,
+    -68.522
+  ],
+  "Avenida Rioja y 25 de Mayo": [
+    -31.528,
+    -68.522
+  ],
+  "Avenida Rioja y Libertador": [
+    -31.5295,
+    -68.522
+  ],
+  "Avenida Rioja y Libertador General San Martín y Rioja": [
+    -31.5295,
+    -68.522
+  ],
+  "Avenida Libertador General San Martín y Rioja": [
+    -31.5295,
+    -68.522
+  ],
+  "Avenida Rioja y Santa Fe": [
+    -31.5335,
+    -68.522
+  ],
+  "Avenida Rioja y Mitre": [
+    -31.532,
+    -68.521
+  ],
+  "Avenida Rioja y Córdoba": [
+    -31.5365,
+    -68.522
+  ],
+  "Avenida España y Chile": [
+    -31.515,
+    -68.53
+  ],
+  "Avenida España y San Isidro": [
+    -31.518,
+    -68.53
+  ],
+  "Avenida España y 25 de Mayo": [
+    -31.527,
+    -68.53
+  ],
+  "Avenida España y Libertador": [
+    -31.53,
+    -68.529
+  ],
+  "Avenida España y Córdoba": [
+    -31.5365,
+    -68.53
+  ],
+  "Avenida España y Arenales": [
+    -31.545,
+    -68.53
+  ],
+  "Avenida España y Benavídez": [
+    -31.5015,
+    -68.53
+  ],
+  "Calle Las Heras y Córdoba": [
+    -31.532,
+    -68.527
+  ],
+  "Calle Las Heras y Libertador": [
+    -31.5295,
+    -68.527
+  ],
+  "Calle Las Heras y 25 de Mayo": [
+    -31.527,
+    -68.527
+  ],
+  "Avenida Rawson y Córdoba": [
+    -31.532,
+    -68.514
+  ],
+  "Avenida Rawson y Santa Fe": [
+    -31.534,
+    -68.514
+  ],
+  "Avenida 25 de Mayo y Rawson": [
+    -31.528,
+    -68.514
+  ],
+  "Avenida Libertador y General Acha": [
+    -31.5295,
+    -68.524
+  ],
+  "Avenida Libertador y Mendoza": [
+    -31.5295,
+    -68.5338
+  ],
+  "Avenida Libertador y España": [
+    -31.5295,
+    -68.53
+  ],
+  "Avenida Libertador y Rioja": [
+    -31.5295,
+    -68.522
+  ],
+  "Calle Dorrego y Neuquén": [
+    -31.485,
+    -68.5298
+  ],
+  "Calle Dorrego y Centenario": [
+    -31.4965,
+    -68.5298
+  ],
+  "Calle Dorrego y Benavídez": [
+    -31.501,
+    -68.5298
+  ],
+  "Calle Ruta 40 y Neuquén": [
+    -31.4852,
+    -68.5305
+  ],
+  "Calle Ruta 40 y Centenario": [
+    -31.4965,
+    -68.5305
+  ],
+  "Calle Pellegrini y Centenario": [
+    -31.4965,
+    -68.559
+  ],
+  "Calle Pellegrini y Rodríguez": [
+    -31.478,
+    -68.559
+  ],
+  "Calle Tomás Edison y Colón": [
+    -31.518,
+    -68.49
+  ],
+  "Calle Tomás Edison y Benavídez": [
+    -31.5012,
+    -68.49
+  ],
+  "Calle Colón y Centenario": [
+    -31.4965,
+    -68.485
+  ],
+  "Calle Necochea y Centenario": [
+    -31.4965,
+    -68.498
+  ],
+  "Calle Necochea y Rodríguez": [
+    -31.478,
+    -68.498
+  ],
+  "Bº Valle Grande": [
+    -31.558,
+    -68.582
+  ],
+  "Complejo El Palomar": [
+    -31.5315,
+    -68.5375
+  ],
+  "Bº CGT Chimbas": [
+    -31.472,
+    -68.54
+  ],
+  "Colonia Gutiérrez (Chimbas)": [
+    -31.455,
+    -68.518
+  ],
+  "Campo Afuera (Albardón)": [
+    -31.42,
+    -68.51
+  ],
+  "Hospital Dr. José Giordano (Albardón)": [
+    -31.432,
+    -68.53
+  ],
+  "San José de Jáchal": [
+    -30.24,
+    -68.59
+  ],
+  "Rodeo (Iglesia)": [
+    -30.21,
+    -69.13
+  ],
+  "Barreal (Calingasta)": [
+    -31.65,
+    -69.47
+  ]
 };
 
 // Obtener la coordenada de una parada o simularla de manera determinista y estable
 const getCoordinatesForStop = (stopName) => {
-  // Buscar en el diccionario
-  const match = Object.keys(stopCoordinates).find(key => 
-    stopName.toLowerCase().includes(key.toLowerCase()) || 
-    key.toLowerCase().includes(stopName.toLowerCase())
-  );
-  if (match) {
-    return stopCoordinates[match];
+  // Buscar coincidencia exacta en el diccionario
+  const trimmed = stopName.trim();
+  if (stopCoordinates.hasOwnProperty(trimmed)) {
+    return stopCoordinates[trimmed];
   }
+
+  // Fallback con advertencia en consola si falta en el diccionario de paradas
+  console.warn(`[RedTulum] Parada sin coordenada exacta en el diccionario: "${stopName}"`);
 
   // Si no está, generar una coordenada determinista estable basada en el nombre
   // para que no cambie de posición al alternar la dirección (ida/vuelta)
@@ -139,14 +635,15 @@ const getCoordinatesForStop = (stopName) => {
   const baseLng = -68.5352;
   
   let hash = 0;
-  for (let i = 0; i < stopName.length; i++) {
-    hash = stopName.charCodeAt(i) + ((hash << 5) - hash);
+  for (let i = 0; i < trimmed.length; i++) {
+    hash = trimmed.charCodeAt(i) + ((hash << 5) - hash);
   }
   
   const angle = (Math.abs(hash) % 360) * (Math.PI / 180);
   const radius = 0.01 + ((Math.abs(hash) % 100) / 100) * 0.02; // radio entre 0.01 y 0.03 grados
   return [baseLat + Math.sin(angle) * radius, baseLng + Math.cos(angle) * radius];
 };
+
 
 export default function BusMap({ lineName = '', stops = [], busType = 'interno_chimbas' }) {
   const mapContainerRef = useRef(null);

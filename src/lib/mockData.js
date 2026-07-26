@@ -7,7 +7,18 @@ export const initialProfiles = [
     full_name: 'Juan Pérez',
     phone: '2645123456',
     avatar_url: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80',
-    created_at: new Date().toISOString()
+    created_at: new Date().toISOString(),
+    is_admin: false,
+    email: 'test@elchimbero.com'
+  },
+  {
+    id: 'a0b07384-d113-4ec5-a581-2292d3b2e999',
+    full_name: 'Admin Chimbero',
+    phone: '264000000',
+    avatar_url: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=150&q=80',
+    created_at: new Date().toISOString(),
+    is_admin: true,
+    email: 'admin@elchimbero.com'
   }
 ];
 
@@ -224,7 +235,7 @@ export const initialPharmacies = [
 
 export const initialKiosks = [
   {
-    id: 'k1b07384-d113-4ec5-a581-2292d3b2e301',
+    id: '01b07384-d113-4ec5-a581-2292d3b2e301',
     name: 'Kiosco El Trébol 24hs',
     address: 'Mendoza y Chubut (Villa Paula)',
     neighborhood: 'Villa Paula',
@@ -236,7 +247,7 @@ export const initialKiosks = [
     created_at: new Date().toISOString()
   },
   {
-    id: 'k1b07384-d113-4ec5-a581-2292d3b2e302',
+    id: '01b07384-d113-4ec5-a581-2292d3b2e302',
     name: 'Drugstore El Monumental',
     address: 'Neuquén 320 - Villa Obrera',
     neighborhood: 'Villa Obrera',
@@ -248,7 +259,7 @@ export const initialKiosks = [
     created_at: new Date().toISOString()
   },
   {
-    id: 'k1b07384-d113-4ec5-a581-2292d3b2e303',
+    id: '01b07384-d113-4ec5-a581-2292d3b2e303',
     name: 'Kiosco 24hs Las Tres Hermanas',
     address: 'Benavidez s/n (frente al Observatorio)',
     neighborhood: 'Villa Observatorio',
@@ -305,6 +316,7 @@ export const initialEvents = [
     date: '2026-06-22',
     time: '16:00',
     location: 'Punto Digital Chimbas (Delegación Oeste)',
+    category: 'Educación',
     image_url: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=800&q=80',
     price: 0,
     created_at: new Date().toISOString()
@@ -313,533 +325,905 @@ export const initialEvents = [
 
 export const initialBuses = [
   {
-    id: 'b1b07384-d113-4ec5-a581-2292d3b2e501',
-    line: 'Línea 400',
-    description: 'Conecta Villa Observatorio en Chimbas Oeste con el Hospital Dr. Guillermo Rawson pasando por el centro de San Juan.',
-    type: 'capital_conexion',
-    frequency: 'Cada 12 minutos',
-    neighborhoods: ['Villa Observatorio', 'Barrio Santo Domingo', 'Villa Paula', 'Capital Centro'],
-    stops: [
-      'Plaza de Villa Observatorio (Calle Pellegrini)',
-      'Calle Pellegrini y Salta',
-      'Calle Salta y Rodríguez',
-      'Calle Salta y Centenario (Comisaría 30ª)',
-      'Avenida Benavídez y Salta (Walmart)',
-      'Avenida Benavídez y Mendoza',
-      'Plaza Centenario de Chimbas (Calle Mendoza)',
-      'Municipalidad de Chimbas (Calle Mendoza)',
-      'Calle Mendoza y Chile',
-      'Calle Mendoza y 25 de Mayo',
-      'Avenida España y 25 de Mayo',
-      'Centro Cívico de San Juan (Avenida España)',
-      'Calle Las Heras y Córdoba',
-      'Teatro del Bicentenario (Las Heras)',
-      'Avenida Libertador y Mendoza',
-      'Hospital Dr. Guillermo Rawson (Avenida Rawson)'
+    "id": "b1b07384-d113-4ec5-a581-2292d3b2e501",
+    "line": "Línea 400",
+    "description": "Conecta Villa Observatorio en Chimbas Oeste con el Hospital Dr. Guillermo Rawson pasando por el centro de San Juan.",
+    "type": "capital_conexion",
+    "frequency": "Cada 12 minutos",
+    "neighborhoods": [
+      "Villa Observatorio",
+      "Barrio Santo Domingo",
+      "Villa Paula",
+      "Capital Centro"
     ],
-    stops_vuelta: [
-      'Hospital Dr. Guillermo Rawson (Avenida Rawson)',
-      'Terminal de Ómnibus de San Juan',
-      'Avenida Libertador y General Acha',
-      'Teatro del Bicentenario (Las Heras)',
-      'Centro Cívico de San Juan (Avenida España)',
-      'Avenida España y 25 de Mayo',
-      'Calle Mendoza y Chile',
-      'Municipalidad de Chimbas (Calle Mendoza)',
-      'Plaza Centenario de Chimbas (Calle Mendoza)',
-      'Avenida Benavídez y Tucumán',
-      'Avenida Benavídez y Salta (Walmart)',
-      'Calle Salta y Centenario (Comisaría 30ª)',
-      'Calle Salta y Rodríguez',
-      'Plaza de Villa Observatorio (Calle Pellegrini)'
+    "stops": [
+      "Plaza de Villa Observatorio (Calle Pellegrini)",
+      "Calle Pellegrini y Salta",
+      "Calle Salta y Neuquén",
+      "Calle Salta y Rodríguez",
+      "Calle Salta y Centenario (Comisaría 30ª)",
+      "Avenida Benavídez y Salta (Walmart)",
+      "Avenida Benavídez y España",
+      "Avenida Benavídez y Mendoza",
+      "Plaza Centenario de Chimbas (Calle Mendoza)",
+      "Municipalidad de Chimbas (Calle Mendoza)",
+      "Calle Mendoza y Chile",
+      "Calle Mendoza y San Isidro",
+      "Calle Mendoza y 25 de Mayo",
+      "Avenida España y 25 de Mayo",
+      "Centro Cívico de San Juan (Avenida España)",
+      "Calle Las Heras y Córdoba",
+      "Teatro del Bicentenario (Las Heras)",
+      "Avenida Libertador y Mendoza",
+      "Calle Tucumán y Libertador",
+      "Hospital Dr. Guillermo Rawson (Avenida Rawson)"
     ],
-    schedule: 'Lunes a Sábado de 05:00 a 23:30, Domingos de 07:00 a 22:00',
-    created_at: new Date().toISOString()
+    "stops_vuelta": [
+      "Hospital Dr. Guillermo Rawson (Avenida Rawson)",
+      "Terminal de Ómnibus de San Juan",
+      "Calle Tucumán y Libertador",
+      "Avenida Libertador y General Acha",
+      "Teatro del Bicentenario (Las Heras)",
+      "Centro Cívico de San Juan (Avenida España)",
+      "Avenida España y 25 de Mayo",
+      "Calle Mendoza y 25 de Mayo",
+      "Calle Mendoza y San Isidro",
+      "Calle Mendoza y Chile",
+      "Municipalidad de Chimbas (Calle Mendoza)",
+      "Plaza Centenario de Chimbas (Calle Mendoza)",
+      "Avenida Benavídez y Mendoza",
+      "Avenida Benavídez y España",
+      "Avenida Benavídez y Salta (Walmart)",
+      "Calle Salta y Centenario (Comisaría 30ª)",
+      "Calle Salta y Rodríguez",
+      "Calle Salta y Neuquén",
+      "Calle Pellegrini y Salta",
+      "Plaza de Villa Observatorio (Calle Pellegrini)"
+    ],
+    "schedule": "Lunes a Sábado de 05:00 a 23:30, Domingos de 07:00 a 22:00"
   },
   {
-    id: 'b1b07384-d113-4ec5-a581-2292d3b2e502',
-    line: 'Línea 401',
-    description: 'Une Villa Obrera en Chimbas Este con el Centro Cívico y el Hospital Dr. Guillermo Rawson.',
-    type: 'capital_conexion',
-    frequency: 'Cada 15 minutos',
-    neighborhoods: ['Villa Obrera', 'Villa Paula', 'Capital Centro'],
-    stops: [
-      'Plaza de Villa Obrera (Calle Dorrego)',
-      'Calle Dorrego y Neuquén',
-      'Calle Ruta 40 y Neuquén',
-      'Delegación Municipal Este',
-      'Calle Neuquén y Mendoza',
-      'Plaza Centenario de Chimbas',
-      'Calle Mendoza y Benavídez',
-      'Avenida Rioja y Benavídez',
-      'Avenida Rioja y Corrientes',
-      'Avenida Rioja y 25 de Mayo',
-      'Avenida Libertador General San Martín y Rioja',
-      'Centro Cívico de San Juan',
-      'Avenida 25 de Mayo y Rawson',
-      'Hospital Dr. Guillermo Rawson'
+    "id": "b1b07384-d113-4ec5-a581-2292d3b2e502",
+    "line": "Línea 401",
+    "description": "Une Villa Obrera en Chimbas Este con el Centro Cívico y el Hospital Dr. Guillermo Rawson.",
+    "type": "capital_conexion",
+    "frequency": "Cada 15 minutos",
+    "neighborhoods": [
+      "Villa Obrera",
+      "Villa Paula",
+      "Capital Centro"
     ],
-    stops_vuelta: [
-      'Hospital Dr. Guillermo Rawson',
-      'Avenida Rawson y Santa Fe',
-      'Avenida Libertador General San Martín y Rioja',
-      'Centro Cívico de San Juan',
-      'Avenida Rioja y Corrientes',
-      'Avenida Rioja y Benavídez',
-      'Calle Mendoza y Benavídez',
-      'Plaza Centenario de Chimbas',
-      'Calle Neuquén y Mendoza',
-      'Delegación Municipal Este',
-      'Calle Ruta 40 y Neuquén',
-      'Plaza de Villa Obrera (Calle Dorrego)'
+    "stops": [
+      "Plaza de Villa Obrera (Calle Dorrego)",
+      "Calle Dorrego y Neuquén",
+      "Calle Ruta 40 y Neuquén",
+      "Delegación Municipal Este",
+      "Calle Neuquén y Mendoza",
+      "Plaza Centenario de Chimbas",
+      "Calle Mendoza y Chubut",
+      "Calle Mendoza y Benavídez",
+      "Avenida Rioja y Benavídez",
+      "Avenida Rioja y Corrientes",
+      "Avenida Rioja y 25 de Mayo",
+      "Avenida Libertador General San Martín y Rioja",
+      "Centro Cívico de San Juan",
+      "Avenida 25 de Mayo y Rawson",
+      "Hospital Dr. Guillermo Rawson"
     ],
-    schedule: 'Lunes a Viernes de 05:30 a 23:00, Sábados y Domingos de 06:30 a 22:30',
-    created_at: new Date().toISOString()
+    "stops_vuelta": [
+      "Hospital Dr. Guillermo Rawson",
+      "Avenida Rawson y Santa Fe",
+      "Avenida Libertador General San Martín y Rioja",
+      "Centro Cívico de San Juan",
+      "Avenida Rioja y 25 de Mayo",
+      "Avenida Rioja y Corrientes",
+      "Avenida Rioja y Benavídez",
+      "Calle Mendoza y Benavídez",
+      "Calle Mendoza y Chubut",
+      "Plaza Centenario de Chimbas",
+      "Calle Neuquén y Mendoza",
+      "Delegación Municipal Este",
+      "Calle Ruta 40 y Neuquén",
+      "Calle Dorrego y Neuquén",
+      "Plaza de Villa Obrera (Calle Dorrego)"
+    ],
+    "schedule": "Lunes a Viernes de 05:30 a 23:00, Sábados y Domingos de 06:30 a 22:30"
   },
   {
-    id: 'b1b07384-d113-4ec5-a581-2292d3b2e503',
-    line: 'Línea 402',
-    description: 'Conecta el Barrio Pedregal con el Hospital Dr. Guillermo Rawson y la zona céntrica.',
-    type: 'capital_conexion',
-    frequency: 'Cada 18 minutos',
-    neighborhoods: ['Barrio Pedregal', 'Villa Paula', 'Capital Centro'],
-    stops: [
-      'Barrio Pedregal (Calle Rodríguez)',
-      'Calle Rodríguez y Mendoza',
-      'Calle Mendoza y Oro',
-      'Calle Mendoza y Rodríguez',
-      'Calle Mendoza y Centenario',
-      'Plaza Centenario de Chimbas',
-      'Avenida Benavídez y Mendoza',
-      'Avenida Benavídez y Salta',
-      'San Juan Shopping (Avenida Benavídez)',
-      'Avenida Benavídez y Tucumán',
-      'Avenida España y Libertador',
-      'Centro Cívico de San Juan',
-      'Avenida Rawson y Santa Fe',
-      'Hospital Dr. Guillermo Rawson'
+    "id": "b1b07384-d113-4ec5-a581-2292d3b2e503",
+    "line": "Línea 402",
+    "description": "Conecta el Barrio Pedregal con el Hospital Dr. Guillermo Rawson y la zona céntrica.",
+    "type": "capital_conexion",
+    "frequency": "Cada 18 minutos",
+    "neighborhoods": [
+      "Barrio Pedregal",
+      "Villa Paula",
+      "Capital Centro"
     ],
-    stops_vuelta: [
-      'Hospital Dr. Guillermo Rawson',
-      'Avenida Rawson y Santa Fe',
-      'Centro Cívico de San Juan',
-      'Avenida España y Libertador',
-      'Avenida Benavídez y Tucumán',
-      'San Juan Shopping (Avenida Benavídez)',
-      'Avenida Benavídez y Salta',
-      'Avenida Benavídez y Mendoza',
-      'Plaza Centenario de Chimbas',
-      'Calle Mendoza y Centenario',
-      'Calle Mendoza y Rodríguez',
-      'Calle Mendoza y Oro',
-      'Calle Rodríguez y Mendoza',
-      'Barrio Pedregal (Calle Rodríguez)'
+    "stops": [
+      "Barrio Pedregal (Calle Rodríguez)",
+      "Calle Mendoza y Rodríguez",
+      "Calle Mendoza y Sabatini",
+      "Calle Mendoza y Neuquén",
+      "Calle Mendoza y Centenario",
+      "Plaza Centenario de Chimbas",
+      "Avenida Benavídez y Mendoza",
+      "Avenida Benavídez y Salta",
+      "San Juan Shopping (Avenida Benavídez)",
+      "Avenida Benavídez y Tucumán",
+      "Avenida España y Libertador",
+      "Centro Cívico de San Juan",
+      "Avenida Rawson y Santa Fe",
+      "Hospital Dr. Guillermo Rawson"
     ],
-    schedule: 'Lunes a Viernes de 05:45 a 22:45, Sábados de 06:00 a 22:00',
-    created_at: new Date().toISOString()
+    "stops_vuelta": [
+      "Hospital Dr. Guillermo Rawson",
+      "Avenida Rawson y Santa Fe",
+      "Centro Cívico de San Juan",
+      "Avenida España y Libertador",
+      "Avenida Benavídez y Tucumán",
+      "San Juan Shopping (Avenida Benavídez)",
+      "Avenida Benavídez y Salta",
+      "Avenida Benavídez y Mendoza",
+      "Plaza Centenario de Chimbas",
+      "Calle Mendoza y Centenario",
+      "Calle Mendoza y Neuquén",
+      "Calle Mendoza y Sabatini",
+      "Calle Mendoza y Rodríguez",
+      "Barrio Pedregal (Calle Rodríguez)"
+    ],
+    "schedule": "Lunes a Viernes de 05:45 a 22:45, Sábados de 06:00 a 22:00"
   },
   {
-    id: 'b1b07384-d113-4ec5-a581-2292d3b2e504',
-    line: 'Línea 403',
-    description: 'Conexión desde Villa Paula a través del Centro Cívico hacia el Hospital Dr. Guillermo Rawson.',
-    type: 'capital_conexion',
-    frequency: 'Cada 14 minutos',
-    neighborhoods: ['Villa Paula', 'Barrio Los Tamarindos', 'Capital Centro'],
-    stops: [
-      'Plaza Centenario de Chimbas (Villa Paula)',
-      'Calle Mendoza y Chubut',
-      'Calle Mendoza y Benavídez',
-      'Avenida Benavídez y Tucumán',
-      'Calle Salta y Benavídez',
-      'Calle Salta y Sargento Cabral',
-      'Avenida España y San Isidro',
-      'Parque de Mayo (Avenida Libertador)',
-      'Centro Cívico de San Juan',
-      'Avenida Rioja y Mitre',
-      'Terminal de Ómnibus de San Juan',
-      'Hospital Dr. Guillermo Rawson'
+    "id": "b1b07384-d113-4ec5-a581-2292d3b2e504",
+    "line": "Línea 403",
+    "description": "Conexión desde Villa Paula a través del Centro Cívico hacia el Hospital Dr. Guillermo Rawson.",
+    "type": "capital_conexion",
+    "frequency": "Cada 14 minutos",
+    "neighborhoods": [
+      "Villa Paula",
+      "Barrio Los Tamarindos",
+      "Capital Centro"
     ],
-    stops_vuelta: [
-      'Hospital Dr. Guillermo Rawson',
-      'Terminal de Ómnibus de San Juan',
-      'Avenida Rioja y Mitre',
-      'Centro Cívico de San Juan',
-      'Parque de Mayo (Avenida Libertador)',
-      'Avenida España y San Isidro',
-      'Calle Salta y Sargento Cabral',
-      'Calle Salta y Benavídez',
-      'Avenida Benavídez y Tucumán',
-      'Calle Mendoza y Benavídez',
-      'Calle Mendoza y Chubut',
-      'Plaza Centenario de Chimbas (Villa Paula)'
+    "stops": [
+      "Plaza Centenario de Chimbas (Villa Paula)",
+      "Calle Mendoza y Chubut",
+      "Calle Mendoza y Benavídez",
+      "Avenida Benavídez y Tucumán",
+      "Calle Salta y Benavídez",
+      "Calle Salta y Sargento Cabral",
+      "Avenida España y San Isidro",
+      "Parque de Mayo (Avenida Libertador)",
+      "Centro Cívico de San Juan",
+      "Avenida Rioja y Mitre",
+      "Terminal de Ómnibus de San Juan",
+      "Hospital Dr. Guillermo Rawson"
     ],
-    schedule: 'Lunes a Sábado de 05:15 a 23:15, Domingos de 07:15 a 22:15',
-    created_at: new Date().toISOString()
+    "stops_vuelta": [
+      "Hospital Dr. Guillermo Rawson",
+      "Terminal de Ómnibus de San Juan",
+      "Avenida Rioja y Mitre",
+      "Centro Cívico de San Juan",
+      "Parque de Mayo (Avenida Libertador)",
+      "Avenida España y San Isidro",
+      "Calle Salta y Sargento Cabral",
+      "Calle Salta y Benavídez",
+      "Avenida Benavídez y Tucumán",
+      "Calle Mendoza y Benavídez",
+      "Calle Mendoza y Chubut",
+      "Plaza Centenario de Chimbas (Villa Paula)"
+    ],
+    "schedule": "Lunes a Sábado de 05:15 a 23:15, Domingos de 07:15 a 22:15"
   },
   {
-    id: 'b1b07384-d113-4ec5-a581-2292d3b2e505',
-    line: 'Línea 404',
-    description: 'Une el Barrio Las Calandrias con el Hospital Dr. Guillermo Rawson pasando por la Plaza de Chimbas.',
-    type: 'capital_conexion',
-    frequency: 'Cada 16 minutos',
-    neighborhoods: ['Barrio Las Calandrias', 'Villa Paula', 'Capital Centro'],
-    stops: [
-      'Barrio Las Calandrias (Calle Oro)',
-      'Costanera Alta (Frente a Río San Juan)',
-      'Complejo Ferial Costanera',
-      'Calle Tucumán y Oro',
-      'Calle Mendoza y Oro',
-      'Calle Mendoza y Neuquén',
-      'Plaza Centenario de Chimbas (Municipalidad)',
-      'Calle Mendoza y Benavídez',
-      'Avenida España y 25 de Mayo',
-      'Centro Cívico de San Juan',
-      'Avenida Rawson y Córdoba',
-      'Hospital Dr. Guillermo Rawson'
+    "id": "b1b07384-d113-4ec5-a581-2292d3b2e505",
+    "line": "Línea 404",
+    "description": "Une el Barrio Las Calandrias con el Hospital Dr. Guillermo Rawson pasando por la Plaza de Chimbas.",
+    "type": "capital_conexion",
+    "frequency": "Cada 16 minutos",
+    "neighborhoods": [
+      "Barrio Las Calandrias",
+      "Villa Paula",
+      "Capital Centro"
     ],
-    stops_vuelta: [
-      'Hospital Dr. Guillermo Rawson',
-      'Avenida Rawson y Córdoba',
-      'Centro Cívico de San Juan',
-      'Avenida España y 25 de Mayo',
-      'Calle Mendoza y Benavídez',
-      'Plaza Centenario de Chimbas (Municipalidad)',
-      'Calle Mendoza y Neuquén',
-      'Calle Mendoza y Oro',
-      'Calle Tucumán y Oro',
-      'Complejo Ferial Costanera',
-      'Costanera Alta (Frente a Río San Juan)',
-      'Barrio Las Calandrias (Calle Oro)'
+    "stops": [
+      "Barrio Las Calandrias (Calle Oro)",
+      "Costanera Alta (Frente a Río San Juan)",
+      "Complejo Ferial Costanera",
+      "Calle Mendoza y Oro",
+      "Calle Mendoza y Rodríguez",
+      "Calle Mendoza y Neuquén",
+      "Plaza Centenario de Chimbas (Municipalidad)",
+      "Calle Mendoza y Benavídez",
+      "Avenida España y 25 de Mayo",
+      "Centro Cívico de San Juan",
+      "Avenida Rawson y Córdoba",
+      "Hospital Dr. Guillermo Rawson"
     ],
-    schedule: 'Lunes a Sábado de 05:30 a 23:00, Domingos de 07:00 a 22:00',
-    created_at: new Date().toISOString()
+    "stops_vuelta": [
+      "Hospital Dr. Guillermo Rawson",
+      "Avenida Rawson y Córdoba",
+      "Centro Cívico de San Juan",
+      "Avenida España y 25 de Mayo",
+      "Calle Mendoza y Benavídez",
+      "Plaza Centenario de Chimbas (Municipalidad)",
+      "Calle Mendoza y Neuquén",
+      "Calle Mendoza y Rodríguez",
+      "Calle Mendoza y Oro",
+      "Complejo Ferial Costanera",
+      "Costanera Alta (Frente a Río San Juan)",
+      "Barrio Las Calandrias (Calle Oro)"
+    ],
+    "schedule": "Lunes a Sábado de 05:30 a 23:00, Domingos de 07:00 a 22:00"
   },
   {
-    id: 'b1b07384-d113-4ec5-a581-2292d3b2e506',
-    line: 'Línea 405',
-    description: 'Conecta el Barrio Natania VIII en Chimbas con el Centro Cívico y el Hospital Dr. Guillermo Rawson.',
-    type: 'capital_conexion',
-    frequency: 'Cada 15 minutos',
-    neighborhoods: ['Barrio Natania VIII', 'Villa Paula', 'Capital Centro'],
-    stops: [
-      'Barrio Natania VIII',
-      'Calle Tucumán y Centenario',
-      'Plaza Centenario de Chimbas',
-      'Calle Mendoza y Benavídez',
-      'Calle Tucumán y Benavídez',
-      'Avenida Rioja y Benavídez',
-      'Avenida Rioja y Libertador',
-      'Plaza 25 de Mayo (Capital)',
-      'Centro Cívico de San Juan',
-      'Avenida Rawson y Santa Fe',
-      'Hospital Dr. Guillermo Rawson'
+    "id": "b1b07384-d113-4ec5-a581-2292d3b2e506",
+    "line": "Línea 405",
+    "description": "Conecta el Barrio Natania VIII en Chimbas con el Centro Cívico y el Hospital Dr. Guillermo Rawson.",
+    "type": "capital_conexion",
+    "frequency": "Cada 15 minutos",
+    "neighborhoods": [
+      "Barrio Natania VIII",
+      "Villa Paula",
+      "Capital Centro"
     ],
-    stops_vuelta: [
-      'Hospital Dr. Guillermo Rawson',
-      'Avenida Rawson y Santa Fe',
-      'Centro Cívico de San Juan',
-      'Plaza 25 de Mayo (Capital)',
-      'Avenida Rioja y Libertador',
-      'Avenida Rioja y Benavídez',
-      'Calle Tucumán y Benavídez',
-      'Calle Mendoza y Benavídez',
-      'Plaza Centenario de Chimbas',
-      'Calle Tucumán y Centenario',
-      'Barrio Natania VIII'
+    "stops": [
+      "Barrio Natania VIII",
+      "Calle Tucumán y Centenario",
+      "Plaza Centenario de Chimbas",
+      "Calle Mendoza y Benavídez",
+      "Calle Tucumán y Benavídez",
+      "Avenida Rioja y Benavídez",
+      "Avenida Rioja y Libertador",
+      "Plaza 25 de Mayo (Capital)",
+      "Centro Cívico de San Juan",
+      "Avenida Rawson y Santa Fe",
+      "Hospital Dr. Guillermo Rawson"
     ],
-    schedule: 'Lunes a Viernes de 05:00 a 23:30, Sábados y Domingos de 06:30 a 22:30',
-    created_at: new Date().toISOString()
+    "stops_vuelta": [
+      "Hospital Dr. Guillermo Rawson",
+      "Avenida Rawson y Santa Fe",
+      "Centro Cívico de San Juan",
+      "Plaza 25 de Mayo (Capital)",
+      "Avenida Rioja y Libertador",
+      "Avenida Rioja y Benavídez",
+      "Calle Tucumán y Benavídez",
+      "Calle Mendoza y Benavídez",
+      "Plaza Centenario de Chimbas",
+      "Calle Tucumán y Centenario",
+      "Barrio Natania VIII"
+    ],
+    "schedule": "Lunes a Viernes de 05:00 a 23:30, Sábados y Domingos de 06:30 a 22:30"
   },
   {
-    id: 'b1b07384-d113-4ec5-a581-2292d3b2e507',
-    line: 'Línea 406',
-    description: 'Servicio interno de conexión entre Lote Hogar 59, Villa Paula y el Centro Cívico.',
-    type: 'interno_chimbas',
-    frequency: 'Cada 20 minutos',
-    neighborhoods: ['Lote Hogar 59', 'Villa Paula', 'Capital Centro'],
-    stops: [
-      'Lote Hogar 59',
-      'Calle Centenario y Mendoza',
-      'Plaza Centenario de Chimbas',
-      'Municipalidad de Chimbas',
-      'Calle Mendoza y Benavídez',
-      'Calle Mendoza y Chile',
-      'Calle Mendoza y 25 de Mayo',
-      'Avenida Rioja y Corrientes',
-      'Parque de Mayo (Avenida Libertador)',
-      'Centro Cívico de San Juan (Terminus)'
+    "id": "b1b07384-d113-4ec5-a581-2292d3b2e507",
+    "line": "Línea 406",
+    "description": "Servicio interno de conexión entre Lote Hogar 59, Villa Paula y el Centro Cívico.",
+    "type": "interno_chimbas",
+    "frequency": "Cada 20 minutos",
+    "neighborhoods": [
+      "Lote Hogar 59",
+      "Villa Paula",
+      "Capital Centro"
     ],
-    stops_vuelta: [
-      'Centro Cívico de San Juan (Terminus)',
-      'Parque de Mayo (Avenida Libertador)',
-      'Avenida Rioja y Corrientes',
-      'Calle Mendoza y 25 de Mayo',
-      'Calle Mendoza y Chile',
-      'Calle Mendoza y Benavídez',
-      'Municipalidad de Chimbas',
-      'Plaza Centenario de Chimbas',
-      'Calle Centenario y Mendoza',
-      'Lote Hogar 59'
+    "stops": [
+      "Lote Hogar 59",
+      "Calle Centenario y Mendoza",
+      "Plaza Centenario de Chimbas",
+      "Municipalidad de Chimbas",
+      "Calle Mendoza y Benavídez",
+      "Calle Mendoza y Chile",
+      "Calle Mendoza y 25 de Mayo",
+      "Avenida Rioja y Corrientes",
+      "Parque de Mayo (Avenida Libertador)",
+      "Centro Cívico de San Juan (Terminus)"
     ],
-    schedule: 'Lunes a Viernes de 06:00 a 22:00, Sábados de 07:00 a 21:00',
-    created_at: new Date().toISOString()
+    "stops_vuelta": [
+      "Centro Cívico de San Juan (Terminus)",
+      "Parque de Mayo (Avenida Libertador)",
+      "Avenida Rioja y Corrientes",
+      "Calle Mendoza y 25 de Mayo",
+      "Calle Mendoza y Chile",
+      "Calle Mendoza y Benavídez",
+      "Municipalidad de Chimbas",
+      "Plaza Centenario de Chimbas",
+      "Calle Centenario y Mendoza",
+      "Lote Hogar 59"
+    ],
+    "schedule": "Lunes a Viernes de 06:00 a 22:00, Sábados de 07:00 a 21:00"
   },
   {
-    id: 'b1b07384-d113-4ec5-a581-2292d3b2e508',
-    line: 'Línea 407',
-    description: 'Conecta la Villa Mariano Moreno en el noreste de Chimbas con el Hospital Dr. Guillermo Rawson.',
-    type: 'capital_conexion',
-    frequency: 'Cada 18 minutos',
-    neighborhoods: ['Villa Mariano Moreno', 'El Mogote', 'Capital Centro'],
-    stops: [
-      'Villa Mariano Moreno (Calle Pellegrini)',
-      'Calle Pellegrini y Mendoza',
-      'Calle Mendoza y Oro',
-      'Calle Mendoza y Rodríguez',
-      'Calle Rodríguez y Mendoza',
-      'Plaza Centenario de Chimbas',
-      'Calle Mendoza y Benavídez',
-      'Avenida Rioja y 25 de Mayo',
-      'Avenida Libertador y Rioja',
-      'Hospital Dr. Guillermo Rawson',
-      'Terminal de Ómnibus de San Juan',
-      'Centro Cívico de San Juan'
+    "id": "b1b07384-d113-4ec5-a581-2292d3b2e508",
+    "line": "Línea 407",
+    "description": "Conecta la Villa Mariano Moreno en el noreste de Chimbas con el Hospital Dr. Guillermo Rawson.",
+    "type": "capital_conexion",
+    "frequency": "Cada 18 minutos",
+    "neighborhoods": [
+      "Villa Mariano Moreno",
+      "El Mogote",
+      "Capital Centro"
     ],
-    stops_vuelta: [
-      'Centro Cívico de San Juan',
-      'Terminal de Ómnibus de San Juan',
-      'Hospital Dr. Guillermo Rawson',
-      'Avenida Libertador y Rioja',
-      'Avenida Rioja y 25 de Mayo',
-      'Calle Mendoza y Benavídez',
-      'Plaza Centenario de Chimbas',
-      'Calle Rodríguez y Mendoza',
-      'Calle Mendoza y Rodríguez',
-      'Calle Mendoza y Oro',
-      'Calle Pellegrini y Mendoza',
-      'Villa Mariano Moreno (Calle Pellegrini)'
+    "stops": [
+      "Villa Mariano Moreno (Calle Pellegrini)",
+      "Calle Pellegrini y Mendoza",
+      "Calle Mendoza y Oro",
+      "Calle Mendoza y Rodríguez",
+      "Calle Mendoza y Sabatini",
+      "Calle Mendoza y Neuquén",
+      "Plaza Centenario de Chimbas",
+      "Calle Mendoza y Benavídez",
+      "Avenida Rioja y 25 de Mayo",
+      "Avenida Libertador y Rioja",
+      "Hospital Dr. Guillermo Rawson",
+      "Terminal de Ómnibus de San Juan",
+      "Centro Cívico de San Juan"
     ],
-    schedule: 'Lunes a Viernes de 05:30 a 22:30, Sábados de 06:30 a 21:30',
-    created_at: new Date().toISOString()
+    "stops_vuelta": [
+      "Centro Cívico de San Juan",
+      "Terminal de Ómnibus de San Juan",
+      "Hospital Dr. Guillermo Rawson",
+      "Avenida Libertador y Rioja",
+      "Avenida Rioja y 25 de Mayo",
+      "Calle Mendoza y Benavídez",
+      "Plaza Centenario de Chimbas",
+      "Calle Mendoza y Neuquén",
+      "Calle Mendoza y Sabatini",
+      "Calle Mendoza y Rodríguez",
+      "Calle Mendoza y Oro",
+      "Calle Pellegrini y Mendoza",
+      "Villa Mariano Moreno (Calle Pellegrini)"
+    ],
+    "schedule": "Lunes a Viernes de 05:30 a 22:30, Sábados de 06:30 a 21:30"
   },
   {
-    id: 'b1b07384-d113-4ec5-a581-2292d3b2e509',
-    line: 'Línea 408',
-    description: 'Une El Mogote y la Plaza de Chimbas con el Centro Cívico y el Hospital Dr. Guillermo Rawson.',
-    type: 'capital_conexion',
-    frequency: 'Cada 22 minutos',
-    neighborhoods: ['El Mogote', 'Villa Paula', 'Capital Centro'],
-    stops: [
-      'El Mogote (Calle Rodríguez)',
-      'Portal de El Mogote',
-      'Calle Tucumán y Rodríguez',
-      'Calle Neuquén y Mendoza',
-      'Plaza Centenario de Chimbas',
-      'Calle Mendoza y Benavídez',
-      'Avenida España y Benavídez',
-      'Centro Cívico de San Juan',
-      'Avenida Rioja y Santa Fe',
-      'Hospital Dr. Guillermo Rawson'
+    "id": "b1b07384-d113-4ec5-a581-2292d3b2e509",
+    "line": "Línea 408",
+    "description": "Une El Mogote y la Plaza de Chimbas con el Centro Cívico y el Hospital Dr. Guillermo Rawson.",
+    "type": "capital_conexion",
+    "frequency": "Cada 22 minutos",
+    "neighborhoods": [
+      "El Mogote",
+      "Villa Paula",
+      "Capital Centro"
     ],
-    stops_vuelta: [
-      'Hospital Dr. Guillermo Rawson',
-      'Avenida Rioja y Santa Fe',
-      'Centro Cívico de San Juan',
-      'Avenida España y Benavídez',
-      'Calle Mendoza y Benavídez',
-      'Plaza Centenario de Chimbas',
-      'Calle Neuquén y Mendoza',
-      'Calle Tucumán y Rodríguez',
-      'Portal de El Mogote',
-      'El Mogote (Calle Rodríguez)'
+    "stops": [
+      "El Mogote (Calle Rodríguez)",
+      "Portal de El Mogote",
+      "Calle Tucumán y Rodríguez",
+      "Calle Tucumán y Neuquén",
+      "Calle Neuquén y Mendoza",
+      "Plaza Centenario de Chimbas",
+      "Calle Mendoza y Benavídez",
+      "Avenida España y Benavídez",
+      "Centro Cívico de San Juan",
+      "Avenida Rioja y Santa Fe",
+      "Hospital Dr. Guillermo Rawson"
     ],
-    schedule: 'Lunes a Viernes de 05:15 a 22:30, Sábados de 06:30 a 21:30',
-    created_at: new Date().toISOString()
+    "stops_vuelta": [
+      "Hospital Dr. Guillermo Rawson",
+      "Avenida Rioja y Santa Fe",
+      "Centro Cívico de San Juan",
+      "Avenida España y Benavídez",
+      "Calle Mendoza y Benavídez",
+      "Plaza Centenario de Chimbas",
+      "Calle Neuquén y Mendoza",
+      "Calle Tucumán y Neuquén",
+      "Calle Tucumán y Rodríguez",
+      "Portal de El Mogote",
+      "El Mogote (Calle Rodríguez)"
+    ],
+    "schedule": "Lunes a Viernes de 05:15 a 22:30, Sábados de 06:30 a 21:30"
   },
   {
-    id: 'b1b07384-d113-4ec5-a581-2292d3b2e510',
-    line: 'Línea 420',
-    description: 'Línea de salud y universitaria. Conecta Chimbas directamente con el CUIM de la UNSJ y el Hospital Dr. Guillermo Rawson.',
-    type: 'salud_universidad',
-    frequency: 'Cada 15 minutos',
-    neighborhoods: ['Villa Paula', 'Villa Observatorio', 'Capital Rawson', 'Rivadavia CUIM'],
-    stops: [
-      'Plaza Centenario de Chimbas',
-      'Complejo Ferial Costanera',
-      'Chimbas Oeste (Villa Observatorio)',
-      'Avenida Benavídez y Salta',
-      'San Juan Shopping (Avenida Benavídez)',
-      'Avenida Libertador (Parque de Mayo)',
-      'Avenida España y Libertador',
-      'Hospital Dr. Guillermo Rawson',
-      'Avenida España y Arenales',
-      'CUIM - UNSJ (Rivadavia)'
+    "id": "b1b07384-d113-4ec5-a581-2292d3b2e510",
+    "line": "Línea 420",
+    "description": "Línea de salud y universitaria. Conecta Chimbas directamente con el CUIM de la UNSJ y el Hospital Dr. Guillermo Rawson.",
+    "type": "salud_universidad",
+    "frequency": "Cada 15 minutos",
+    "neighborhoods": [
+      "Villa Paula",
+      "Villa Observatorio",
+      "Capital Rawson",
+      "Rivadavia CUIM"
     ],
-    stops_vuelta: [
-      'CUIM - UNSJ (Rivadavia)',
-      'Avenida España y Arenales',
-      'Hospital Dr. Guillermo Rawson',
-      'Avenida España y Libertador',
-      'Avenida Libertador (Parque de Mayo)',
-      'San Juan Shopping (Avenida Benavídez)',
-      'Avenida Benavídez y Salta',
-      'Chimbas Oeste (Villa Observatorio)',
-      'Complejo Ferial Costanera',
-      'Plaza Centenario de Chimbas'
+    "stops": [
+      "Plaza Centenario de Chimbas",
+      "Complejo Ferial Costanera",
+      "Chimbas Oeste (Villa Observatorio)",
+      "Avenida Benavídez y Salta",
+      "San Juan Shopping (Avenida Benavídez)",
+      "Avenida Libertador (Parque de Mayo)",
+      "Avenida España y Libertador",
+      "Hospital Dr. Guillermo Rawson",
+      "Avenida España y Arenales",
+      "CUIM - UNSJ (Rivadavia)"
     ],
-    schedule: 'Lunes a Viernes de 06:00 a 22:30, Sábados con frecuencia reducida',
-    created_at: new Date().toISOString()
+    "stops_vuelta": [
+      "CUIM - UNSJ (Rivadavia)",
+      "Avenida España y Arenales",
+      "Hospital Dr. Guillermo Rawson",
+      "Avenida España y Libertador",
+      "Avenida Libertador (Parque de Mayo)",
+      "San Juan Shopping (Avenida Benavídez)",
+      "Avenida Benavídez y Salta",
+      "Chimbas Oeste (Villa Observatorio)",
+      "Complejo Ferial Costanera",
+      "Plaza Centenario de Chimbas"
+    ],
+    "schedule": "Lunes a Viernes de 06:00 a 22:30, Sábados con frecuencia reducida"
   },
   {
-    id: 'b1b07384-d113-4ec5-a581-2292d3b2e511',
-    line: 'Troncal TNS',
-    description: 'Troncal Norte-Sur. Conecta la Plaza Centenario de Chimbas con la Plaza de Villa Krause en Rawson, cruzando por el microcentro de San Juan.',
-    type: 'capital_conexion',
-    frequency: 'Cada 8 minutos',
-    neighborhoods: ['Villa Paula', 'Capital Centro', 'Villa Krause'],
-    stops: [
-      'Plaza Centenario de Chimbas (Calle Mendoza)',
-      'Municipalidad de Chimbas (Calle Mendoza)',
-      'Calle Mendoza y Benavídez',
-      'Avenida Rioja y Benavídez',
-      'Avenida Rioja y Libertador',
-      'Estación de Transbordo Córdoba',
-      'Centro Cívico de San Juan',
-      'Avenida España y Arenales',
-      'Plaza de Villa Krause (Rawson)'
+    "id": "b1b07384-d113-4ec5-a581-2292d3b2e511",
+    "line": "Troncal TNS",
+    "description": "Troncal Norte-Sur. Conecta la Plaza Centenario de Chimbas con la Plaza de Villa Krause en Rawson, cruzando por el microcentro de San Juan.",
+    "type": "capital_conexion",
+    "frequency": "Cada 8 minutos",
+    "neighborhoods": [
+      "Villa Paula",
+      "Capital Centro",
+      "Villa Krause"
     ],
-    stops_vuelta: [
-      'Plaza de Villa Krause (Rawson)',
-      'Avenida España y Arenales',
-      'Estación de Transbordo Córdoba',
-      'Avenida Rioja y Libertador',
-      'Avenida Rioja y Benavídez',
-      'Calle Mendoza y Benavídez',
-      'Municipalidad de Chimbas (Calle Mendoza)',
-      'Plaza Centenario de Chimbas (Calle Mendoza)'
+    "stops": [
+      "Plaza Centenario de Chimbas (Calle Mendoza)",
+      "Municipalidad de Chimbas (Calle Mendoza)",
+      "Calle Mendoza y Jorge Newbery",
+      "Calle Mendoza y Pellegrini",
+      "Calle Mendoza y Chubut",
+      "Calle Mendoza y Centenario",
+      "Calle Mendoza y Benavídez",
+      "Avenida Rioja y Benavídez",
+      "Avenida Rioja y Chile",
+      "Avenida Rioja y San Isidro",
+      "Avenida Rioja y 25 de Mayo",
+      "Avenida Rioja y Libertador",
+      "Estación de Transbordo Córdoba",
+      "Centro Cívico de San Juan",
+      "Avenida España y Arenales",
+      "Plaza de Villa Krause (Rawson)"
     ],
-    schedule: 'Lunes a Domingo de 04:30 a 00:30',
-    created_at: new Date().toISOString()
+    "stops_vuelta": [
+      "Plaza de Villa Krause (Rawson)",
+      "Avenida España y Arenales",
+      "Estación de Transbordo Córdoba",
+      "Avenida Rioja y Libertador",
+      "Avenida Rioja y 25 de Mayo",
+      "Avenida Rioja y San Isidro",
+      "Avenida Rioja y Chile",
+      "Avenida Rioja y Benavídez",
+      "Calle Mendoza y Benavídez",
+      "Calle Mendoza y Centenario",
+      "Calle Mendoza y Chubut",
+      "Calle Mendoza y Pellegrini",
+      "Calle Mendoza y Jorge Newbery",
+      "Municipalidad de Chimbas (Calle Mendoza)",
+      "Plaza Centenario de Chimbas (Calle Mendoza)"
+    ],
+    "schedule": "Lunes a Domingo de 04:30 a 00:30"
   },
   {
-    id: 'b1b07384-d113-4ec5-a581-2292d3b2e512',
-    line: 'Corredor B',
-    description: 'Corredor Benavídez. Conecta la Escuela de Policía en Chimbas Oeste con la Estación de Transbordo Córdoba por el eje vial de Av. Benavídez.',
-    type: 'capital_conexion',
-    frequency: 'Cada 10 minutos',
-    neighborhoods: ['Chimbas Oeste', 'Barrio Los Tamarindos', 'Capital Centro'],
-    stops: [
-      'Escuela de Policía (Chimbas)',
-      'Avenida Benavídez y Salta (Walmart)',
-      'Avenida Benavídez y Mendoza',
-      'Avenida Benavídez y Rioja',
-      'Avenida Benavídez y Necochea',
-      'Avenida Rawson y Córdoba',
-      'Estación de Transbordo Córdoba',
-      'Hospital Dr. Guillermo Rawson'
+    "id": "b1b07384-d113-4ec5-a581-2292d3b2e512",
+    "line": "Corredor B",
+    "description": "Corredor Benavídez. Conecta la Escuela de Policía en Chimbas Oeste con la Estación de Transbordo Córdoba por el eje vial de Av. Benavídez.",
+    "type": "capital_conexion",
+    "frequency": "Cada 10 minutos",
+    "neighborhoods": [
+      "Chimbas Oeste",
+      "Barrio Los Tamarindos",
+      "Capital Centro"
     ],
-    stops_vuelta: [
-      'Hospital Dr. Guillermo Rawson',
-      'Estación de Transbordo Córdoba',
-      'Avenida Rawson y Córdoba',
-      'Avenida Benavídez y Necochea',
-      'Avenida Benavídez y Rioja',
-      'Avenida Benavídez y Mendoza',
-      'Avenida Benavídez y Salta (Walmart)',
-      'Escuela de Policía (Chimbas)'
+    "stops": [
+      "Escuela de Policía (Chimbas)",
+      "Avenida Benavídez y Salta (Walmart)",
+      "Avenida Benavídez y España",
+      "Avenida Benavídez y Mendoza",
+      "Avenida Benavídez y Rioja",
+      "Avenida Benavídez y Tucumán",
+      "Avenida Benavídez y Ruta 40",
+      "Avenida Benavídez y Necochea",
+      "Avenida Rawson y Córdoba",
+      "Estación de Transbordo Córdoba",
+      "Hospital Dr. Guillermo Rawson"
     ],
-    schedule: 'Lunes a Sábado de 05:00 a 23:45, Domingos de 07:00 a 22:30',
-    created_at: new Date().toISOString()
+    "stops_vuelta": [
+      "Hospital Dr. Guillermo Rawson",
+      "Estación de Transbordo Córdoba",
+      "Avenida Rawson y Córdoba",
+      "Avenida Benavídez y Necochea",
+      "Avenida Benavídez y Ruta 40",
+      "Avenida Benavídez y Tucumán",
+      "Avenida Benavídez y Rioja",
+      "Avenida Benavídez y Mendoza",
+      "Avenida Benavídez y España",
+      "Avenida Benavídez y Salta (Walmart)",
+      "Escuela de Policía (Chimbas)"
+    ],
+    "schedule": "Lunes a Sábado de 05:00 a 23:45, Domingos de 07:00 a 22:30"
   },
   {
-    id: 'b1b07384-d113-4ec5-a581-2292d3b2e513',
-    line: 'Línea 30',
-    description: 'Perimetral Este. Conexión periférica directa entre la Plaza de Chimbas y la Plaza de Santa Lucía, pasando por Chimbas Este y la zona este del Gran San Juan.',
-    type: 'interno_chimbas',
-    frequency: 'Cada 15 minutos',
-    neighborhoods: ['Villa Paula', 'Chimbas Este', 'Santa Lucía Centro'],
-    stops: [
-      'Plaza Centenario de Chimbas',
-      'Calle Neuquén y Mendoza',
-      'Delegación Municipal Este',
-      'Calle Ruta 40 y Neuquén',
-      'Avenida Benavídez y Necochea',
-      'Calle Tomás Edison y Colón',
-      'Plaza de Santa Lucía'
+    "id": "b1b07384-d113-4ec5-a581-2292d3b2e513",
+    "line": "Línea 30",
+    "description": "Perimetral Este. Conexión periférica directa entre la Plaza de Chimbas y la Plaza de Santa Lucía, pasando por Chimbas Este y la zona este del Gran San Juan.",
+    "type": "interno_chimbas",
+    "frequency": "Cada 15 minutos",
+    "neighborhoods": [
+      "Villa Paula",
+      "Chimbas Este",
+      "Santa Lucía Centro"
     ],
-    stops_vuelta: [
-      'Plaza de Santa Lucía',
-      'Calle Tomás Edison y Colón',
-      'Avenida Benavídez y Necochea',
-      'Calle Ruta 40 y Neuquén',
-      'Delegación Municipal Este',
-      'Calle Neuquén y Mendoza',
-      'Plaza Centenario de Chimbas'
+    "stops": [
+      "Plaza Centenario de Chimbas",
+      "Calle Neuquén y Mendoza",
+      "Delegación Municipal Este",
+      "Calle Ruta 40 y Neuquén",
+      "Calle Ruta 40 y Centenario",
+      "Avenida Benavídez y Ruta 40",
+      "Avenida Benavídez y Necochea",
+      "Calle Necochea y Centenario",
+      "Calle Tomás Edison y Benavídez",
+      "Calle Tomás Edison y Colón",
+      "Plaza de Santa Lucía"
     ],
-    schedule: 'Lunes a Sábado de 06:00 a 22:30',
-    created_at: new Date().toISOString()
+    "stops_vuelta": [
+      "Plaza de Santa Lucía",
+      "Calle Tomás Edison y Colón",
+      "Calle Tomás Edison y Benavídez",
+      "Calle Necochea y Centenario",
+      "Avenida Benavídez y Necochea",
+      "Avenida Benavídez y Ruta 40",
+      "Calle Ruta 40 y Centenario",
+      "Calle Ruta 40 y Neuquén",
+      "Delegación Municipal Este",
+      "Calle Neuquén y Mendoza",
+      "Plaza Centenario de Chimbas"
+    ],
+    "schedule": "Lunes a Sábado de 06:00 a 22:30"
   },
   {
-    id: 'b1b07384-d113-4ec5-a581-2292d3b2e514',
-    line: 'Línea 40',
-    description: 'Perimetral Norte. Une la Plaza de Chimbas con el departamento de Rivadavia y el CUIM (Complejo Universitario) de la UNSJ, ideal para estudiantes.',
-    type: 'salud_universidad',
-    frequency: 'Cada 14 minutos',
-    neighborhoods: ['Villa Paula', 'Chimbas Oeste', 'Rivadavia Universidades'],
-    stops: [
-      'Plaza Centenario de Chimbas',
-      'Avenida Benavídez y Mendoza',
-      'Avenida Benavídez y Salta',
-      'Chimbas Oeste (Villa Observatorio)',
-      'Hospital Dr. Marcial Quiroga',
-      'Avenida Libertador (Parque de Mayo)',
-      'CUIM - UNSJ (Rivadavia)'
+    "id": "b1b07384-d113-4ec5-a581-2292d3b2e514",
+    "line": "Línea 40",
+    "description": "Perimetral Norte. Une la Plaza de Chimbas con el departamento de Rivadavia y el CUIM (Complejo Universitario) de la UNSJ, ideal para estudiantes.",
+    "type": "salud_universidad",
+    "frequency": "Cada 14 minutos",
+    "neighborhoods": [
+      "Villa Paula",
+      "Chimbas Oeste",
+      "Rivadavia Universidades"
     ],
-    stops_vuelta: [
-      'CUIM - UNSJ (Rivadavia)',
-      'Avenida Libertador (Parque de Mayo)',
-      'Hospital Dr. Marcial Quiroga',
-      'Chimbas Oeste (Villa Observatorio)',
-      'Avenida Benavídez y Salta',
-      'Avenida Benavídez y Mendoza',
-      'Plaza Centenario de Chimbas'
+    "stops": [
+      "Plaza Centenario de Chimbas",
+      "Avenida Benavídez y Mendoza",
+      "Avenida Benavídez y España",
+      "Avenida Benavídez y Salta",
+      "Chimbas Oeste (Villa Observatorio)",
+      "Hospital Dr. Marcial Quiroga",
+      "Avenida Libertador (Parque de Mayo)",
+      "CUIM - UNSJ (Rivadavia)"
     ],
-    schedule: 'Lunes a Viernes de 06:00 a 22:00, Sábados con frecuencia reducida',
-    created_at: new Date().toISOString()
+    "stops_vuelta": [
+      "CUIM - UNSJ (Rivadavia)",
+      "Avenida Libertador (Parque de Mayo)",
+      "Hospital Dr. Marcial Quiroga",
+      "Chimbas Oeste (Villa Observatorio)",
+      "Avenida Benavídez y Salta",
+      "Avenida Benavídez y España",
+      "Avenida Benavídez y Mendoza",
+      "Plaza Centenario de Chimbas"
+    ],
+    "schedule": "Lunes a Viernes de 06:00 a 22:00, Sábados con frecuencia reducida"
   },
   {
-    id: 'b1b07384-d113-4ec5-a581-2292d3b2e515',
-    line: 'Línea 4',
-    description: 'Interurbana Norte. Conexión de larga distancia desde la Villa Villicum en Albardón hasta la Estación de Transbordo Córdoba, transitando por Ruta 40 a través de Chimbas.',
-    type: 'capital_conexion',
-    frequency: 'Cada 20 minutos',
-    neighborhoods: ['Albardón Villicum', 'Chimbas Ruta 40', 'Capital Centro'],
-    stops: [
-      'Villa Villicum (Albardón)',
-      'Portal de El Mogote',
-      'Calle Ruta 40 y Neuquén',
-      'Avenida Benavídez y Rioja',
-      'Avenida Rioja y Libertador',
-      'Estación de Transbordo Córdoba',
-      'Terminal de Ómnibus de San Juan'
+    "id": "b1b07384-d113-4ec5-a581-2292d3b2e515",
+    "line": "Línea 4",
+    "description": "Interurbana Norte. Conexión de larga distancia desde la Villa Villicum en Albardón hasta la Estación de Transbordo Córdoba, transitando por Ruta 40 a través de Chimbas.",
+    "type": "capital_conexion",
+    "frequency": "Cada 20 minutos",
+    "neighborhoods": [
+      "Albardón Villicum",
+      "Chimbas Ruta 40",
+      "Capital Centro"
     ],
-    stops_vuelta: [
-      'Terminal de Ómnibus de San Juan',
-      'Estación de Transbordo Córdoba',
-      'Avenida Rioja y Libertador',
-      'Avenida Benavídez y Rioja',
-      'Calle Ruta 40 y Neuquén',
-      'Portal de El Mogote',
-      'Villa Villicum (Albardón)'
+    "stops": [
+      "Villa Villicum (Albardón)",
+      "Portal de El Mogote",
+      "Calle Ruta 40 y Neuquén",
+      "Calle Ruta 40 y Centenario",
+      "Avenida Benavídez y Ruta 40",
+      "Avenida Benavídez y Rioja",
+      "Avenida Rioja y Libertador",
+      "Estación de Transbordo Córdoba",
+      "Terminal de Ómnibus de San Juan"
     ],
-    schedule: 'Lunes a Sábado de 05:00 a 23:00, Domingos de 07:00 a 22:00',
-    created_at: new Date().toISOString()
+    "stops_vuelta": [
+      "Terminal de Ómnibus de San Juan",
+      "Estación de Transbordo Córdoba",
+      "Avenida Rioja y Libertador",
+      "Avenida Benavídez y Rioja",
+      "Avenida Benavídez y Ruta 40",
+      "Calle Ruta 40 y Centenario",
+      "Calle Ruta 40 y Neuquén",
+      "Portal de El Mogote",
+      "Villa Villicum (Albardón)"
+    ],
+    "schedule": "Lunes a Sábado de 05:00 a 23:00, Domingos de 07:00 a 22:00"
+  },
+  {
+    "id": "b1b07384-d113-4ec5-a581-2292d3b2e516",
+    "line": "Línea 120",
+    "description": "Conecta el Barrio Valle Grande en Rivadavia con Villa Observatorio en Chimbas Oeste, transitando por el microcentro.",
+    "type": "salud_universidad",
+    "frequency": "Cada 15 minutos",
+    "neighborhoods": [
+      "Rivadavia Valle Grande",
+      "Capital Centro",
+      "Chimbas Oeste"
+    ],
+    "stops": [
+      "Bº Valle Grande",
+      "CUIM - UNSJ (Rivadavia)",
+      "Hospital Dr. Marcial Quiroga",
+      "Avenida Libertador (Parque de Mayo)",
+      "Centro Cívico de San Juan (Avenida España)",
+      "Avenida España y 25 de Mayo",
+      "Avenida España y Benavídez",
+      "Avenida Benavídez y Salta (Walmart)",
+      "Plaza de Villa Observatorio (Calle Pellegrini)"
+    ],
+    "stops_vuelta": [
+      "Plaza de Villa Observatorio (Calle Pellegrini)",
+      "Avenida Benavídez y Salta (Walmart)",
+      "Avenida España y Benavídez",
+      "Avenida España y 25 de Mayo",
+      "Centro Cívico de San Juan (Avenida España)",
+      "Avenida Libertador (Parque de Mayo)",
+      "Hospital Dr. Marcial Quiroga",
+      "CUIM - UNSJ (Rivadavia)",
+      "Bº Valle Grande"
+    ],
+    "schedule": "Lunes a Sábado de 06:00 a 22:30"
+  },
+  {
+    "id": "b1b07384-d113-4ec5-a581-2292d3b2e517",
+    "line": "Línea 126",
+    "description": "Une la Plaza de Villa Obrera con el Complejo Deportivo El Palomar y el Hospital Rawson.",
+    "type": "capital_conexion",
+    "frequency": "Cada 18 minutos",
+    "neighborhoods": [
+      "Chimbas Este",
+      "Capital Centro"
+    ],
+    "stops": [
+      "Plaza de Villa Obrera (Calle Dorrego)",
+      "Calle Dorrego y Neuquén",
+      "Calle Ruta 40 y Neuquén",
+      "Delegación Municipal Este",
+      "Calle Neuquén y Mendoza",
+      "Plaza Centenario de Chimbas",
+      "Calle Mendoza y Benavídez",
+      "Avenida Rioja y Benavídez",
+      "Avenida Rioja y 25 de Mayo",
+      "Complejo El Palomar",
+      "Hospital Dr. Guillermo Rawson"
+    ],
+    "stops_vuelta": [
+      "Hospital Dr. Guillermo Rawson",
+      "Complejo El Palomar",
+      "Avenida Rioja y 25 de Mayo",
+      "Avenida Rioja y Benavídez",
+      "Calle Mendoza y Benavídez",
+      "Plaza Centenario de Chimbas",
+      "Calle Neuquén y Mendoza",
+      "Delegación Municipal Este",
+      "Calle Ruta 40 y Neuquén",
+      "Calle Dorrego y Neuquén",
+      "Plaza de Villa Obrera (Calle Dorrego)"
+    ],
+    "schedule": "Lunes a Viernes de 05:30 a 22:30, Sábados de 06:30 a 21:30"
+  },
+  {
+    "id": "b1b07384-d113-4ec5-a581-2292d3b2e518",
+    "line": "Línea 128",
+    "description": "Conecta el complejo universitario CUIM con el Barrio CGT Chimbas y la zona norte.",
+    "type": "salud_universidad",
+    "frequency": "Cada 16 minutos",
+    "neighborhoods": [
+      "Rivadavia Universidades",
+      "Chimbas Norte"
+    ],
+    "stops": [
+      "CUIM - UNSJ (Rivadavia)",
+      "Hospital Dr. Marcial Quiroga",
+      "Chimbas Oeste (Villa Observatorio)",
+      "Avenida Benavídez y Salta (Walmart)",
+      "Avenida Benavídez y España",
+      "Avenida Benavídez y Mendoza",
+      "Plaza Centenario de Chimbas",
+      "Calle Mendoza y Oro",
+      "Bº CGT Chimbas"
+    ],
+    "stops_vuelta": [
+      "Bº CGT Chimbas",
+      "Calle Mendoza y Oro",
+      "Plaza Centenario de Chimbas",
+      "Avenida Benavídez y Mendoza",
+      "Avenida Benavídez y España",
+      "Avenida Benavídez y Salta (Walmart)",
+      "Chimbas Oeste (Villa Observatorio)",
+      "Hospital Dr. Marcial Quiroga",
+      "CUIM - UNSJ (Rivadavia)"
+    ],
+    "schedule": "Lunes a Sábado de 06:00 a 22:00"
+  },
+  {
+    "id": "b1b07384-d113-4ec5-a581-2292d3b2e519",
+    "line": "Línea 301",
+    "description": "Servicio periférico extenso que une Colonia Gutiérrez con el Hospital Rawson y el Centro Cívico.",
+    "type": "interno_chimbas",
+    "frequency": "Cada 20 minutos",
+    "neighborhoods": [
+      "Colonia Gutiérrez",
+      "Chimbas Este",
+      "Capital Centro"
+    ],
+    "stops": [
+      "Colonia Gutiérrez (Chimbas)",
+      "Calle Tucumán y Oro",
+      "Calle Tucumán y Rodríguez",
+      "Calle Tucumán y Neuquén",
+      "Calle Tucumán y Centenario",
+      "Calle Tucumán y Benavídez",
+      "Avenida Rawson y Córdoba",
+      "Hospital Dr. Guillermo Rawson",
+      "Estación de Transbordo Córdoba",
+      "Centro Cívico de San Juan"
+    ],
+    "stops_vuelta": [
+      "Centro Cívico de San Juan",
+      "Estación de Transbordo Córdoba",
+      "Hospital Dr. Guillermo Rawson",
+      "Avenida Rawson y Córdoba",
+      "Calle Tucumán y Benavídez",
+      "Calle Tucumán y Centenario",
+      "Calle Tucumán y Neuquén",
+      "Calle Tucumán y Rodríguez",
+      "Calle Tucumán y Oro",
+      "Colonia Gutiérrez (Chimbas)"
+    ],
+    "schedule": "Lunes a Sábado de 05:00 a 23:00"
+  },
+  {
+    "id": "b1b07384-d113-4ec5-a581-2292d3b2e520",
+    "line": "Línea 421",
+    "description": "Servicio secundario que conecta Campo Afuera y el Hospital Giordano en Albardón con Chimbas y el Hospital Rawson.",
+    "type": "capital_conexion",
+    "frequency": "Cada 18 minutos",
+    "neighborhoods": [
+      "Albardón",
+      "Chimbas",
+      "Capital Centro"
+    ],
+    "stops": [
+      "Campo Afuera (Albardón)",
+      "Hospital Dr. José Giordano (Albardón)",
+      "Villa Villicum (Albardón)",
+      "Portal de El Mogote",
+      "Calle Ruta 40 y Neuquén",
+      "Avenida Benavídez y Rioja",
+      "Estación de Transbordo Córdoba",
+      "Hospital Dr. Guillermo Rawson"
+    ],
+    "stops_vuelta": [
+      "Hospital Dr. Guillermo Rawson",
+      "Estación de Transbordo Córdoba",
+      "Avenida Benavídez y Rioja",
+      "Calle Ruta 40 y Neuquén",
+      "Portal de El Mogote",
+      "Villa Villicum (Albardón)",
+      "Hospital Dr. José Giordano (Albardón)",
+      "Campo Afuera (Albardón)"
+    ],
+    "schedule": "Lunes a Sábado de 06:00 a 22:00"
+  },
+  {
+    "id": "b1b07384-d113-4ec5-a581-2292d3b2e521",
+    "line": "Línea 500",
+    "description": "Media distancia. Une la localidad de San José de Jáchal con la Terminal de Ómnibus de San Juan, transitando por Ruta 40.",
+    "type": "capital_conexion",
+    "frequency": "Tres frecuencias diarias",
+    "neighborhoods": [
+      "Jáchal",
+      "Albardón",
+      "Chimbas Ruta 40",
+      "Capital Centro"
+    ],
+    "stops": [
+      "San José de Jáchal",
+      "Villa Villicum (Albardón)",
+      "Portal de El Mogote",
+      "Calle Ruta 40 y Neuquén",
+      "Avenida Benavídez y Ruta 40",
+      "Avenida Rawson y Córdoba",
+      "Terminal de Ómnibus de San Juan"
+    ],
+    "stops_vuelta": [
+      "Terminal de Ómnibus de San Juan",
+      "Avenida Rawson y Córdoba",
+      "Avenida Benavídez y Ruta 40",
+      "Calle Ruta 40 y Neuquén",
+      "Portal de El Mogote",
+      "Villa Villicum (Albardón)",
+      "San José de Jáchal"
+    ],
+    "schedule": "Lunes a Domingo según horarios fijos"
+  },
+  {
+    "id": "b1b07384-d113-4ec5-a581-2292d3b2e522",
+    "line": "Línea 600",
+    "description": "Media distancia. Conecta Rodeo en el departamento de Iglesia con la Terminal de Ómnibus, cruzando Chimbas por Ruta 40.",
+    "type": "capital_conexion",
+    "frequency": "Dos frecuencias diarias",
+    "neighborhoods": [
+      "Iglesia",
+      "Albardón",
+      "Chimbas Ruta 40",
+      "Capital Centro"
+    ],
+    "stops": [
+      "Rodeo (Iglesia)",
+      "Villa Villicum (Albardón)",
+      "Portal de El Mogote",
+      "Calle Ruta 40 y Neuquén",
+      "Avenida Benavídez y Ruta 40",
+      "Avenida Rawson y Córdoba",
+      "Terminal de Ómnibus de San Juan"
+    ],
+    "stops_vuelta": [
+      "Terminal de Ómnibus de San Juan",
+      "Avenida Rawson y Córdoba",
+      "Avenida Benavídez y Ruta 40",
+      "Calle Ruta 40 y Neuquén",
+      "Portal de El Mogote",
+      "Villa Villicum (Albardón)",
+      "Rodeo (Iglesia)"
+    ],
+    "schedule": "Lunes a Domingo según horarios fijos"
+  },
+  {
+    "id": "b1b07384-d113-4ec5-a581-2292d3b2e523",
+    "line": "Línea 700",
+    "description": "Larga distancia. Une Barreal y Calingasta con la Terminal de Ómnibus, transitando por Ruta 40 a través de Chimbas.",
+    "type": "capital_conexion",
+    "frequency": "Frecuencias diarias programadas",
+    "neighborhoods": [
+      "Calingasta Barreal",
+      "Albardón",
+      "Chimbas Ruta 40",
+      "Capital Centro"
+    ],
+    "stops": [
+      "Barreal (Calingasta)",
+      "Villa Villicum (Albardón)",
+      "Portal de El Mogote",
+      "Calle Ruta 40 y Neuquén",
+      "Avenida Benavídez y Ruta 40",
+      "Avenida Rawson y Córdoba",
+      "Terminal de Ómnibus de San Juan"
+    ],
+    "stops_vuelta": [
+      "Terminal de Ómnibus de San Juan",
+      "Avenida Rawson y Córdoba",
+      "Avenida Benavídez y Ruta 40",
+      "Calle Ruta 40 y Neuquén",
+      "Portal de El Mogote",
+      "Villa Villicum (Albardón)",
+      "Barreal (Calingasta)"
+    ],
+    "schedule": "Lunes a Domingo según horarios programados"
   }
 ];
 
 export const initialJobs = [
   {
-    id: 'j1b07384-d113-4ec5-a581-2292d3b2e601',
+    id: 'a1b07384-d113-4ec5-a581-2292d3b2e601',
     title: 'Mozo / Ayudante de Cocina para Fines de Semana',
     description: 'Pizzería La Chimbera busca personal para atención al público y tareas básicas de ayudante de cocina. Experiencia previa valorada. Se ofrece excelente ambiente laboral y pago por jornada.',
     type: 'oferta_laboral',
@@ -851,7 +1235,7 @@ export const initialJobs = [
     created_at: new Date().toISOString()
   },
   {
-    id: 'j1b07384-d113-4ec5-a581-2292d3b2e602',
+    id: 'a1b07384-d113-4ec5-a581-2292d3b2e602',
     title: 'Servicio de Pintura de Frentes e Interiores',
     description: 'Vecino del Barrio Santo Domingo ofrece servicio de pintura en general, enduido, impermeabilización de techos y colocación de membranas. Presupuestos sin cargo en todo Chimbas.',
     type: 'servicio_vecinal',
@@ -863,7 +1247,7 @@ export const initialJobs = [
     created_at: new Date().toISOString()
   },
   {
-    id: 'j1b07384-d113-4ec5-a581-2292d3b2e603',
+    id: 'a1b07384-d113-4ec5-a581-2292d3b2e603',
     title: 'Vendedora para Local de Ropa de Niños',
     description: 'Comercio céntrico en Mendoza y Chubut busca vendedora para turno tarde. Requisitos: Buena presencia, proactiva y experiencia en atención al público. Edad de 18 a 30 años.',
     type: 'oferta_laboral',
@@ -875,7 +1259,7 @@ export const initialJobs = [
     created_at: new Date().toISOString()
   },
   {
-    id: 'j1b07384-d113-4ec5-a581-2292d3b2e604',
+    id: 'a1b07384-d113-4ec5-a581-2292d3b2e604',
     title: 'Apoyo Escolar Primario e Inglés Inicial',
     description: 'Estudiante avanzada de profesorado de inglés ofrece clases particulares de apoyo escolar general para nivel primario y clases de inglés para todas las edades. Clases a domicilio en Villa Paula.',
     type: 'servicio_vecinal',

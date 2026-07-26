@@ -6,13 +6,17 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "seed:buses": "node scripts/seed-via-client.mjs",
+    "seed:sql": "node scripts/write-seed-chunks.mjs",
+    "verify:supabase": "node scripts/verify-supabase.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.108.1",
     "leaflet": "^1.9.4",
     "lucide-react": "^1.17.0",
     "next": "16.2.9",
+    "pg": "^8.21.0",
     "react": "19.2.4",
     "react-dom": "19.2.4"
   },

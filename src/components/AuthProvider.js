@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect } from 'react';
-import { db } from '@/lib/db';
+import { db, isMock, supabaseClient } from '@/lib/db';
 
 const AuthContext = createContext({
   user: null,
@@ -29,7 +29,18 @@ export function AuthProvider({ children }) {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     refreshUser();
+
+    if (isMock || !supabaseClient) return undefined;
+
+    const { data: { subscription } } = supabaseClient.auth.onAuthStateChange(() => {
+      refreshUser();
+    });
+
+    return () => {
+      subscription?.unsubscribe();
+    };
   }, []);
 
   const signIn = async (email, password) => {

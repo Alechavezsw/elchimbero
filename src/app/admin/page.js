@@ -30,6 +30,12 @@ export default function AdminDashboard() {
   const { user, loading } = useAuth();
   const router = useRouter();
 
+  useEffect(() => {
+    if (!loading && (!user || !(user.is_admin || user.email === 'admin@elchimbero.com'))) {
+      router.push('/');
+    }
+  }, [user, loading, router]);
+
   // Tab activo: 'stats' | 'businesses' | 'classifieds' | 'pharmacies' | 'kiosks' | 'buses' | 'events' | 'jobs'
   const [activeTab, setActiveTab] = useState('stats');
 
@@ -85,6 +91,7 @@ export default function AdminDashboard() {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadAllData();
   }, []);
 
@@ -314,6 +321,14 @@ export default function AdminDashboard() {
   // --- FILTROS DE CONTENIDO ---
   const pendingBusinesses = businesses.filter(b => b.status === 'pending');
   const approvedBusinesses = businesses.filter(b => b.status === 'approved');
+
+  if (loading || !user || !(user.is_admin || user.email === 'admin@elchimbero.com')) {
+    return (
+      <div className="container" style={{ padding: '6rem 2rem', textAlign: 'center' }}>
+        <h2 style={{ fontSize: '1.5rem', fontWeight: 700 }}>Cargando administrador...</h2>
+      </div>
+    );
+  }
 
   return (
     <div className="container fade-in" style={{ paddingBottom: '6rem' }}>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { db } from '@/lib/db';
@@ -23,6 +23,74 @@ import {
 export default function Home() {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
+  const searchRef = useRef(null);
+  const [searchIndex, setSearchIndex] = useState({ businesses: [], classifieds: [], jobs: [] });
+  const [indexLoaded, setIndexLoaded] = useState(false);
+  const [isDropdownFocused, setIsDropdownFocused] = useState(false);
+
+  // Clic fuera del buscador para cerrar
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (searchRef.current && !searchRef.current.contains(e.target)) {
+        setIsDropdownFocused(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // Cargar índice cuando el usuario empieza a escribir (2 o más caracteres)
+  useEffect(() => {
+    if (searchQuery.trim().length >= 2 && !indexLoaded) {
+      db.getBusinesses().then(biz => {
+        db.getClassifieds().then(ads => {
+          db.getJobs().then(jobs => {
+            setSearchIndex({
+              businesses: biz || [],
+              classifieds: ads || [],
+              jobs: jobs || []
+            });
+            setIndexLoaded(true);
+          });
+        });
+      });
+    }
+  }, [searchQuery, indexLoaded]);
+
+  // Filtrar resultados en caliente mediante useMemo (100% puro y óptimo)
+  const liveResults = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+    if (query.length < 2) {
+      return { businesses: [], classifieds: [], jobs: [], totalCount: 0 };
+    }
+
+    const filteredBiz = searchIndex.businesses.filter(b => 
+      b.name.toLowerCase().includes(query) ||
+      b.category.toLowerCase().includes(query) ||
+      (b.description && b.description.toLowerCase().includes(query))
+    ).slice(0, 3);
+
+    const filteredAds = searchIndex.classifieds.filter(ad => 
+      ad.title.toLowerCase().includes(query) ||
+      ad.category.toLowerCase().includes(query) ||
+      ad.description.toLowerCase().includes(query)
+    ).slice(0, 3);
+
+    const filteredJobs = searchIndex.jobs.filter(j => 
+      j.title.toLowerCase().includes(query) ||
+      j.category.toLowerCase().includes(query) ||
+      j.description.toLowerCase().includes(query)
+    ).slice(0, 3);
+
+    return {
+      businesses: filteredBiz,
+      classifieds: filteredAds,
+      jobs: filteredJobs,
+      totalCount: filteredBiz.length + filteredAds.length + filteredJobs.length
+    };
+  }, [searchQuery, searchIndex]);
+
+  const showDropdown = isDropdownFocused && searchQuery.trim().length >= 2;
   const [featuredBusinesses, setFeaturedBusinesses] = useState([]);
   const [recentClassifieds, setRecentClassifieds] = useState([]);
   const [showEmergencyModal, setShowEmergencyModal] = useState(false);
@@ -44,6 +112,7 @@ export default function Home() {
   useEffect(() => {
     // Formatear fecha local
     const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setCurrentDate(new Date().toLocaleDateString('es-AR', options));
 
     // Reloj digital en vivo
@@ -166,19 +235,87 @@ export default function Home() {
             Encontrá los comercios de tu barrio, clasificados de vecinos, farmacias de turno activas y mucho más.
           </p>
 
-          <form onSubmit={handleSearchSubmit} className={`${styles.searchContainer} search-glow`}>
-            <Search size={22} className={styles.searchIcon} style={{ color: 'var(--text-muted)', marginLeft: '1rem' }} />
-            <input 
-              type="text" 
-              placeholder="¿Qué comercio, servicio o producto estás buscando hoy?" 
-              className={styles.searchInput}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-            <button type="submit" className="btn btn-primary">
-              Buscar
-            </button>
-          </form>
+          <div className={styles.searchWrapper} ref={searchRef}>
+            <form onSubmit={handleSearchSubmit} className={`${styles.searchContainer} search-glow`}>
+              <Search size={22} className={styles.searchIcon} style={{ color: 'var(--text-muted)', marginLeft: '1rem' }} />
+              <input 
+                type="text" 
+                placeholder="¿Qué comercio, servicio o producto estás buscando hoy?" 
+                className={styles.searchInput}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onFocus={() => setIsDropdownFocused(true)}
+              />
+              <button type="submit" className="btn btn-primary">
+                Buscar
+              </button>
+            </form>
+
+            {showDropdown && (
+              <div className={styles.searchResults}>
+                {liveResults.totalCount === 0 ? (
+                  <div className={styles.noResultsMessage}>
+                    No se encontraron resultados para &quot;{searchQuery}&quot;
+                  </div>
+                ) : (
+                  <>
+                    {liveResults.businesses.length > 0 && (
+                      <>
+                        <div className={styles.searchGroupTitle}>Comercios</div>
+                        {liveResults.businesses.map(b => (
+                          <Link 
+                            key={b.id} 
+                            href={`/guia/${b.id}`} 
+                            className={styles.searchResultItem}
+                            onClick={() => setIsDropdownFocused(false)}
+                          >
+                            <span className={styles.searchResultTitle}>{b.name}</span>
+                            <span className={styles.searchResultSub}>📍 {b.neighborhood} - {b.category}</span>
+                          </Link>
+                        ))}
+                      </>
+                    )}
+
+                    {liveResults.classifieds.length > 0 && (
+                      <>
+                        <div className={styles.searchGroupTitle}>Clasificados</div>
+                        {liveResults.classifieds.map(ad => (
+                          <Link 
+                            key={ad.id} 
+                            href={`/clasificados/${ad.id}`} 
+                            className={styles.searchResultItem}
+                            onClick={() => setIsDropdownFocused(false)}
+                          >
+                            <span className={styles.searchResultTitle}>{ad.title}</span>
+                            <span className={styles.searchResultSub}>
+                              💰 {ad.price > 0 ? `$${ad.price.toLocaleString('es-AR')}` : 'Consultar'} - {ad.category === 'sale' ? 'Venta' : ad.category === 'rent' ? 'Alquiler' : ad.category === 'service' ? 'Servicio' : 'Empleo'}
+                            </span>
+                          </Link>
+                        ))}
+                      </>
+                    )}
+
+                    {liveResults.jobs.length > 0 && (
+                      <>
+                        <div className={styles.searchGroupTitle}>Empleos</div>
+                        {liveResults.jobs.map(j => (
+                          <Link 
+                            key={j.id} 
+                            href={`/empleo?search=${encodeURIComponent(j.title)}&type=${j.type}`} 
+                            className={styles.searchResultItem}
+                            onClick={() => setIsDropdownFocused(false)}
+                          >
+                            <span className={styles.searchResultTitle}>{j.title}</span>
+                            <span className={styles.searchResultSub}>🏢 {j.company || 'Particular'} - {j.category}</span>
+                          </Link>
+                        ))}
+                      </>
+                    )}
+                  </>
+                )}
+              </div>
+            )}
+          </div>
         </div>
       </section>
 

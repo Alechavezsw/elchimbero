@@ -19,6 +19,7 @@ export default function ClimaPage() {
   
   useEffect(() => {
     const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setCurrentDate(new Date().toLocaleDateString('es-AR', options));
   }, []);
 

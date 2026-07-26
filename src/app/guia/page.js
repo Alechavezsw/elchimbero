@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect, useMemo, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { db } from '@/lib/db';
@@ -22,7 +22,6 @@ function GuiaContent() {
   const initialSearch = searchParams.get('search') || '';
 
   const [businesses, setBusinesses] = useState([]);
-  const [filteredBusinesses, setFilteredBusinesses] = useState([]);
   const [searchQuery, setSearchQuery] = useState(initialSearch);
   const [selectedCategory, setSelectedCategory] = useState('Todos');
   const [selectedNeighborhood, setSelectedNeighborhood] = useState('Todos');
@@ -51,7 +50,7 @@ function GuiaContent() {
   }, []);
 
   // Filtrar comercios en base a búsqueda, categoría y barrio
-  useEffect(() => {
+  const filteredBusinesses = useMemo(() => {
     let result = [...businesses];
 
     // Filtrar por categoría
@@ -76,7 +75,7 @@ function GuiaContent() {
       );
     }
 
-    setFilteredBusinesses(result);
+    return result;
   }, [businesses, searchQuery, selectedCategory, selectedNeighborhood]);
 
   return (

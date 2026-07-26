@@ -54,7 +54,35 @@ function findMatchingImage(title, imageFiles) {
     }
   }
 
-  return bestMatch ? `/redes/2026-06-10/${bestMatch}` : null;
+  return bestMatch;
+}
+
+async function getLatestRedesDir() {
+  const redesPath = path.join(process.cwd(), 'redes');
+  try {
+    const files = await fs.readdir(redesPath, { withFileTypes: true });
+    const dirs = files
+      .filter(f => f.isDirectory() && /^\d{4}-\d{2}-\d{2}$/.test(f.name))
+      .map(f => f.name)
+      .sort((a, b) => b.localeCompare(a)); // Orden descendente: el más reciente primero
+    
+    if (dirs.length > 0) {
+      return { 
+        dirName: dirs[0], 
+        path: path.join(redesPath, dirs[0]), 
+        source: 'root' 
+      };
+    }
+  } catch (err) {
+    console.warn('No se pudo leer el directorio redes de la raiz:', err.message);
+  }
+  
+  // Fallback a public/redes/2026-06-10
+  return { 
+    dirName: '2026-06-10', 
+    path: path.join(process.cwd(), 'public', 'redes', '2026-06-10'),
+    source: 'public'
+  };
 }
 
 function getFallbackImage(categories = [], title = '') {
@@ -110,10 +138,12 @@ function extractAllTagsContent(xml, tagName) {
 
 export async function GET() {
   try {
-    // 1. Intentar cargar el listado de imágenes locales
+    // 1. Obtener el directorio de imágenes más reciente
+    const latestDir = await getLatestRedesDir();
     let localImages = [];
+    
     try {
-      const manifestPath = path.join(process.cwd(), 'public', 'redes', '2026-06-10', 'manifest.json');
+      const manifestPath = path.join(latestDir.path, 'manifest.json');
       let manifestContent = await fs.readFile(manifestPath, 'utf-8');
       manifestContent = manifestContent.trim();
       if (manifestContent.charCodeAt(0) === 0xFEFF) {
@@ -122,14 +152,15 @@ export async function GET() {
       const manifest = JSON.parse(manifestContent);
       localImages = manifest.files || [];
     } catch (err) {
-      console.warn('No se pudo cargar el manifest.json local de imágenes:', err.message);
+      console.warn(`No se pudo cargar el manifest.json desde ${latestDir.path}:`, err.message);
     }
 
-    // 2. Fetch del RSS Feed de El Chimbero
+    // 2. Fetch del RSS Feed de El Chimbero (timeout corto para no tumbar la home)
     const res = await fetch('https://elchimbero.com.ar/feed/', {
       headers: {
         'User-Agent': 'ElChimberoPortalClient/1.0',
       },
+      signal: AbortSignal.timeout(8000),
       next: { revalidate: 60 } // Caché por 60 segundos
     });
 
@@ -155,7 +186,15 @@ export async function GET() {
       const pubDate = cleanText(pubDateRaw);
 
       // Intentar asociar con imagen local
-      let image_url = findMatchingImage(title, localImages);
+      const matchingFile = findMatchingImage(title, localImages);
+      let image_url = null;
+      if (matchingFile) {
+        if (latestDir.source === 'root') {
+          image_url = `/api/redes/${latestDir.dirName}/${matchingFile}`;
+        } else {
+          image_url = `/redes/${latestDir.dirName}/${matchingFile}`;
+        }
+      }
       
       // Si no hay match local, usar fallback
       if (!image_url) {
@@ -186,9 +225,24 @@ export async function GET() {
 
   } catch (error) {
     console.error('Error en Route Handler de noticias:', error);
+    const timedOut =
+      error?.name === 'TimeoutError' ||
+      error?.name === 'AbortError' ||
+      error?.cause?.code === 'UND_ERR_CONNECT_TIMEOUT';
+
     return Response.json({
       success: false,
-      error: error.message || 'Error interno del servidor al procesar noticias'
-    }, { status: 500 });
+      error: timedOut
+        ? 'El feed de noticias no respondió a tiempo. Reintentá en unos segundos.'
+        : (error.message || 'Error interno del servidor al procesar noticias'),
+      data: []
+    }, {
+      // 503 evita romper la home; el cliente ya maneja success:false
+      status: timedOut ? 503 : 500,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json'
+      }
+    });
   }
 }

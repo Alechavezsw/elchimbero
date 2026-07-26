@@ -26,6 +26,7 @@ if (hasRealSupabase) {
 }
 
 export const isMock = !supabaseClient;
+export { supabaseClient };
 
 // --- FUNCIONES MOCK (LocalStorage para persistencia en el browser) ---
 const getStorageItem = (key, defaultValue) => {
@@ -69,7 +70,7 @@ const initMockDB = () => {
     setStorageItem('chimbero_events', initialEvents);
   }
   const storedBuses = getStorageItem('chimbero_buses', []);
-  const needsStopsUpdate = storedBuses[0] && (!storedBuses[0].stops || storedBuses[0].stops.length < 8 || !storedBuses[0].hasOwnProperty('stops_vuelta'));
+  const needsStopsUpdate = storedBuses[0] && (!storedBuses[0].stops || storedBuses[0].stops.length < 20 || !storedBuses[0].hasOwnProperty('stops_vuelta'));
   if (!window.localStorage.getItem('chimbero_buses') || storedBuses.length < initialBuses.length || needsStopsUpdate) {
     setStorageItem('chimbero_buses', initialBuses);
   }
@@ -150,6 +151,7 @@ export const db = {
   async createBusiness(businessData) {
     const user = await this.getCurrentUser();
     if (!user) throw new Error('Debes estar autenticado para registrar un comercio');
+    const isAdmin = !!(user.is_admin || user.email === 'admin@elchimbero.com');
 
     const newBusiness = {
       id: typeof window !== 'undefined' ? crypto.randomUUID() : Math.random().toString(),
@@ -165,15 +167,17 @@ export const db = {
       longitude: parseFloat(businessData.longitude) || -68.5352,
       image_url: businessData.image_url || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80',
       hours: businessData.hours || { lunes_a_viernes: '09:00 - 13:00, 17:00 - 21:00' },
-      status: 'approved', // Auto-aprobado para simplicidad del demo local
+      // En Supabase: vecinos quedan pendientes; admin publica aprobado
+      status: isAdmin ? 'approved' : (isMock ? 'approved' : 'pending'),
       is_featured: false,
       created_at: new Date().toISOString()
     };
 
     if (!isMock) {
+      const { id, created_at, ...payload } = newBusiness;
       const { data, error } = await supabaseClient
         .from('businesses')
-        .insert([newBusiness])
+        .insert([payload])
         .select();
       if (error) throw error;
       return data[0];
@@ -245,9 +249,10 @@ export const db = {
     };
 
     if (!isMock) {
+      const { id, created_at, ...payload } = newAd;
       const { data, error } = await supabaseClient
         .from('classifieds')
-        .insert([newAd])
+        .insert([payload])
         .select();
       if (error) throw error;
       return data[0];
@@ -345,7 +350,8 @@ export const db = {
         email,
         full_name: fullName,
         phone,
-        avatar_url: newProfile.avatar_url
+        avatar_url: newProfile.avatar_url,
+        is_admin: false
       };
 
       mockCurrentUser = sessionUser;
@@ -376,20 +382,23 @@ export const db = {
         ...profile
       };
     } else {
-      // Para mock, si es test@elchimbero.com y la pass es chimbero123, logueamos.
-      // O permitimos loguear con cualquier correo ficticio para testing rápido
+      // Para mock, si es test@elchimbero.com o admin@elchimbero.com, buscamos sus respectivos perfiles
       const profiles = getMockData('chimbero_profiles', initialProfiles);
       
-      // Permitimos loguear con Juan Pérez por defecto si es test@elchimbero.com
-      let profile = profiles.find(p => p.full_name === 'Juan Pérez');
-      
-      if (email !== 'test@elchimbero.com') {
-        // Buscar si hay otro perfil con ese nombre, o creamos uno nuevo rápido para no trabar
+      let profile;
+      if (email === 'admin@elchimbero.com') {
+        profile = profiles.find(p => p.email === 'admin@elchimbero.com');
+      } else if (email === 'test@elchimbero.com') {
+        profile = profiles.find(p => p.email === 'test@elchimbero.com');
+      } else {
+        // Buscar si hay otro perfil con ese correo, o creamos uno nuevo rápido para no trabar
         profile = profiles.find(p => p.email === email) || {
           id: typeof window !== 'undefined' ? crypto.randomUUID() : Math.random().toString(),
           full_name: email.split('@')[0],
           phone: '264111222',
-          avatar_url: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80'
+          avatar_url: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80',
+          is_admin: false,
+          email: email
         };
         
         if (!profiles.some(p => p.id === profile.id)) {
@@ -403,7 +412,8 @@ export const db = {
         email,
         full_name: profile.full_name,
         phone: profile.phone,
-        avatar_url: profile.avatar_url
+        avatar_url: profile.avatar_url,
+        is_admin: !!profile.is_admin
       };
 
       mockCurrentUser = sessionUser;
@@ -460,17 +470,21 @@ export const db = {
   async deleteBusiness(id) {
     const user = await this.getCurrentUser();
     if (!user) throw new Error('No autorizado');
+    const isAdmin = !!(user.is_admin || user.email === 'admin@elchimbero.com');
 
     if (!isMock) {
-      const { error } = await supabaseClient
-        .from('businesses')
-        .delete()
-        .eq('id', id)
-        .eq('owner_id', user.id);
+      let query = supabaseClient.from('businesses').delete().eq('id', id);
+      // Dueños solo borran lo suyo; admin borra cualquiera (RLS lo valida)
+      if (!isAdmin) query = query.eq('owner_id', user.id);
+      const { data, error } = await query.select('id');
       if (error) throw error;
+      if (!data?.length) throw new Error('No se pudo eliminar el comercio (sin permisos o no existe)');
     } else {
       const businesses = getMockData('chimbero_businesses', initialBusinesses);
-      const updated = businesses.filter(b => !(b.id === id && b.owner_id === user.id));
+      const updated = businesses.filter(b =>
+        !(b.id === id && (isAdmin || b.owner_id === user.id))
+      );
+      if (updated.length === businesses.length) throw new Error('No autorizado');
       saveMockData('chimbero_businesses', updated);
     }
   },
@@ -478,17 +492,20 @@ export const db = {
   async deleteClassified(id) {
     const user = await this.getCurrentUser();
     if (!user) throw new Error('No autorizado');
+    const isAdmin = !!(user.is_admin || user.email === 'admin@elchimbero.com');
 
     if (!isMock) {
-      const { error } = await supabaseClient
-        .from('classifieds')
-        .delete()
-        .eq('id', id)
-        .eq('user_id', user.id);
+      let query = supabaseClient.from('classifieds').delete().eq('id', id);
+      if (!isAdmin) query = query.eq('user_id', user.id);
+      const { data, error } = await query.select('id');
       if (error) throw error;
+      if (!data?.length) throw new Error('No se pudo eliminar el clasificado (sin permisos o no existe)');
     } else {
       const classifieds = getMockData('chimbero_classifieds', initialClassifieds);
-      const updated = classifieds.filter(c => !(c.id === id && c.user_id === user.id));
+      const updated = classifieds.filter(c =>
+        !(c.id === id && (isAdmin || c.user_id === user.id))
+      );
+      if (updated.length === classifieds.length) throw new Error('No autorizado');
       saveMockData('chimbero_classifieds', updated);
     }
   },
@@ -526,9 +543,10 @@ export const db = {
     };
 
     if (!isMock) {
+      const { id, created_at, ...payload } = newEvent;
       const { data, error } = await supabaseClient
         .from('events')
-        .insert([newEvent])
+        .insert([payload])
         .select();
       if (error) throw error;
       return data[0];
@@ -576,6 +594,7 @@ export const db = {
 
     const newJob = {
       id: typeof window !== 'undefined' ? crypto.randomUUID() : Math.random().toString(),
+      user_id: user.id,
       title: jobData.title,
       description: jobData.description,
       type: jobData.type || 'oferta_laboral',
@@ -588,9 +607,10 @@ export const db = {
     };
 
     if (!isMock) {
+      const { id, created_at, ...payload } = newJob;
       const { data, error } = await supabaseClient
         .from('jobs')
-        .insert([newJob])
+        .insert([payload])
         .select();
       if (error) throw error;
       return data[0];
@@ -605,16 +625,18 @@ export const db = {
   async deleteJob(id) {
     const user = await this.getCurrentUser();
     if (!user) throw new Error('No autorizado');
+    const isAdmin = !!(user.is_admin || user.email === 'admin@elchimbero.com');
 
     if (!isMock) {
-      const { error } = await supabaseClient
-        .from('jobs')
-        .delete()
-        .eq('id', id);
+      let query = supabaseClient.from('jobs').delete().eq('id', id);
+      if (!isAdmin) query = query.eq('user_id', user.id);
+      const { data, error } = await query.select('id');
       if (error) throw error;
+      if (!data?.length) throw new Error('No se pudo eliminar el empleo (sin permisos o no existe)');
     } else {
       const jobs = getMockData('chimbero_jobs', initialJobs);
-      const updated = jobs.filter(j => j.id !== id);
+      const updated = jobs.filter(j => !(j.id === id && (isAdmin || j.user_id === user.id || !j.user_id)));
+      if (updated.length === jobs.length) throw new Error('No autorizado');
       saveMockData('chimbero_jobs', updated);
     }
   },
@@ -643,6 +665,7 @@ export const db = {
         .eq('id', id)
         .select();
       if (error) throw error;
+      if (!data?.length) throw new Error('No se pudo actualizar el comercio (sin permisos o no existe)');
       return data[0];
     } else {
       const businesses = getMockData('chimbero_businesses', initialBusinesses);
@@ -670,9 +693,10 @@ export const db = {
     };
 
     if (!isMock) {
+      const { id, created_at, ...payload } = newPharmacy;
       const { data, error } = await supabaseClient
         .from('pharmacies')
-        .insert([newPharmacy])
+        .insert([payload])
         .select();
       if (error) throw error;
       return data[0];
@@ -713,9 +737,10 @@ export const db = {
     };
 
     if (!isMock) {
+      const { id, created_at, ...payload } = newKiosk;
       const { data, error } = await supabaseClient
         .from('kiosks')
-        .insert([newKiosk])
+        .insert([payload])
         .select();
       if (error) throw error;
       return data[0];
@@ -756,9 +781,10 @@ export const db = {
     };
 
     if (!isMock) {
+      const { id, created_at, ...payload } = newBus;
       const { data, error } = await supabaseClient
         .from('buses')
-        .insert([newBus])
+        .insert([payload])
         .select();
       if (error) throw error;
       return data[0];

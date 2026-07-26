@@ -1,7 +1,7 @@
 -- Datos Semilla para El Chimbero
 -- Departamento de Chimbas, San Juan, Argentina
 
--- 1. Crear un usuario de prueba en auth.users (si no existe)
+-- 1. Crear usuarios de prueba en auth.users (si no existen)
 -- Su contraseña es: chimbero123
 INSERT INTO auth.users (
   id,
@@ -17,7 +17,8 @@ INSERT INTO auth.users (
   aud,
   confirmation_token
 )
-VALUES (
+VALUES 
+(
   'd3b07384-d113-4ec5-a581-2292d3b2e591',
   '00000000-0000-0000-0000-000000000000',
   'test@elchimbero.com',
@@ -30,19 +31,42 @@ VALUES (
   'authenticated',
   'authenticated',
   ''
+),
+(
+  'a0b07384-d113-4ec5-a581-2292d3b2e999',
+  '00000000-0000-0000-0000-000000000000',
+  'admin@elchimbero.com',
+  '$2a$10$U.9aN4x62iV3.Q6Q11O6u.K5C7Ff4NqO/f5d5N79K1XpY5E2dGe2i', -- hash para "chimbero123"
+  now(),
+  '{"provider":"email","providers":["email"]}',
+  '{"full_name":"Admin Chimbero","phone":"264000000"}',
+  now(),
+  now(),
+  'authenticated',
+  'authenticated',
+  ''
 )
 ON CONFLICT (id) DO NOTHING;
 
 -- Nota: El trigger 'on_auth_user_created' creará automáticamente el perfil en public.profiles.
--- Por si acaso, nos aseguramos de que exista el perfil:
-INSERT INTO public.profiles (id, full_name, phone, avatar_url)
-VALUES (
+-- Por si acaso, nos aseguramos de que existan los perfiles con sus respectivos roles:
+INSERT INTO public.profiles (id, full_name, phone, avatar_url, is_admin)
+VALUES 
+(
   'd3b07384-d113-4ec5-a581-2292d3b2e591',
   'Juan Pérez',
   '2645123456',
-  'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80'
+  'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80',
+  false
+),
+(
+  'a0b07384-d113-4ec5-a581-2292d3b2e999',
+  'Admin Chimbero',
+  '264000000',
+  'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=150&q=80',
+  true
 )
-ON CONFLICT (id) DO NOTHING;
+ON CONFLICT (id) DO UPDATE SET is_admin = EXCLUDED.is_admin;
 
 
 -- 2. Insertar Comercios (Guía Comercial)
@@ -311,7 +335,7 @@ INSERT INTO public.kiosks (
 )
 VALUES 
 (
-  'k1b07384-d113-4ec5-a581-2292d3b2e301',
+  '01b07384-d113-4ec5-a581-2292d3b2e301',
   'Kiosco El Trébol 24hs',
   'Mendoza y Chubut (Villa Paula)',
   'Villa Paula',
@@ -322,7 +346,7 @@ VALUES
   'Abierto las 24 horas del día. Carga de sube, bebidas frías, cigarrillos, golosinas y mercadería en general.'
 ),
 (
-  'k1b07384-d113-4ec5-a581-2292d3b2e302',
+  '01b07384-d113-4ec5-a581-2292d3b2e302',
   'Drugstore El Monumental',
   'Neuquén 320 - Villa Obrera',
   'Villa Obrera',
@@ -333,7 +357,7 @@ VALUES
   'Abierto todos los días de 08:00 a 02:00. Bebidas, snacks, fiambrería express y carbón.'
 ),
 (
-  'k1b07384-d113-4ec5-a581-2292d3b2e303',
+  '01b07384-d113-4ec5-a581-2292d3b2e303',
   'Kiosco 24hs Las Tres Hermanas',
   'Benavidez s/n (frente al Observatorio)',
   'Villa Observatorio',
@@ -366,8 +390,8 @@ VALUES
   'capital_conexion',
   'Cada 12 minutos',
   ARRAY['Villa Observatorio', 'Barrio Santo Domingo', 'Villa Paula', 'Capital Centro'],
-  ARRAY['Plaza de Villa Observatorio (Calle Pellegrini)', 'Calle Pellegrini y Salta', 'Calle Salta y Rodríguez', 'Calle Salta y Centenario (Comisaría 30ª)', 'Avenida Benavídez y Salta (Walmart)', 'Avenida Benavídez y Mendoza', 'Plaza Centenario de Chimbas (Calle Mendoza)', 'Municipalidad de Chimbas (Calle Mendoza)', 'Calle Mendoza y Chile', 'Calle Mendoza y 25 de Mayo', 'Avenida España y 25 de Mayo', 'Centro Cívico de San Juan (Avenida España)', 'Calle Las Heras y Córdoba', 'Teatro del Bicentenario (Las Heras)', 'Avenida Libertador y Mendoza', 'Hospital Dr. Guillermo Rawson (Avenida Rawson)'],
-  ARRAY['Hospital Dr. Guillermo Rawson (Avenida Rawson)', 'Terminal de Ómnibus de San Juan', 'Avenida Libertador y General Acha', 'Teatro del Bicentenario (Las Heras)', 'Centro Cívico de San Juan (Avenida España)', 'Avenida España y 25 de Mayo', 'Calle Mendoza y Chile', 'Municipalidad de Chimbas (Calle Mendoza)', 'Plaza Centenario de Chimbas (Calle Mendoza)', 'Avenida Benavídez y Tucumán', 'Avenida Benavídez y Salta (Walmart)', 'Calle Salta y Centenario (Comisaría 30ª)', 'Calle Salta y Rodríguez', 'Plaza de Villa Observatorio (Calle Pellegrini)'],
+  ARRAY['Plaza de Villa Observatorio (Calle Pellegrini)', 'Calle Pellegrini y Salta', 'Calle Salta y Neuquén', 'Calle Salta y Rodríguez', 'Calle Salta y Centenario (Comisaría 30ª)', 'Avenida Benavídez y Salta (Walmart)', 'Avenida Benavídez y España', 'Avenida Benavídez y Mendoza', 'Plaza Centenario de Chimbas (Calle Mendoza)', 'Municipalidad de Chimbas (Calle Mendoza)', 'Calle Mendoza y Chile', 'Calle Mendoza y San Isidro', 'Calle Mendoza y 25 de Mayo', 'Avenida España y 25 de Mayo', 'Centro Cívico de San Juan (Avenida España)', 'Calle Las Heras y Córdoba', 'Teatro del Bicentenario (Las Heras)', 'Avenida Libertador y Mendoza', 'Calle Tucumán y Libertador', 'Hospital Dr. Guillermo Rawson (Avenida Rawson)'],
+  ARRAY['Hospital Dr. Guillermo Rawson (Avenida Rawson)', 'Terminal de Ómnibus de San Juan', 'Calle Tucumán y Libertador', 'Avenida Libertador y General Acha', 'Teatro del Bicentenario (Las Heras)', 'Centro Cívico de San Juan (Avenida España)', 'Avenida España y 25 de Mayo', 'Calle Mendoza y 25 de Mayo', 'Calle Mendoza y San Isidro', 'Calle Mendoza y Chile', 'Municipalidad de Chimbas (Calle Mendoza)', 'Plaza Centenario de Chimbas (Calle Mendoza)', 'Avenida Benavídez y Mendoza', 'Avenida Benavídez y España', 'Avenida Benavídez y Salta (Walmart)', 'Calle Salta y Centenario (Comisaría 30ª)', 'Calle Salta y Rodríguez', 'Calle Salta y Neuquén', 'Calle Pellegrini y Salta', 'Plaza de Villa Observatorio (Calle Pellegrini)'],
   'Lunes a Sábado de 05:00 a 23:30, Domingos de 07:00 a 22:00'
 ),
 (
@@ -377,8 +401,8 @@ VALUES
   'capital_conexion',
   'Cada 15 minutos',
   ARRAY['Villa Obrera', 'Villa Paula', 'Capital Centro'],
-  ARRAY['Plaza de Villa Obrera (Calle Dorrego)', 'Calle Dorrego y Neuquén', 'Calle Ruta 40 y Neuquén', 'Delegación Municipal Este', 'Calle Neuquén y Mendoza', 'Plaza Centenario de Chimbas', 'Calle Mendoza y Benavídez', 'Avenida Rioja y Benavídez', 'Avenida Rioja y Corrientes', 'Avenida Rioja y 25 de Mayo', 'Avenida Libertador General San Martín y Rioja', 'Centro Cívico de San Juan', 'Avenida 25 de Mayo y Rawson', 'Hospital Dr. Guillermo Rawson'],
-  ARRAY['Hospital Dr. Guillermo Rawson', 'Avenida Rawson y Santa Fe', 'Avenida Libertador General San Martín y Rioja', 'Centro Cívico de San Juan', 'Avenida Rioja y Corrientes', 'Avenida Rioja y Benavídez', 'Calle Mendoza y Benavídez', 'Plaza Centenario de Chimbas', 'Calle Neuquén y Mendoza', 'Delegación Municipal Este', 'Calle Ruta 40 y Neuquén', 'Plaza de Villa Obrera (Calle Dorrego)'],
+  ARRAY['Plaza de Villa Obrera (Calle Dorrego)', 'Calle Dorrego y Neuquén', 'Calle Ruta 40 y Neuquén', 'Delegación Municipal Este', 'Calle Neuquén y Mendoza', 'Plaza Centenario de Chimbas', 'Calle Mendoza y Chubut', 'Calle Mendoza y Benavídez', 'Avenida Rioja y Benavídez', 'Avenida Rioja y Corrientes', 'Avenida Rioja y 25 de Mayo', 'Avenida Libertador General San Martín y Rioja', 'Centro Cívico de San Juan', 'Avenida 25 de Mayo y Rawson', 'Hospital Dr. Guillermo Rawson'],
+  ARRAY['Hospital Dr. Guillermo Rawson', 'Avenida Rawson y Santa Fe', 'Avenida Libertador General San Martín y Rioja', 'Centro Cívico de San Juan', 'Avenida Rioja y 25 de Mayo', 'Avenida Rioja y Corrientes', 'Avenida Rioja y Benavídez', 'Calle Mendoza y Benavídez', 'Calle Mendoza y Chubut', 'Plaza Centenario de Chimbas', 'Calle Neuquén y Mendoza', 'Delegación Municipal Este', 'Calle Ruta 40 y Neuquén', 'Calle Dorrego y Neuquén', 'Plaza de Villa Obrera (Calle Dorrego)'],
   'Lunes a Viernes de 05:30 a 23:00, Sábados y Domingos de 06:30 a 22:30'
 ),
 (
@@ -388,8 +412,8 @@ VALUES
   'capital_conexion',
   'Cada 18 minutos',
   ARRAY['Barrio Pedregal', 'Villa Paula', 'Capital Centro'],
-  ARRAY['Barrio Pedregal (Calle Rodríguez)', 'Calle Rodríguez y Mendoza', 'Calle Mendoza y Oro', 'Calle Mendoza y Rodríguez', 'Calle Mendoza y Centenario', 'Plaza Centenario de Chimbas', 'Avenida Benavídez y Mendoza', 'Avenida Benavídez y Salta', 'San Juan Shopping (Avenida Benavídez)', 'Avenida Benavídez y Tucumán', 'Avenida España y Libertador', 'Centro Cívico de San Juan', 'Avenida Rawson y Santa Fe', 'Hospital Dr. Guillermo Rawson'],
-  ARRAY['Hospital Dr. Guillermo Rawson', 'Avenida Rawson y Santa Fe', 'Centro Cívico de San Juan', 'Avenida España y Libertador', 'Avenida Benavídez y Tucumán', 'San Juan Shopping (Avenida Benavídez)', 'Avenida Benavídez y Salta', 'Avenida Benavídez y Mendoza', 'Plaza Centenario de Chimbas', 'Calle Mendoza y Centenario', 'Calle Mendoza y Rodríguez', 'Calle Mendoza y Oro', 'Calle Rodríguez y Mendoza', 'Barrio Pedregal (Calle Rodríguez)'],
+  ARRAY['Barrio Pedregal (Calle Rodríguez)', 'Calle Mendoza y Rodríguez', 'Calle Mendoza y Sabatini', 'Calle Mendoza y Neuquén', 'Calle Mendoza y Centenario', 'Plaza Centenario de Chimbas', 'Avenida Benavídez y Mendoza', 'Avenida Benavídez y Salta', 'San Juan Shopping (Avenida Benavídez)', 'Avenida Benavídez y Tucumán', 'Avenida España y Libertador', 'Centro Cívico de San Juan', 'Avenida Rawson y Santa Fe', 'Hospital Dr. Guillermo Rawson'],
+  ARRAY['Hospital Dr. Guillermo Rawson', 'Avenida Rawson y Santa Fe', 'Centro Cívico de San Juan', 'Avenida España y Libertador', 'Avenida Benavídez y Tucumán', 'San Juan Shopping (Avenida Benavídez)', 'Avenida Benavídez y Salta', 'Avenida Benavídez y Mendoza', 'Plaza Centenario de Chimbas', 'Calle Mendoza y Centenario', 'Calle Mendoza y Neuquén', 'Calle Mendoza y Sabatini', 'Calle Mendoza y Rodríguez', 'Barrio Pedregal (Calle Rodríguez)'],
   'Lunes a Viernes de 05:45 a 22:45, Sábados de 06:00 a 22:00'
 ),
 (
@@ -410,8 +434,8 @@ VALUES
   'capital_conexion',
   'Cada 16 minutos',
   ARRAY['Barrio Las Calandrias', 'Villa Paula', 'Capital Centro'],
-  ARRAY['Barrio Las Calandrias (Calle Oro)', 'Costanera Alta (Frente a Río San Juan)', 'Complejo Ferial Costanera', 'Calle Tucumán y Oro', 'Calle Mendoza y Oro', 'Calle Mendoza y Neuquén', 'Plaza Centenario de Chimbas (Municipalidad)', 'Calle Mendoza y Benavídez', 'Avenida España y 25 de Mayo', 'Centro Cívico de San Juan', 'Avenida Rawson y Córdoba', 'Hospital Dr. Guillermo Rawson'],
-  ARRAY['Hospital Dr. Guillermo Rawson', 'Avenida Rawson y Córdoba', 'Centro Cívico de San Juan', 'Avenida España y 25 de Mayo', 'Calle Mendoza y Benavídez', 'Plaza Centenario de Chimbas (Municipalidad)', 'Calle Mendoza y Neuquén', 'Calle Mendoza y Oro', 'Calle Tucumán y Oro', 'Complejo Ferial Costanera', 'Costanera Alta (Frente a Río San Juan)', 'Barrio Las Calandrias (Calle Oro)'],
+  ARRAY['Barrio Las Calandrias (Calle Oro)', 'Costanera Alta (Frente a Río San Juan)', 'Complejo Ferial Costanera', 'Calle Mendoza y Oro', 'Calle Mendoza y Rodríguez', 'Calle Mendoza y Neuquén', 'Plaza Centenario de Chimbas (Municipalidad)', 'Calle Mendoza y Benavídez', 'Avenida España y 25 de Mayo', 'Centro Cívico de San Juan', 'Avenida Rawson y Córdoba', 'Hospital Dr. Guillermo Rawson'],
+  ARRAY['Hospital Dr. Guillermo Rawson', 'Avenida Rawson y Córdoba', 'Centro Cívico de San Juan', 'Avenida España y 25 de Mayo', 'Calle Mendoza y Benavídez', 'Plaza Centenario de Chimbas (Municipalidad)', 'Calle Mendoza y Neuquén', 'Calle Mendoza y Rodríguez', 'Calle Mendoza y Oro', 'Complejo Ferial Costanera', 'Costanera Alta (Frente a Río San Juan)', 'Barrio Las Calandrias (Calle Oro)'],
   'Lunes a Sábado de 05:30 a 23:00, Domingos de 07:00 a 22:00'
 ),
 (
@@ -443,8 +467,8 @@ VALUES
   'capital_conexion',
   'Cada 18 minutos',
   ARRAY['Villa Mariano Moreno', 'El Mogote', 'Capital Centro'],
-  ARRAY['Villa Mariano Moreno (Calle Pellegrini)', 'Calle Pellegrini y Mendoza', 'Calle Mendoza y Oro', 'Calle Mendoza y Rodríguez', 'Calle Rodríguez y Mendoza', 'Plaza Centenario de Chimbas', 'Calle Mendoza y Benavídez', 'Avenida Rioja y 25 de Mayo', 'Avenida Libertador y Rioja', 'Hospital Dr. Guillermo Rawson', 'Terminal de Ómnibus de San Juan', 'Centro Cívico de San Juan'],
-  ARRAY['Centro Cívico de San Juan', 'Terminal de Ómnibus de San Juan', 'Hospital Dr. Guillermo Rawson', 'Avenida Libertador y Rioja', 'Avenida Rioja y 25 de Mayo', 'Calle Mendoza y Benavídez', 'Plaza Centenario de Chimbas', 'Calle Rodríguez y Mendoza', 'Calle Mendoza y Rodríguez', 'Calle Mendoza y Oro', 'Calle Pellegrini y Mendoza', 'Villa Mariano Moreno (Calle Pellegrini)'],
+  ARRAY['Villa Mariano Moreno (Calle Pellegrini)', 'Calle Pellegrini y Mendoza', 'Calle Mendoza y Oro', 'Calle Mendoza y Rodríguez', 'Calle Mendoza y Sabatini', 'Calle Mendoza y Neuquén', 'Plaza Centenario de Chimbas', 'Calle Mendoza y Benavídez', 'Avenida Rioja y 25 de Mayo', 'Avenida Libertador y Rioja', 'Hospital Dr. Guillermo Rawson', 'Terminal de Ómnibus de San Juan', 'Centro Cívico de San Juan'],
+  ARRAY['Centro Cívico de San Juan', 'Terminal de Ómnibus de San Juan', 'Hospital Dr. Guillermo Rawson', 'Avenida Libertador y Rioja', 'Avenida Rioja y 25 de Mayo', 'Calle Mendoza y Benavídez', 'Plaza Centenario de Chimbas', 'Calle Mendoza y Neuquén', 'Calle Mendoza y Sabatini', 'Calle Mendoza y Rodríguez', 'Calle Mendoza y Oro', 'Calle Pellegrini y Mendoza', 'Villa Mariano Moreno (Calle Pellegrini)'],
   'Lunes a Viernes de 05:30 a 22:30, Sábados de 06:30 a 21:30'
 ),
 (
@@ -454,8 +478,8 @@ VALUES
   'capital_conexion',
   'Cada 22 minutos',
   ARRAY['El Mogote', 'Villa Paula', 'Capital Centro'],
-  ARRAY['El Mogote (Calle Rodríguez)', 'Portal de El Mogote', 'Calle Tucumán y Rodríguez', 'Calle Neuquén y Mendoza', 'Plaza Centenario de Chimbas', 'Calle Mendoza y Benavídez', 'Avenida España y Benavídez', 'Centro Cívico de San Juan', 'Avenida Rioja y Santa Fe', 'Hospital Dr. Guillermo Rawson'],
-  ARRAY['Hospital Dr. Guillermo Rawson', 'Avenida Rioja y Santa Fe', 'Centro Cívico de San Juan', 'Avenida España y Benavídez', 'Calle Mendoza y Benavídez', 'Plaza Centenario de Chimbas', 'Calle Neuquén y Mendoza', 'Calle Tucumán y Rodríguez', 'Portal de El Mogote', 'El Mogote (Calle Rodríguez)'],
+  ARRAY['El Mogote (Calle Rodríguez)', 'Portal de El Mogote', 'Calle Tucumán y Rodríguez', 'Calle Tucumán y Neuquén', 'Calle Neuquén y Mendoza', 'Plaza Centenario de Chimbas', 'Calle Mendoza y Benavídez', 'Avenida España y Benavídez', 'Centro Cívico de San Juan', 'Avenida Rioja y Santa Fe', 'Hospital Dr. Guillermo Rawson'],
+  ARRAY['Hospital Dr. Guillermo Rawson', 'Avenida Rioja y Santa Fe', 'Centro Cívico de San Juan', 'Avenida España y Benavídez', 'Calle Mendoza y Benavídez', 'Plaza Centenario de Chimbas', 'Calle Neuquén y Mendoza', 'Calle Tucumán y Neuquén', 'Calle Tucumán y Rodríguez', 'Portal de El Mogote', 'El Mogote (Calle Rodríguez)'],
   'Lunes a Viernes de 05:15 a 22:30, Sábados de 06:30 a 21:30'
 ),
 (
@@ -476,8 +500,8 @@ VALUES
   'capital_conexion',
   'Cada 8 minutos',
   ARRAY['Villa Paula', 'Capital Centro', 'Villa Krause'],
-  ARRAY['Plaza Centenario de Chimbas (Calle Mendoza)', 'Municipalidad de Chimbas (Calle Mendoza)', 'Calle Mendoza y Benavídez', 'Avenida Rioja y Benavídez', 'Avenida Rioja y Libertador', 'Estación de Transbordo Córdoba', 'Centro Cívico de San Juan', 'Avenida España y Arenales', 'Plaza de Villa Krause (Rawson)'],
-  ARRAY['Plaza de Villa Krause (Rawson)', 'Avenida España y Arenales', 'Estación de Transbordo Córdoba', 'Avenida Rioja y Libertador', 'Avenida Rioja y Benavídez', 'Calle Mendoza y Benavídez', 'Municipalidad de Chimbas (Calle Mendoza)', 'Plaza Centenario de Chimbas (Calle Mendoza)'],
+  ARRAY['Plaza Centenario de Chimbas (Calle Mendoza)', 'Municipalidad de Chimbas (Calle Mendoza)', 'Calle Mendoza y Jorge Newbery', 'Calle Mendoza y Pellegrini', 'Calle Mendoza y Chubut', 'Calle Mendoza y Centenario', 'Calle Mendoza y Benavídez', 'Avenida Rioja y Benavídez', 'Avenida Rioja y Chile', 'Avenida Rioja y San Isidro', 'Avenida Rioja y 25 de Mayo', 'Avenida Rioja y Libertador', 'Estación de Transbordo Córdoba', 'Centro Cívico de San Juan', 'Avenida España y Arenales', 'Plaza de Villa Krause (Rawson)'],
+  ARRAY['Plaza de Villa Krause (Rawson)', 'Avenida España y Arenales', 'Estación de Transbordo Córdoba', 'Avenida Rioja y Libertador', 'Avenida Rioja y 25 de Mayo', 'Avenida Rioja y San Isidro', 'Avenida Rioja y Chile', 'Avenida Rioja y Benavídez', 'Calle Mendoza y Benavídez', 'Calle Mendoza y Centenario', 'Calle Mendoza y Chubut', 'Calle Mendoza y Pellegrini', 'Calle Mendoza y Jorge Newbery', 'Municipalidad de Chimbas (Calle Mendoza)', 'Plaza Centenario de Chimbas (Calle Mendoza)'],
   'Lunes a Domingo de 04:30 a 00:30'
 ),
 (
@@ -487,8 +511,8 @@ VALUES
   'capital_conexion',
   'Cada 10 minutos',
   ARRAY['Chimbas Oeste', 'Barrio Los Tamarindos', 'Capital Centro'],
-  ARRAY['Escuela de Policía (Chimbas)', 'Avenida Benavídez y Salta (Walmart)', 'Avenida Benavídez y Mendoza', 'Avenida Benavídez y Rioja', 'Avenida Benavídez y Necochea', 'Avenida Rawson y Córdoba', 'Estación de Transbordo Córdoba', 'Hospital Dr. Guillermo Rawson'],
-  ARRAY['Hospital Dr. Guillermo Rawson', 'Estación de Transbordo Córdoba', 'Avenida Rawson y Córdoba', 'Avenida Benavídez y Necochea', 'Avenida Benavídez y Rioja', 'Avenida Benavídez y Mendoza', 'Avenida Benavídez y Salta (Walmart)', 'Escuela de Policía (Chimbas)'],
+  ARRAY['Escuela de Policía (Chimbas)', 'Avenida Benavídez y Salta (Walmart)', 'Avenida Benavídez y España', 'Avenida Benavídez y Mendoza', 'Avenida Benavídez y Rioja', 'Avenida Benavídez y Tucumán', 'Avenida Benavídez y Ruta 40', 'Avenida Benavídez y Necochea', 'Avenida Rawson y Córdoba', 'Estación de Transbordo Córdoba', 'Hospital Dr. Guillermo Rawson'],
+  ARRAY['Hospital Dr. Guillermo Rawson', 'Estación de Transbordo Córdoba', 'Avenida Rawson y Córdoba', 'Avenida Benavídez y Necochea', 'Avenida Benavídez y Ruta 40', 'Avenida Benavídez y Tucumán', 'Avenida Benavídez y Rioja', 'Avenida Benavídez y Mendoza', 'Avenida Benavídez y España', 'Avenida Benavídez y Salta (Walmart)', 'Escuela de Policía (Chimbas)'],
   'Lunes a Sábado de 05:00 a 23:45, Domingos de 07:00 a 22:30'
 ),
 (
@@ -498,8 +522,8 @@ VALUES
   'interno_chimbas',
   'Cada 15 minutos',
   ARRAY['Villa Paula', 'Chimbas Este', 'Santa Lucía Centro'],
-  ARRAY['Plaza Centenario de Chimbas', 'Calle Neuquén y Mendoza', 'Delegación Municipal Este', 'Calle Ruta 40 y Neuquén', 'Avenida Benavídez y Necochea', 'Calle Tomás Edison y Colón', 'Plaza de Santa Lucía'],
-  ARRAY['Plaza de Santa Lucía', 'Calle Tomás Edison y Colón', 'Avenida Benavídez y Necochea', 'Calle Ruta 40 y Neuquén', 'Delegación Municipal Este', 'Calle Neuquén y Mendoza', 'Plaza Centenario de Chimbas'],
+  ARRAY['Plaza Centenario de Chimbas', 'Calle Neuquén y Mendoza', 'Delegación Municipal Este', 'Calle Ruta 40 y Neuquén', 'Calle Ruta 40 y Centenario', 'Avenida Benavídez y Ruta 40', 'Avenida Benavídez y Necochea', 'Calle Necochea y Centenario', 'Calle Tomás Edison y Benavídez', 'Calle Tomás Edison y Colón', 'Plaza de Santa Lucía'],
+  ARRAY['Plaza de Santa Lucía', 'Calle Tomás Edison y Colón', 'Calle Tomás Edison y Benavídez', 'Calle Necochea y Centenario', 'Avenida Benavídez y Necochea', 'Avenida Benavídez y Ruta 40', 'Calle Ruta 40 y Centenario', 'Calle Ruta 40 y Neuquén', 'Delegación Municipal Este', 'Calle Neuquén y Mendoza', 'Plaza Centenario de Chimbas'],
   'Lunes a Sábado de 06:00 a 22:30'
 ),
 (
@@ -509,8 +533,8 @@ VALUES
   'salud_universidad',
   'Cada 14 minutos',
   ARRAY['Villa Paula', 'Chimbas Oeste', 'Rivadavia Universidades'],
-  ARRAY['Plaza Centenario de Chimbas', 'Avenida Benavídez y Mendoza', 'Avenida Benavídez y Salta', 'Chimbas Oeste (Villa Observatorio)', 'Hospital Dr. Marcial Quiroga', 'Avenida Libertador (Parque de Mayo)', 'CUIM - UNSJ (Rivadavia)'],
-  ARRAY['CUIM - UNSJ (Rivadavia)', 'Avenida Libertador (Parque de Mayo)', 'Hospital Dr. Marcial Quiroga', 'Chimbas Oeste (Villa Observatorio)', 'Avenida Benavídez y Salta', 'Avenida Benavídez y Mendoza', 'Plaza Centenario de Chimbas'],
+  ARRAY['Plaza Centenario de Chimbas', 'Avenida Benavídez y Mendoza', 'Avenida Benavídez y España', 'Avenida Benavídez y Salta', 'Chimbas Oeste (Villa Observatorio)', 'Hospital Dr. Marcial Quiroga', 'Avenida Libertador (Parque de Mayo)', 'CUIM - UNSJ (Rivadavia)'],
+  ARRAY['CUIM - UNSJ (Rivadavia)', 'Avenida Libertador (Parque de Mayo)', 'Hospital Dr. Marcial Quiroga', 'Chimbas Oeste (Villa Observatorio)', 'Avenida Benavídez y Salta', 'Avenida Benavídez y España', 'Avenida Benavídez y Mendoza', 'Plaza Centenario de Chimbas'],
   'Lunes a Viernes de 06:00 a 22:00, Sábados con frecuencia reducida'
 ),
 (
@@ -520,8 +544,96 @@ VALUES
   'capital_conexion',
   'Cada 20 minutos',
   ARRAY['Albardón Villicum', 'Chimbas Ruta 40', 'Capital Centro'],
-  ARRAY['Villa Villicum (Albardón)', 'Portal de El Mogote', 'Calle Ruta 40 y Neuquén', 'Avenida Benavídez y Rioja', 'Avenida Rioja y Libertador', 'Estación de Transbordo Córdoba', 'Terminal de Ómnibus de San Juan'],
-  ARRAY['Terminal de Ómnibus de San Juan', 'Estación de Transbordo Córdoba', 'Avenida Rioja y Libertador', 'Avenida Benavídez y Rioja', 'Calle Ruta 40 y Neuquén', 'Portal de El Mogote', 'Villa Villicum (Albardón)'],
+  ARRAY['Villa Villicum (Albardón)', 'Portal de El Mogote', 'Calle Ruta 40 y Neuquén', 'Calle Ruta 40 y Centenario', 'Avenida Benavídez y Ruta 40', 'Avenida Benavídez y Rioja', 'Avenida Rioja y Libertador', 'Estación de Transbordo Córdoba', 'Terminal de Ómnibus de San Juan'],
+  ARRAY['Terminal de Ómnibus de San Juan', 'Estación de Transbordo Córdoba', 'Avenida Rioja y Libertador', 'Avenida Benavídez y Rioja', 'Avenida Benavídez y Ruta 40', 'Calle Ruta 40 y Centenario', 'Calle Ruta 40 y Neuquén', 'Portal de El Mogote', 'Villa Villicum (Albardón)'],
   'Lunes a Sábado de 05:00 a 23:00, Domingos de 07:00 a 22:00'
+),
+(
+  'b1b07384-d113-4ec5-a581-2292d3b2e516',
+  'Línea 120',
+  'Conecta el Barrio Valle Grande en Rivadavia con Villa Observatorio en Chimbas Oeste, transitando por el microcentro.',
+  'salud_universidad',
+  'Cada 15 minutos',
+  ARRAY['Rivadavia Valle Grande', 'Capital Centro', 'Chimbas Oeste'],
+  ARRAY['Bº Valle Grande', 'CUIM - UNSJ (Rivadavia)', 'Hospital Dr. Marcial Quiroga', 'Avenida Libertador (Parque de Mayo)', 'Centro Cívico de San Juan (Avenida España)', 'Avenida España y 25 de Mayo', 'Avenida España y Benavídez', 'Avenida Benavídez y Salta (Walmart)', 'Plaza de Villa Observatorio (Calle Pellegrini)'],
+  ARRAY['Plaza de Villa Observatorio (Calle Pellegrini)', 'Avenida Benavídez y Salta (Walmart)', 'Avenida España y Benavídez', 'Avenida España y 25 de Mayo', 'Centro Cívico de San Juan (Avenida España)', 'Avenida Libertador (Parque de Mayo)', 'Hospital Dr. Marcial Quiroga', 'CUIM - UNSJ (Rivadavia)', 'Bº Valle Grande'],
+  'Lunes a Sábado de 06:00 a 22:30'
+),
+(
+  'b1b07384-d113-4ec5-a581-2292d3b2e517',
+  'Línea 126',
+  'Une la Plaza de Villa Obrera con el Complejo Deportivo El Palomar y el Hospital Rawson.',
+  'capital_conexion',
+  'Cada 18 minutos',
+  ARRAY['Chimbas Este', 'Capital Centro'],
+  ARRAY['Plaza de Villa Obrera (Calle Dorrego)', 'Calle Dorrego y Neuquén', 'Calle Ruta 40 y Neuquén', 'Delegación Municipal Este', 'Calle Neuquén y Mendoza', 'Plaza Centenario de Chimbas', 'Calle Mendoza y Benavídez', 'Avenida Rioja y Benavídez', 'Avenida Rioja y 25 de Mayo', 'Complejo El Palomar', 'Hospital Dr. Guillermo Rawson'],
+  ARRAY['Hospital Dr. Guillermo Rawson', 'Complejo El Palomar', 'Avenida Rioja y 25 de Mayo', 'Avenida Rioja y Benavídez', 'Calle Mendoza y Benavídez', 'Plaza Centenario de Chimbas', 'Calle Neuquén y Mendoza', 'Delegación Municipal Este', 'Calle Ruta 40 y Neuquén', 'Calle Dorrego y Neuquén', 'Plaza de Villa Obrera (Calle Dorrego)'],
+  'Lunes a Viernes de 05:30 a 22:30, Sábados de 06:30 a 21:30'
+),
+(
+  'b1b07384-d113-4ec5-a581-2292d3b2e518',
+  'Línea 128',
+  'Conecta el complejo universitario CUIM con el Barrio CGT Chimbas y la zona norte.',
+  'salud_universidad',
+  'Cada 16 minutos',
+  ARRAY['Rivadavia Universidades', 'Chimbas Norte'],
+  ARRAY['CUIM - UNSJ (Rivadavia)', 'Hospital Dr. Marcial Quiroga', 'Chimbas Oeste (Villa Observatorio)', 'Avenida Benavídez y Salta (Walmart)', 'Avenida Benavídez y España', 'Avenida Benavídez y Mendoza', 'Plaza Centenario de Chimbas', 'Calle Mendoza y Oro', 'Bº CGT Chimbas'],
+  ARRAY['Bº CGT Chimbas', 'Calle Mendoza y Oro', 'Plaza Centenario de Chimbas', 'Avenida Benavídez y Mendoza', 'Avenida Benavídez y España', 'Avenida Benavídez y Salta (Walmart)', 'Chimbas Oeste (Villa Observatorio)', 'Hospital Dr. Marcial Quiroga', 'CUIM - UNSJ (Rivadavia)'],
+  'Lunes a Sábado de 06:00 a 22:00'
+),
+(
+  'b1b07384-d113-4ec5-a581-2292d3b2e519',
+  'Línea 301',
+  'Servicio periférico extenso que une Colonia Gutiérrez con el Hospital Rawson y el Centro Cívico.',
+  'interno_chimbas',
+  'Cada 20 minutos',
+  ARRAY['Colonia Gutiérrez', 'Chimbas Este', 'Capital Centro'],
+  ARRAY['Colonia Gutiérrez (Chimbas)', 'Calle Tucumán y Oro', 'Calle Tucumán y Rodríguez', 'Calle Tucumán y Neuquén', 'Calle Tucumán y Centenario', 'Calle Tucumán y Benavídez', 'Avenida Rawson y Córdoba', 'Hospital Dr. Guillermo Rawson', 'Estación de Transbordo Córdoba', 'Centro Cívico de San Juan'],
+  ARRAY['Centro Cívico de San Juan', 'Estación de Transbordo Córdoba', 'Hospital Dr. Guillermo Rawson', 'Avenida Rawson y Córdoba', 'Calle Tucumán y Benavídez', 'Calle Tucumán y Centenario', 'Calle Tucumán y Neuquén', 'Calle Tucumán y Rodríguez', 'Calle Tucumán y Oro', 'Colonia Gutiérrez (Chimbas)'],
+  'Lunes a Sábado de 05:00 a 23:00'
+),
+(
+  'b1b07384-d113-4ec5-a581-2292d3b2e520',
+  'Línea 421',
+  'Servicio secundario que conecta Campo Afuera y el Hospital Giordano en Albardón con Chimbas y el Hospital Rawson.',
+  'capital_conexion',
+  'Cada 18 minutos',
+  ARRAY['Albardón', 'Chimbas', 'Capital Centro'],
+  ARRAY['Campo Afuera (Albardón)', 'Hospital Dr. José Giordano (Albardón)', 'Villa Villicum (Albardón)', 'Portal de El Mogote', 'Calle Ruta 40 y Neuquén', 'Avenida Benavídez y Rioja', 'Estación de Transbordo Córdoba', 'Hospital Dr. Guillermo Rawson'],
+  ARRAY['Hospital Dr. Guillermo Rawson', 'Estación de Transbordo Córdoba', 'Avenida Benavídez y Rioja', 'Calle Ruta 40 y Neuquén', 'Portal de El Mogote', 'Villa Villicum (Albardón)', 'Hospital Dr. José Giordano (Albardón)', 'Campo Afuera (Albardón)'],
+  'Lunes a Sábado de 06:00 a 22:00'
+),
+(
+  'b1b07384-d113-4ec5-a581-2292d3b2e521',
+  'Línea 500',
+  'Media distancia. Une la localidad de San José de Jáchal con la Terminal de Ómnibus de San Juan, transitando por Ruta 40.',
+  'capital_conexion',
+  'Tres frecuencias diarias',
+  ARRAY['Jáchal', 'Albardón', 'Chimbas Ruta 40', 'Capital Centro'],
+  ARRAY['San José de Jáchal', 'Villa Villicum (Albardón)', 'Portal de El Mogote', 'Calle Ruta 40 y Neuquén', 'Avenida Benavídez y Ruta 40', 'Avenida Rawson y Córdoba', 'Terminal de Ómnibus de San Juan'],
+  ARRAY['Terminal de Ómnibus de San Juan', 'Avenida Rawson y Córdoba', 'Avenida Benavídez y Ruta 40', 'Calle Ruta 40 y Neuquén', 'Portal de El Mogote', 'Villa Villicum (Albardón)', 'San José de Jáchal'],
+  'Lunes a Domingo según horarios fijos'
+),
+(
+  'b1b07384-d113-4ec5-a581-2292d3b2e522',
+  'Línea 600',
+  'Media distancia. Conecta Rodeo en el departamento de Iglesia con la Terminal de Ómnibus, cruzando Chimbas por Ruta 40.',
+  'capital_conexion',
+  'Dos frecuencias diarias',
+  ARRAY['Iglesia', 'Albardón', 'Chimbas Ruta 40', 'Capital Centro'],
+  ARRAY['Rodeo (Iglesia)', 'Villa Villicum (Albardón)', 'Portal de El Mogote', 'Calle Ruta 40 y Neuquén', 'Avenida Benavídez y Ruta 40', 'Avenida Rawson y Córdoba', 'Terminal de Ómnibus de San Juan'],
+  ARRAY['Terminal de Ómnibus de San Juan', 'Avenida Rawson y Córdoba', 'Avenida Benavídez y Ruta 40', 'Calle Ruta 40 y Neuquén', 'Portal de El Mogote', 'Villa Villicum (Albardón)', 'Rodeo (Iglesia)'],
+  'Lunes a Domingo según horarios fijos'
+),
+(
+  'b1b07384-d113-4ec5-a581-2292d3b2e523',
+  'Línea 700',
+  'Larga distancia. Une Barreal y Calingasta con la Terminal de Ómnibus, transitando por Ruta 40 a través de Chimbas.',
+  'capital_conexion',
+  'Frecuencias diarias programadas',
+  ARRAY['Calingasta Barreal', 'Albardón', 'Chimbas Ruta 40', 'Capital Centro'],
+  ARRAY['Barreal (Calingasta)', 'Villa Villicum (Albardón)', 'Portal de El Mogote', 'Calle Ruta 40 y Neuquén', 'Avenida Benavídez y Ruta 40', 'Avenida Rawson y Córdoba', 'Terminal de Ómnibus de San Juan'],
+  ARRAY['Terminal de Ómnibus de San Juan', 'Avenida Rawson y Córdoba', 'Avenida Benavídez y Ruta 40', 'Calle Ruta 40 y Neuquén', 'Portal de El Mogote', 'Villa Villicum (Albardón)', 'Barreal (Calingasta)'],
+  'Lunes a Domingo según horarios programados'
 )
 ON CONFLICT (id) DO NOTHING;

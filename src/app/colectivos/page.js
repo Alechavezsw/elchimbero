@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { db } from '@/lib/db';
+import { initialBuses } from '@/lib/mockData';
 import { 
   Bus, 
   ArrowLeft, 
@@ -26,32 +27,38 @@ export default function ColectivosPage() {
 
   useEffect(() => {
     async function loadBuses() {
+      let data = [];
       try {
-        const data = await db.getBuses();
-        setBuses(data);
-        // Seleccionar la primera por defecto
-        if (data.length > 0) {
-          setSelectedBus(data[0]);
-          setDirection('ida');
-        }
+        data = await db.getBuses();
       } catch (err) {
-        console.error('Error al cargar colectivos:', err);
-      } finally {
-        setLoading(false);
+        console.error('Error al cargar colectivos, usando datos locales:', err);
       }
+      // Si Supabase falla o no tiene datos, usamos el listado local
+      if (!data || data.length === 0) {
+        data = [...initialBuses].sort((a, b) => a.line.localeCompare(b.line));
+      }
+      setBuses(data);
+      if (data.length > 0) {
+        setSelectedBus(data[0]);
+        setDirection('ida');
+      }
+      setLoading(false);
     }
     loadBuses();
   }, []);
 
   const filteredBuses = buses.filter(bus => {
-    const matchesSearch = 
-      bus.line.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      bus.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      bus.stops.some(stop => stop.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      bus.neighborhoods.some(n => n.toLowerCase().includes(searchQuery.toLowerCase()));
-      
+    const q = searchQuery.toLowerCase();
+    const stops = Array.isArray(bus.stops) ? bus.stops : [];
+    const neighborhoods = Array.isArray(bus.neighborhoods) ? bus.neighborhoods : [];
+    const matchesSearch =
+      (bus.line || '').toLowerCase().includes(q) ||
+      (bus.description || '').toLowerCase().includes(q) ||
+      stops.some(stop => String(stop).toLowerCase().includes(q)) ||
+      neighborhoods.some(n => String(n).toLowerCase().includes(q));
+
     const matchesFilter = filterType === 'all' || bus.type === filterType;
-    
+
     return matchesSearch && matchesFilter;
   });
 
@@ -69,6 +76,26 @@ export default function ColectivosPage() {
     }
   };
 
+  // "Línea 400" -> "400", "Troncal TNS" -> "TNS", "Corredor B" -> "B"
+  const getLineCode = (line) => line.replace(/^(Línea|Troncal|Corredor)\s+/i, '');
+
+  const typeCounts = {
+    all: buses.length,
+    capital_conexion: buses.filter(b => b.type === 'capital_conexion').length,
+    interno_chimbas: buses.filter(b => b.type === 'interno_chimbas').length,
+    salud_universidad: buses.filter(b => b.type === 'salud_universidad').length,
+  };
+
+  const totalStops = buses.reduce((acc, b) => acc + (b.stops?.length || 0), 0);
+  const totalNeighborhoods = new Set(buses.flatMap(b => b.neighborhoods || [])).size;
+
+  const filterTabs = [
+    { key: 'all', label: 'Todos' },
+    { key: 'capital_conexion', label: 'Conexión Capital' },
+    { key: 'interno_chimbas', label: 'Internos Chimbas' },
+    { key: 'salud_universidad', label: 'Salud / Univ.' },
+  ];
+
   return (
     <div className="container fade-in" style={{ padding: '2rem 1.5rem 4rem 1.5rem' }}>
       
@@ -79,16 +106,56 @@ export default function ColectivosPage() {
         </Link>
       </div>
 
-      <div style={{ marginBottom: '2.5rem' }}>
-        <span className="badge badge-open" style={{ marginBottom: '0.5rem', background: 'rgba(0, 240, 255, 0.1)', color: 'var(--secondary)', border: '1px solid rgba(0, 240, 255, 0.2)' }}>
-          Transporte Público
-        </span>
-        <h1 style={{ fontSize: '2.5rem', fontWeight: 800 }} className="gradient-text-teal">
-          Guía de Colectivos - RedTulum
-        </h1>
-        <p style={{ color: 'var(--text-secondary)', marginTop: '0.25rem' }}>
-          Encontrá los recorridos, frecuencias y paradas de las líneas de colectivos que circulan por Chimbas.
-        </p>
+      {/* HERO */}
+      <div className={styles.hero}>
+        <div className={styles.heroGlow} />
+        <div className={styles.heroPattern} />
+        {/* Ruta decorativa con paradas */}
+        <svg className={styles.heroRoute} viewBox="0 0 320 150" fill="none" aria-hidden="true">
+          <path className={styles.heroRoutePath} d="M8 130 C 70 30, 130 160, 190 70 S 290 40, 312 14" />
+          <circle cx="8" cy="130" r="5" className={styles.heroStopStart} />
+          <circle cx="190" cy="70" r="4" className={styles.heroStopMid} />
+          <circle cx="312" cy="14" r="5" className={styles.heroStopEnd} />
+        </svg>
+        <div className={styles.heroContent}>
+          <div className={styles.heroIcon}>
+            <Bus size={30} />
+          </div>
+          <div>
+            <span className={styles.heroBadge}>
+              <span className={styles.liveDot} /> Transporte Público · RedTulum
+            </span>
+            <h1 className={styles.heroTitle}>
+              Guía de <span className="gradient-text-teal">Colectivos</span>
+            </h1>
+            <p className={styles.heroSubtitle}>
+              Recorridos, frecuencias y paradas de todas las líneas que circulan por Chimbas.
+            </p>
+          </div>
+        </div>
+        {!loading && (
+          <div className={styles.heroStats}>
+            <div className={styles.statChip}>
+              <strong>{buses.length}</strong>
+              <span>Líneas activas</span>
+            </div>
+            <div className={styles.statChip}>
+              <strong>{totalStops}</strong>
+              <span>Paradas mapeadas</span>
+            </div>
+            <div className={styles.statChip}>
+              <strong>{totalNeighborhoods}</strong>
+              <span>Barrios cubiertos</span>
+            </div>
+          </div>
+        )}
+        {/* Carretera animada con colectivo en movimiento */}
+        <div className={styles.heroRoad}>
+          <div className={styles.roadLines} />
+          <div className={styles.roadBus}>
+            <Bus size={15} />
+          </div>
+        </div>
       </div>
 
       {/* FILTROS Y BÚSQUEDA */}
@@ -105,36 +172,28 @@ export default function ColectivosPage() {
         </div>
 
         <div className={styles.filterTabs}>
-          <button 
-            className={`${styles.filterTab} ${filterType === 'all' ? styles.activeTab : ''}`}
-            onClick={() => setFilterType('all')}
-          >
-            Todos
-          </button>
-          <button 
-            className={`${styles.filterTab} ${filterType === 'capital_conexion' ? styles.activeTab : ''}`}
-            onClick={() => setFilterType('capital_conexion')}
-          >
-            Conexión Capital
-          </button>
-          <button 
-            className={`${styles.filterTab} ${filterType === 'interno_chimbas' ? styles.activeTab : ''}`}
-            onClick={() => setFilterType('interno_chimbas')}
-          >
-            Internos Chimbas
-          </button>
-          <button 
-            className={`${styles.filterTab} ${filterType === 'salud_universidad' ? styles.activeTab : ''}`}
-            onClick={() => setFilterType('salud_universidad')}
-          >
-            Salud / Univ.
-          </button>
+          {filterTabs.map((tab) => (
+            <button
+              key={tab.key}
+              className={`${styles.filterTab} ${filterType === tab.key ? styles.activeTab : ''}`}
+              onClick={() => setFilterType(tab.key)}
+            >
+              {tab.key !== 'all' && <span className={`${styles.tabDot} ${styles['dot_' + tab.key]}`} />}
+              {tab.label}
+              {!loading && <span className={styles.tabCount}>{typeCounts[tab.key]}</span>}
+            </button>
+          ))}
         </div>
       </div>
 
       {loading ? (
-        <div className="glass" style={{ height: '350px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <span style={{ color: 'var(--text-secondary)', animation: 'pulse 1.5s infinite' }}>Cargando información de RedTulum...</span>
+        <div className={styles.mainLayout}>
+          <div className={styles.listSection}>
+            {[0, 1, 2, 3].map((i) => (
+              <div key={i} className={styles.skeletonCard} style={{ animationDelay: `${i * 120}ms` }} />
+            ))}
+          </div>
+          <div className={styles.skeletonDetail} />
         </div>
       ) : (
         <div className={styles.mainLayout}>
@@ -146,34 +205,50 @@ export default function ColectivosPage() {
             </h3>
             
             {filteredBuses.length === 0 ? (
-              <div className="glass" style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>
-                No se encontraron líneas para tu búsqueda.
+              <div className={`glass ${styles.emptyState}`}>
+                <Bus size={36} />
+                <p>No se encontraron líneas para tu búsqueda.</p>
+                <span>Probá con otro barrio, parada o número de línea.</span>
               </div>
             ) : (
               <div className={styles.busList}>
-                {filteredBuses.map((bus) => (
-                  <div 
-                    key={bus.id} 
+                {filteredBuses.map((bus, idx) => (
+                  <div
+                    key={bus.id}
                     className={`${styles.busCard} glass ${selectedBus?.id === bus.id ? `${styles.selectedBusCard} ${styles['selected_' + bus.type]}` : ''}`}
                     onClick={() => handleSelectBus(bus)}
+                    style={{ animationDelay: `${Math.min(idx, 10) * 45}ms` }}
                   >
                     <div className={styles.busCardHeader}>
-                      <div className={styles.busBadge}>
-                        <Bus size={18} />
-                        <span>{bus.line}</span>
+                      <div className={styles.busIdentity}>
+                        <span className={`${styles.linePlate} ${styles['plate_' + bus.type]}`}>
+                          {getLineCode(bus.line)}
+                        </span>
+                        <div className={styles.busIdentityText}>
+                          <span className={styles.busLineName}>{bus.line}</span>
+                          <span className={`${styles.typeTag} ${styles[bus.type]}`}>
+                            {getTypeName(bus.type)}
+                          </span>
+                        </div>
                       </div>
-                      <span className={`${styles.typeTag} ${styles[bus.type]}`}>
-                        {getTypeName(bus.type)}
-                      </span>
                     </div>
-                    
-                    <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', margin: '0.5rem 0' }}>
-                      {bus.description}
-                    </p>
-                    
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--text-muted)', borderTop: '1px solid var(--border-glass)', paddingTop: '0.5rem', marginTop: '0.5rem' }}>
-                      <span>🕒 {bus.frequency}</span>
-                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.2rem', color: 'var(--secondary)', fontWeight: 600 }}>
+
+                    <div className={styles.routePreview}>
+                      <div className={styles.routeRow}>
+                        <span className={`${styles.routeDot} ${styles.routeDotStart}`} />
+                        <span className={styles.routeStop}>{bus.stops[0]}</span>
+                      </div>
+                      <div className={styles.routeRow}>
+                        <span className={`${styles.routeDot} ${styles.routeDotEnd}`} />
+                        <span className={styles.routeStop}>{bus.stops[bus.stops.length - 1]}</span>
+                      </div>
+                    </div>
+
+                    <div className={styles.busCardFooter}>
+                      <span className={styles.freqChip}>
+                        <Clock size={12} /> {bus.frequency}
+                      </span>
+                      <span className={styles.viewRouteLink}>
                         Ver Recorrido <ArrowRight size={12} />
                       </span>
                     </div>
@@ -189,7 +264,9 @@ export default function ColectivosPage() {
               <div className={`${styles.detailCard} glass`}>
                 <div className={styles.detailHeader}>
                   <div className={styles.busBigBadge}>
-                    <Bus size={28} />
+                    <span className={`${styles.linePlate} ${styles.linePlateLg} ${styles['plate_' + selectedBus.type]}`}>
+                      {getLineCode(selectedBus.line)}
+                    </span>
                     <div>
                       <h2>{selectedBus.line}</h2>
                       <span className={`${styles.typeTag} ${styles[selectedBus.type]}`}>
@@ -245,7 +322,7 @@ export default function ColectivosPage() {
                   </div>
                   
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--text-muted)', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '0.5rem', marginTop: '0.25rem' }}>
-                    <span>Unidad: <strong>Coche RT-{selectedBus.line.match(/\d+/)?.[0] || '400'}-{Math.floor(Math.random() * 20) + 10}</strong></span>
+                    <span>Unidad: <strong>Coche RT-{selectedBus.line.match(/\d+/)?.[0] || '400'}-{(selectedBus.line.charCodeAt(0) || 0) % 20 + 10}</strong></span>
                     <span>Accesibilidad: ♿ Rampa / ❄️ Aire</span>
                   </div>
                 </div>

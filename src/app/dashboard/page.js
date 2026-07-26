@@ -46,6 +46,7 @@ export default function UserDashboard() {
     if (!loading && !user) {
       router.push('/login?redirect=/dashboard');
     } else if (user) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       loadUserContent();
     }
   }, [user, loading, router]);
