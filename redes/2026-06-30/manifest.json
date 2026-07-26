@@ -1,0 +1,16 @@
+﻿{
+    "date":  "2026-06-30",
+    "target_dir":  "C:\\Users\\Usuario\\Desktop\\Proyectos\\El Chimbero\\redes\\2026-06-30",
+    "file_count":  7,
+    "files":  [
+                  "2026-06-30-chimbas-haran-un-operativo-integral-de-salud-este-miercoles-en-el-barrio-necochea.png",
+                  "2026-06-30-chimbas-robaron-un-auto-y-aparecio-abandonado-y-chocado-en-costa-canal-ii.png",
+                  "2026-06-30-chimbas-una-fila-de-mas-de-tres-cuadras-expuso-la-busqueda-de-empleo-en-un-mayorista.png",
+                  "2026-06-30-ola-polar-en-san-juan-los-refugios-estatales-quedan-abiertos-todo-el-dia.png",
+                  "2026-06-30-san-juan-diputados-definira-este-jueves-la-ley-de-desarrollo-local-minero.png",
+                  "2026-06-30-san-juan-el-comercio-mantendra-el-horario-habitual-pese-al-partido-de-la-seleccion.png",
+                  "2026-06-30-san-juan-lanzaron-una-app-gratuita-para-conectar-oficios-con-clientes.png"
+              ],
+    "drive_base_folder":  "https://drive.google.com/drive/folders/1R-d-e59qzodnnOiJ40LHmtO1guOHzrUJ?usp=drive_link",
+    "note":  "Drive upload pending connector support for folder creation and raw file upload."
+}

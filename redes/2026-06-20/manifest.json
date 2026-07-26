@@ -1,0 +1,14 @@
+﻿{
+    "date":  "2026-06-20",
+    "target_dir":  "C:\\Users\\Usuario\\Desktop\\Proyectos\\El Chimbero\\redes\\2026-06-20",
+    "file_count":  5,
+    "files":  [
+                  "2026-06-20-encontraron-al-adolescente-que-era-buscado-en-san-juan-y-ya-esta-con-su-familia.png",
+                  "2026-06-20-la-libertad-avanza-abrio-una-nueva-sede-en-chimbas-y-apunto-a-sumar-jovenes.png",
+                  "2026-06-20-san-juan-arranco-el-20-de-junio-con-frio-y-una-alerta-por-zonda-en-cordillera.png",
+                  "2026-06-20-san-juan-refuerza-el-refugio-para-personas-sin-techo-en-medio-de-las-noches-mas-frias.png",
+                  "2026-06-20-valle-fertil-salio-a-defender-los-limites-de-san-juan-con-una-protesta-pacifica.png"
+              ],
+    "drive_base_folder":  "https://drive.google.com/drive/folders/1R-d-e59qzodnnOiJ40LHmtO1guOHzrUJ?usp=drive_link",
+    "note":  "Drive upload pending connector support for folder creation and raw file upload."
+}

@@ -1,0 +1,11 @@
+﻿{
+    "date":  "2026-07-25",
+    "target_dir":  "C:\\Users\\Usuario\\Desktop\\Proyectos\\El Chimbero\\redes\\2026-07-25",
+    "file_count":  2,
+    "files":  [
+                  "2026-07-25-chimbas-condenaron-a-dos-jovenes-por-desvalijar-una-recuperadora-y-uno-debera-cumplir-3-anos.png",
+                  "2026-07-25-chimbas-un-hermano-del-remisero-baleado-quedo-con-domiciliaria-por-el-ataque-en-venganza.png"
+              ],
+    "drive_base_folder":  "https://drive.google.com/drive/folders/1R-d-e59qzodnnOiJ40LHmtO1guOHzrUJ?usp=drive_link",
+    "note":  "Drive upload pending connector support for folder creation and raw file upload."
+}

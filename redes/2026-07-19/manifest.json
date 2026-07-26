@@ -1,0 +1,12 @@
+﻿{
+    "date":  "2026-07-19",
+    "target_dir":  "C:\\Users\\Usuario\\Desktop\\Proyectos\\El Chimbero\\redes\\2026-07-19",
+    "file_count":  3,
+    "files":  [
+                  "2026-07-19-chimbas-vecinos-frustraron-el-robo-de-la-bateria-de-un-auto-y-detuvieron-a-un-joven.png",
+                  "2026-07-19-domingo-frio-e-inestable-en-san-juan-se-esperan-lluvias-aisladas-y-una-maxima-de-13-c.png",
+                  "2026-07-19-san-juan-despidio-el-mundial-con-aplausos-y-agradecimiento-pese-al-subcampeonato.png"
+              ],
+    "drive_base_folder":  "https://drive.google.com/drive/folders/1R-d-e59qzodnnOiJ40LHmtO1guOHzrUJ?usp=drive_link",
+    "note":  "Drive upload pending connector support for folder creation and raw file upload."
+}

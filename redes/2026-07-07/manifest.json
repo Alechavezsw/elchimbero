@@ -1,0 +1,13 @@
+﻿{
+    "date":  "2026-07-07",
+    "target_dir":  "C:\\Users\\Usuario\\Desktop\\Proyectos\\El Chimbero\\redes\\2026-07-07",
+    "file_count":  4,
+    "files":  [
+                  "2026-07-07-confirmaron-las-fechas-de-entrega-de-modulos-para-celiacos-y-chimbas-entra-a-fines-de-julio.png",
+                  "2026-07-07-san-juan-entra-en-modo-puma-con-cuatro-dias-de-actividades-antes-del-duelo-con-gales.png",
+                  "2026-07-07-san-juan-no-hara-desfile-por-el-9-de-julio-asi-sera-la-agenda-oficial.png",
+                  "2026-07-07-san-juan-recibira-a-800-deportistas-por-el-nacional-de-hockey-social-para-menores.png"
+              ],
+    "drive_base_folder":  "https://drive.google.com/drive/folders/1R-d-e59qzodnnOiJ40LHmtO1guOHzrUJ?usp=drive_link",
+    "note":  "Drive upload pending connector support for folder creation and raw file upload."
+}

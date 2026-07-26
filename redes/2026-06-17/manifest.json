@@ -1,0 +1,14 @@
+﻿{
+    "date":  "2026-06-17",
+    "target_dir":  "C:\\Users\\Usuario\\Desktop\\Proyectos\\El Chimbero\\redes\\2026-06-17",
+    "file_count":  5,
+    "files":  [
+                  "2026-06-17-apunalaron-a-un-joven-en-chimbas-cuando-quiso-evitar-el-robo-de-su-bicicleta.png",
+                  "2026-06-17-cerraron-la-causa-por-la-muerte-de-tiziano-en-el-canal-benavidez-y-su-madre-cuestiono-la-decisi.png",
+                  "2026-06-17-chimbas-lanzo-el-sorteo-papa-mundial-para-agasajar-a-los-padres-del-departamento.png",
+                  "2026-06-17-cortan-un-tramo-de-ignacio-de-la-roza-por-repavimentacion-en-capital.png",
+                  "2026-06-17-san-juan-abrira-una-capacitacion-gratuita-con-river-para-clubes-locales.png"
+              ],
+    "drive_base_folder":  "https://drive.google.com/drive/folders/1R-d-e59qzodnnOiJ40LHmtO1guOHzrUJ?usp=drive_link",
+    "note":  "Drive upload pending connector support for folder creation and raw file upload."
+}

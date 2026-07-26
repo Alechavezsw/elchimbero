@@ -1,0 +1,11 @@
+﻿{
+    "date":  "2026-07-09",
+    "target_dir":  "C:\\Users\\Usuario\\Desktop\\Proyectos\\El Chimbero\\redes\\2026-07-09",
+    "file_count":  2,
+    "files":  [
+                  "2026-07-09-san-juan-ya-prepara-un-operativo-especial-si-argentina-le-gana-a-suiza-cerraran-la-peatonal-y-h.png",
+                  "2026-07-09-valle-fertil-una-camioneta-choco-contra-animales-sueltos-en-la-ruta-510-y-sus-tres-ocupantes-sa.png"
+              ],
+    "drive_base_folder":  "https://drive.google.com/drive/folders/1R-d-e59qzodnnOiJ40LHmtO1guOHzrUJ?usp=drive_link",
+    "note":  "Drive upload pending connector support for folder creation and raw file upload."
+}

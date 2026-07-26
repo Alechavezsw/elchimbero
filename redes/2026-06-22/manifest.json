@@ -1,0 +1,17 @@
+﻿{
+    "date":  "2026-06-22",
+    "target_dir":  "C:\\Users\\Usuario\\Desktop\\Proyectos\\El Chimbero\\redes\\2026-06-22",
+    "file_count":  8,
+    "files":  [
+                  "2026-06-22-barrio-cabot-sigue-la-investigacion-por-los-tiros-y-la-mujer-herida-en-medio-de-la-violencia.png",
+                  "2026-06-22-chimbas-el-acusado-por-abusar-de-tres-mujeres-en-una-pileta-rechazo-el-abreviado-y-quedo-a-un-p.png",
+                  "2026-06-22-el-hospital-federico-cantoni-ampliara-las-cirugias-de-traumatologia-en-pocito.png",
+                  "2026-06-22-entregaron-escrituras-a-118-familias-y-hubo-beneficiarios-de-chimbas-y-rawson.png",
+                  "2026-06-22-medano-de-oro-se-metio-entre-las-16-mejores-ciudades-del-torneo-de-olga.png",
+                  "2026-06-22-rescataron-40-aves-silvestres-en-dos-allanamientos-realizados-en-pocito.png",
+                  "2026-06-22-ruta-40-sur-hablan-de-un-fuerte-anticipo-para-retomar-la-obra.png",
+                  "2026-06-22-san-juan-instalara-mas-de-4-mil-medidores-inteligentes-para-industrias-y-grandes-comercios.png"
+              ],
+    "drive_base_folder":  "https://drive.google.com/drive/folders/1R-d-e59qzodnnOiJ40LHmtO1guOHzrUJ?usp=drive_link",
+    "note":  "Drive upload pending connector support for folder creation and raw file upload."
+}

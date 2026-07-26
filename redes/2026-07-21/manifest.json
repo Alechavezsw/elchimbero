@@ -1,0 +1,15 @@
+﻿{
+    "date":  "2026-07-21",
+    "target_dir":  "C:\\Users\\Usuario\\Desktop\\Proyectos\\El Chimbero\\redes\\2026-07-21",
+    "file_count":  6,
+    "files":  [
+                  "2026-07-21-arranca-la-repavimentacion-de-avenida-benavidez-y-chimbas-queda-en-un-corredor-clave-de-obra.png",
+                  "2026-07-21-caso-tiago-estrella-la-justicia-formalizo-cargos-contra-dos-presuntos-complices-del-tirador.png",
+                  "2026-07-21-chimbas-la-causa-por-el-ataque-a-tiago-estrella-ya-tiene-dos-detenidos-y-dos-profugos.png",
+                  "2026-07-21-chimbas-vecinos-alertaron-y-frenaron-el-robo-de-la-bateria-de-un-auto-en-el-loteo-amat.png",
+                  "2026-07-21-lisandro-bravo-hizo-pesar-a-chimbas-te-quiero-y-gano-la-segunda-fecha-de-pista.png",
+                  "2026-07-21-murio-tiago-estrella-y-el-caso-de-los-toneles-en-chimbas-se-agrava.png"
+              ],
+    "drive_base_folder":  "https://drive.google.com/drive/folders/1R-d-e59qzodnnOiJ40LHmtO1guOHzrUJ?usp=drive_link",
+    "note":  "Drive upload pending connector support for folder creation and raw file upload."
+}

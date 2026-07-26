@@ -1,0 +1,12 @@
+﻿{
+    "date":  "2026-07-23",
+    "target_dir":  "C:\\Users\\Usuario\\Desktop\\Proyectos\\El Chimbero\\redes\\2026-07-23",
+    "file_count":  3,
+    "files":  [
+                  "2026-07-23-allanamientos-en-capital-y-chimbas-cayeron-cuatro-sospechosos-y-secuestraron-armas.png",
+                  "2026-07-23-estatales-de-san-juan-habra-recategorizacion-y-subas-salariales-en-dos-tramos.png",
+                  "2026-07-23-san-juan-que-zonas-seguian-afectadas-por-los-cortes-de-luz-tras-el-temporal.png"
+              ],
+    "drive_base_folder":  "https://drive.google.com/drive/folders/1R-d-e59qzodnnOiJ40LHmtO1guOHzrUJ?usp=drive_link",
+    "note":  "Drive upload pending connector support for folder creation and raw file upload."
+}

@@ -1,0 +1,16 @@
+﻿{
+    "date":  "2026-07-14",
+    "target_dir":  "C:\\Users\\Usuario\\Desktop\\Proyectos\\El Chimbero\\redes\\2026-07-14",
+    "file_count":  7,
+    "files":  [
+                  "2026-07-14-benavidez-entra-en-obra-este-miercoles-arranca-la-repavimentacion-entre-salta-y-bonduel.png",
+                  "2026-07-14-chimbas-rodriguez-cruzo-a-munisaga-tras-hablar-de-una-posible-candidatura-de-gramajo.png",
+                  "2026-07-14-chimbas-un-joven-de-18-anos-quedo-internado-en-grave-estado-tras-dos-disparos-en-los-toneles.png",
+                  "2026-07-14-chimbas-ya-tiene-fecha-para-una-colecta-de-sangre-sera-el-18-de-julio-y-piden-ir-con-dni.png",
+                  "2026-07-14-san-juan-activa-una-advertencia-por-zonda-fuerte-y-nevadas-intensas-desde-este-miercoles.png",
+                  "2026-07-14-san-juan-reempadronara-los-modulos-por-celiaquia-desde-el-27-de-julio-que-piden.png",
+                  "2026-07-14-ya-se-pueden-consultar-y-pagar-online-algunas-multas-de-transito-provinciales.png"
+              ],
+    "drive_base_folder":  "https://drive.google.com/drive/folders/1R-d-e59qzodnnOiJ40LHmtO1guOHzrUJ?usp=drive_link",
+    "note":  "Drive upload pending connector support for folder creation and raw file upload."
+}

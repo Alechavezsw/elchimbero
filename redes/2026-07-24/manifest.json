@@ -1,0 +1,13 @@
+﻿{
+    "date":  "2026-07-24",
+    "target_dir":  "C:\\Users\\Usuario\\Desktop\\Proyectos\\El Chimbero\\redes\\2026-07-24",
+    "file_count":  4,
+    "files":  [
+                  "2026-07-24-chimbas-renovo-sus-salas-velatorias-y-mantiene-gratuito-el-servicio-para-las-familias.png",
+                  "2026-07-24-denunciaron-requisas-humillantes-y-largas-esperas-para-familiares-en-el-penal-de-chimbas.png",
+                  "2026-07-24-el-remisero-baleado-en-chimbas-esta-estable-y-ya-fue-extubado.png",
+                  "2026-07-24-motochorros-asaltaron-a-un-cobrador-en-chimbas-y-escaparon-con-500-000.png"
+              ],
+    "drive_base_folder":  "https://drive.google.com/drive/folders/1R-d-e59qzodnnOiJ40LHmtO1guOHzrUJ?usp=drive_link",
+    "note":  "Drive upload pending connector support for folder creation and raw file upload."
+}

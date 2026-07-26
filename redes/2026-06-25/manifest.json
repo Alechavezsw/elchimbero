@@ -1,0 +1,11 @@
+﻿{
+    "date":  "2026-06-25",
+    "target_dir":  "C:\\Users\\Usuario\\Desktop\\Proyectos\\El Chimbero\\redes\\2026-06-25",
+    "file_count":  2,
+    "files":  [
+                  "2026-06-25-asaltaron-una-lomoteca-de-chimbas-y-le-robaron-plata-y-celulares-al-dueno.png",
+                  "2026-06-25-el-dni-digital-ya-tiene-validez-legal-para-tramites-bancos-y-viajes-internos-en-san-juan.png"
+              ],
+    "drive_base_folder":  "https://drive.google.com/drive/folders/1R-d-e59qzodnnOiJ40LHmtO1guOHzrUJ?usp=drive_link",
+    "note":  "Drive upload pending connector support for folder creation and raw file upload."
+}

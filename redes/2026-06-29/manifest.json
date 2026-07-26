@@ -1,0 +1,14 @@
+﻿{
+    "date":  "2026-06-29",
+    "target_dir":  "C:\\Users\\Usuario\\Desktop\\Proyectos\\El Chimbero\\redes\\2026-06-29",
+    "file_count":  5,
+    "files":  [
+                  "2026-06-29-chimbas-tendra-un-operativo-integral-de-salud-en-el-barrio-necochea.png",
+                  "2026-06-29-parte-de-rutas-piden-circular-con-precaucion-en-avenida-benavidez-entre-chimbas-y-capital.png",
+                  "2026-06-29-quini-6-un-apostador-de-chimbas-gano-mas-de-14-millones-de-pesos.png",
+                  "2026-06-29-san-juan-acredita-el-30-de-junio-los-haberes-estatales-con-suba-del-3.png",
+                  "2026-06-29-san-juan-inicio-un-nuevo-juicio-por-abusos-denunciados-en-chimbas.png"
+              ],
+    "drive_base_folder":  "https://drive.google.com/drive/folders/1R-d-e59qzodnnOiJ40LHmtO1guOHzrUJ?usp=drive_link",
+    "note":  "Drive upload pending connector support for folder creation and raw file upload."
+}

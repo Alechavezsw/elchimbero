@@ -1,0 +1,12 @@
+﻿{
+    "date":  "2026-06-16",
+    "target_dir":  "C:\\Users\\Usuario\\Desktop\\Proyectos\\El Chimbero\\redes\\2026-06-16",
+    "file_count":  3,
+    "files":  [
+                  "2026-06-16-la-difunta-correa-acelera-obras-y-ya-recibe-hasta-20-mil-visitantes-por-fin-de-semana.png",
+                  "2026-06-16-por-el-frio-san-juan-refuerza-la-asistencia-en-barrios-vulnerables-y-chimbas-ya-esta-entre-las.png",
+                  "2026-06-16-rawson-aprobo-un-nuevo-esquema-para-que-barrios-sin-union-vecinal-puedan-organizarse.png"
+              ],
+    "drive_base_folder":  "https://drive.google.com/drive/folders/1R-d-e59qzodnnOiJ40LHmtO1guOHzrUJ?usp=drive_link",
+    "note":  "Drive upload pending connector support for folder creation and raw file upload."
+}

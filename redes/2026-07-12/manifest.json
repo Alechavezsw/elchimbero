@@ -1,0 +1,14 @@
+﻿{
+    "date":  "2026-07-12",
+    "target_dir":  "C:\\Users\\Usuario\\Desktop\\Proyectos\\El Chimbero\\redes\\2026-07-12",
+    "file_count":  5,
+    "files":  [
+                  "2026-07-12-chimbas-el-chofer-baleado-sigue-internado-pero-su-familia-confirmo-una-mejoria.png",
+                  "2026-07-12-rescataron-a-una-familia-de-chimbas-tras-mas-de-24-horas-perdida-en-una-zona-rural.png",
+                  "2026-07-12-san-juan-salio-a-festejar-el-pase-de-argentina-a-semifinales-en-una-madrugada-helada.png",
+                  "2026-07-12-san-martin-gano-en-santiago-volvio-al-reducido-y-dejo-una-buena-senal-para-san-juan.png",
+                  "2026-07-12-un-policia-le-salvo-la-vida-a-una-beba-de-2-anos-durante-un-traslado-de-urgencia-en-san-juan.png"
+              ],
+    "drive_base_folder":  "https://drive.google.com/drive/folders/1R-d-e59qzodnnOiJ40LHmtO1guOHzrUJ?usp=drive_link",
+    "note":  "Drive upload pending connector support for folder creation and raw file upload."
+}

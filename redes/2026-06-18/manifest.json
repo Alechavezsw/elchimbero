@@ -1,0 +1,16 @@
+﻿{
+    "date":  "2026-06-18",
+    "target_dir":  "C:\\Users\\Usuario\\Desktop\\Proyectos\\El Chimbero\\redes\\2026-06-18",
+    "file_count":  7,
+    "files":  [
+                  "2026-06-18-hola-tulum-abre-este-viernes-en-san-juan-con-mas-de-30-locales-y-500-empleos-directos.png",
+                  "2026-06-18-internos-con-salidas-transitorias-empezaron-a-refaccionar-la-historica-capilla-del-carmen.png",
+                  "2026-06-18-jetsmart-sumara-a-san-juan-entre-sus-nuevos-destinos-y-promete-mas-conectividad-aerea.png",
+                  "2026-06-18-jueves-frio-en-san-juan-anuncian-lloviznas-aisladas-y-una-minima-de-3-grados.png",
+                  "2026-06-18-rawson-activo-la-camara-testigo-para-reportar-infracciones-con-fotos-y-videos.png",
+                  "2026-06-18-san-juan-depositara-el-medio-aguinaldo-este-jueves-19-antes-del-fin-de-semana-largo.png",
+                  "2026-06-18-san-juan-supero-el-90-por-ciento-de-cobertura-en-sala-de-4-y-quedo-entre-las-provincias-lideres.png"
+              ],
+    "drive_base_folder":  "https://drive.google.com/drive/folders/1R-d-e59qzodnnOiJ40LHmtO1guOHzrUJ?usp=drive_link",
+    "note":  "Drive upload pending connector support for folder creation and raw file upload."
+}
