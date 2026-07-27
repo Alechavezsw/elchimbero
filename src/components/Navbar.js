@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from './AuthProvider';
-import { isMock } from '@/lib/db';
 import styles from './Navbar.module.css';
 import { 
   Menu, 
@@ -130,7 +129,6 @@ export default function Navbar() {
             width={240}
             height={44}
           />
-          {isMock && <span className={styles.demoBadge}>Demo</span>}
         </Link>
 
         {/* DESKTOP NAV */}

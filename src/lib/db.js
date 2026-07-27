@@ -828,5 +828,262 @@ export const db = {
       const updated = events.filter(e => e.id !== id);
       saveMockData('chimbero_events', updated);
     }
-  }
+  },
+
+  // --- UPDATE / LISTADOS ADMIN ---
+
+  async requireAdmin() {
+    const user = await this.getCurrentUser();
+    if (!user || !(user.is_admin || user.email === 'admin@elchimbero.com')) {
+      throw new Error('Solo administradores');
+    }
+    return user;
+  },
+
+  async getAllClassifiedsAdmin() {
+    await this.requireAdmin();
+    if (!isMock) {
+      const { data, error } = await supabaseClient
+        .from('classifieds')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      return data;
+    }
+    return getMockData('chimbero_classifieds', initialClassifieds)
+      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+  },
+
+  async updateBusiness(id, businessData) {
+    await this.requireAdmin();
+    const payload = {
+      name: businessData.name,
+      description: businessData.description,
+      category: businessData.category,
+      address: businessData.address,
+      neighborhood: businessData.neighborhood,
+      phone: businessData.phone,
+      whatsapp: businessData.whatsapp,
+      latitude: parseFloat(businessData.latitude) || -31.4958,
+      longitude: parseFloat(businessData.longitude) || -68.5352,
+      image_url: businessData.image_url,
+      hours: businessData.hours,
+    };
+    if (businessData.status) payload.status = businessData.status;
+    if (typeof businessData.is_featured === 'boolean') payload.is_featured = businessData.is_featured;
+
+    if (!isMock) {
+      const { data, error } = await supabaseClient.from('businesses').update(payload).eq('id', id).select();
+      if (error) throw error;
+      if (!data?.length) throw new Error('No se pudo actualizar el comercio');
+      return data[0];
+    }
+    const businesses = getMockData('chimbero_businesses', initialBusinesses);
+    const idx = businesses.findIndex((b) => b.id === id);
+    if (idx === -1) throw new Error('Comercio no encontrado');
+    businesses[idx] = { ...businesses[idx], ...payload };
+    saveMockData('chimbero_businesses', businesses);
+    return businesses[idx];
+  },
+
+  async updateClassified(id, adData) {
+    await this.requireAdmin();
+    const payload = {
+      title: adData.title,
+      description: adData.description,
+      price: parseFloat(adData.price) || 0,
+      category: adData.category,
+      condition: adData.condition,
+      image_url: adData.image_url,
+      whatsapp: adData.whatsapp,
+      status: adData.status || 'active',
+    };
+    if (!isMock) {
+      const { data, error } = await supabaseClient.from('classifieds').update(payload).eq('id', id).select();
+      if (error) throw error;
+      if (!data?.length) throw new Error('No se pudo actualizar el clasificado');
+      return data[0];
+    }
+    const ads = getMockData('chimbero_classifieds', initialClassifieds);
+    const idx = ads.findIndex((a) => a.id === id);
+    if (idx === -1) throw new Error('Clasificado no encontrado');
+    ads[idx] = { ...ads[idx], ...payload };
+    saveMockData('chimbero_classifieds', ads);
+    return ads[idx];
+  },
+
+  async updatePharmacy(id, pharmacyData) {
+    await this.requireAdmin();
+    const payload = {
+      name: pharmacyData.name,
+      address: pharmacyData.address,
+      phone: pharmacyData.phone,
+      latitude: parseFloat(pharmacyData.latitude) || -31.4951,
+      longitude: parseFloat(pharmacyData.longitude) || -68.5345,
+      duty_dates: pharmacyData.duty_dates || [],
+      is_open_24h: !!pharmacyData.is_open_24h,
+    };
+    if (!isMock) {
+      const { data, error } = await supabaseClient.from('pharmacies').update(payload).eq('id', id).select();
+      if (error) throw error;
+      if (!data?.length) throw new Error('No se pudo actualizar la farmacia');
+      return data[0];
+    }
+    const pharmacies = getMockData('chimbero_pharmacies', initialPharmacies);
+    const idx = pharmacies.findIndex((p) => p.id === id);
+    if (idx === -1) throw new Error('Farmacia no encontrada');
+    pharmacies[idx] = { ...pharmacies[idx], ...payload };
+    saveMockData('chimbero_pharmacies', pharmacies);
+    return pharmacies[idx];
+  },
+
+  async updateKiosk(id, kioskData) {
+    await this.requireAdmin();
+    const payload = {
+      name: kioskData.name,
+      address: kioskData.address,
+      neighborhood: kioskData.neighborhood,
+      phone: kioskData.phone,
+      latitude: parseFloat(kioskData.latitude) || -31.4965,
+      longitude: parseFloat(kioskData.longitude) || -68.5361,
+      is_open_24h: !!kioskData.is_open_24h,
+      hours_description: kioskData.hours_description || '',
+    };
+    if (!isMock) {
+      const { data, error } = await supabaseClient.from('kiosks').update(payload).eq('id', id).select();
+      if (error) throw error;
+      if (!data?.length) throw new Error('No se pudo actualizar el kiosco');
+      return data[0];
+    }
+    const kiosks = getMockData('chimbero_kiosks', initialKiosks);
+    const idx = kiosks.findIndex((k) => k.id === id);
+    if (idx === -1) throw new Error('Kiosco no encontrado');
+    kiosks[idx] = { ...kiosks[idx], ...payload };
+    saveMockData('chimbero_kiosks', kiosks);
+    return kiosks[idx];
+  },
+
+  async updateBus(id, busData) {
+    await this.requireAdmin();
+    const payload = {
+      line: busData.line,
+      description: busData.description,
+      type: busData.type || 'interno_chimbas',
+      frequency: busData.frequency || 'Cada 15 minutos',
+      neighborhoods: busData.neighborhoods || [],
+      stops: busData.stops || [],
+      stops_vuelta: busData.stops_vuelta || [],
+      schedule: busData.schedule || 'Lunes a Viernes',
+    };
+    if (!isMock) {
+      const { data, error } = await supabaseClient.from('buses').update(payload).eq('id', id).select();
+      if (error) throw error;
+      if (!data?.length) throw new Error('No se pudo actualizar el colectivo');
+      return data[0];
+    }
+    const buses = getMockData('chimbero_buses', initialBuses);
+    const idx = buses.findIndex((b) => b.id === id);
+    if (idx === -1) throw new Error('Colectivo no encontrado');
+    buses[idx] = { ...buses[idx], ...payload };
+    saveMockData('chimbero_buses', buses);
+    return buses[idx];
+  },
+
+  async updateEvent(id, eventData) {
+    await this.requireAdmin();
+    const payload = {
+      title: eventData.title,
+      description: eventData.description,
+      date: eventData.date,
+      time: eventData.time,
+      location: eventData.location,
+      category: eventData.category,
+      image_url: eventData.image_url,
+      price: parseFloat(eventData.price) || 0,
+    };
+    if (!isMock) {
+      const { data, error } = await supabaseClient.from('events').update(payload).eq('id', id).select();
+      if (error) throw error;
+      if (!data?.length) throw new Error('No se pudo actualizar el evento');
+      return data[0];
+    }
+    const events = getMockData('chimbero_events', initialEvents);
+    const idx = events.findIndex((e) => e.id === id);
+    if (idx === -1) throw new Error('Evento no encontrado');
+    events[idx] = { ...events[idx], ...payload };
+    saveMockData('chimbero_events', events);
+    return events[idx];
+  },
+
+  async updateJob(id, jobData) {
+    await this.requireAdmin();
+    const payload = {
+      title: jobData.title,
+      description: jobData.description,
+      type: jobData.type,
+      category: jobData.category,
+      price: parseFloat(jobData.price) || 0,
+      company: jobData.company,
+      contact_name: jobData.contact_name,
+      whatsapp: jobData.whatsapp,
+    };
+    if (!isMock) {
+      const { data, error } = await supabaseClient.from('jobs').update(payload).eq('id', id).select();
+      if (error) throw error;
+      if (!data?.length) throw new Error('No se pudo actualizar el empleo');
+      return data[0];
+    }
+    const jobs = getMockData('chimbero_jobs', initialJobs);
+    const idx = jobs.findIndex((j) => j.id === id);
+    if (idx === -1) throw new Error('Empleo no encontrado');
+    jobs[idx] = { ...jobs[idx], ...payload };
+    saveMockData('chimbero_jobs', jobs);
+    return jobs[idx];
+  },
+
+  async getProfilesAdmin() {
+    await this.requireAdmin();
+    if (!isMock) {
+      const { data, error } = await supabaseClient
+        .from('profiles')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      return data;
+    }
+    return getMockData('chimbero_profiles', initialProfiles);
+  },
+
+  async updateProfileAdmin(id, profileData) {
+    await this.requireAdmin();
+    const payload = {
+      full_name: profileData.full_name,
+      phone: profileData.phone,
+      is_admin: !!profileData.is_admin,
+    };
+    if (!isMock) {
+      const { data, error } = await supabaseClient.from('profiles').update(payload).eq('id', id).select();
+      if (error) throw error;
+      if (!data?.length) throw new Error('No se pudo actualizar el usuario');
+      return data[0];
+    }
+    const profiles = getMockData('chimbero_profiles', initialProfiles);
+    const idx = profiles.findIndex((p) => p.id === id);
+    if (idx === -1) throw new Error('Usuario no encontrado');
+    profiles[idx] = { ...profiles[idx], ...payload };
+    saveMockData('chimbero_profiles', profiles);
+    return profiles[idx];
+  },
+
+  async deleteProfileAdmin(id) {
+    const admin = await this.requireAdmin();
+    if (admin.id === id) throw new Error('No podés eliminar tu propio usuario');
+    if (!isMock) {
+      const { error } = await supabaseClient.from('profiles').delete().eq('id', id);
+      if (error) throw error;
+    } else {
+      const profiles = getMockData('chimbero_profiles', initialProfiles);
+      saveMockData('chimbero_profiles', profiles.filter((p) => p.id !== id));
+    }
+  },
 };

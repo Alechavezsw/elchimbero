@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -15,6 +15,7 @@ import {
   Briefcase, 
   Bus, 
   Plus, 
+  Pencil,
   Trash2, 
   Check, 
   X, 
@@ -26,6 +27,15 @@ import {
   Info
 } from 'lucide-react';
 
+const emptyPharmacyForm = { name: '', address: '', phone: '', latitude: '', longitude: '', duty_dates: '', is_open_24h: false };
+const emptyKioskForm = { name: '', address: '', neighborhood: '', phone: '', latitude: '', longitude: '', is_open_24h: true, hours_description: '' };
+const emptyBusForm = { line: '', description: '', type: 'interno_chimbas', frequency: '', neighborhoods: '', stops: '', stops_vuelta: '', schedule: '' };
+const emptyEventForm = { title: '', description: '', date: '', time: '', location: '', category: 'Cultura', image_url: '', price: '0' };
+const emptyJobForm = { title: '', description: '', type: 'oferta_laboral', category: '', price: '0', company: '', contact_name: '', whatsapp: '' };
+const emptyBusinessForm = { name: '', description: '', category: 'Gastronomía', address: '', neighborhood: '', phone: '', whatsapp: '', latitude: '', longitude: '', image_url: '', hours_lunes_viernes: '09:00 - 13:00, 17:00 - 21:00', hours_sabado_domingo: 'Cerrado' };
+const emptyClassifiedForm = { title: '', description: '', price: '', category: 'sale', condition: 'used', image_url: '', whatsapp: '', status: 'active' };
+const emptyProfileForm = { full_name: '', phone: '', is_admin: false };
+
 export default function AdminDashboard() {
   const { user, loading } = useAuth();
   const router = useRouter();
@@ -36,7 +46,7 @@ export default function AdminDashboard() {
     }
   }, [user, loading, router]);
 
-  // Tab activo: 'stats' | 'businesses' | 'classifieds' | 'pharmacies' | 'kiosks' | 'buses' | 'events' | 'jobs'
+  // Tab activo: 'stats' | 'businesses' | 'classifieds' | 'pharmacies' | 'kiosks' | 'buses' | 'events' | 'jobs' | 'users'
   const [activeTab, setActiveTab] = useState('stats');
 
   // Datos del dashboard
@@ -47,33 +57,43 @@ export default function AdminDashboard() {
   const [buses, setBuses] = useState([]);
   const [events, setEvents] = useState([]);
   const [jobs, setJobs] = useState([]);
+  const [profiles, setProfiles] = useState([]);
   const [loadingData, setLoadingData] = useState(true);
 
   // Mensaje de feedback
   const [message, setMessage] = useState(null);
 
-  // Modales
-  const [showModal, setShowModal] = useState(null); // 'pharmacy' | 'kiosk' | 'bus' | 'event' | 'job' | 'business' | null
+  // Modales + edición
+  const [showModal, setShowModal] = useState(null); // 'pharmacy' | 'kiosk' | 'bus' | 'event' | 'job' | 'business' | 'classified' | 'user' | null
+  const [editingId, setEditingId] = useState(null);
   
-  // Estados para formularios de creación
-  const [pharmacyForm, setPharmacyForm] = useState({ name: '', address: '', phone: '', latitude: '', longitude: '', duty_dates: '', is_open_24h: false });
-  const [kioskForm, setKioskForm] = useState({ name: '', address: '', neighborhood: '', phone: '', latitude: '', longitude: '', is_open_24h: true, hours_description: '' });
-  const [busForm, setBusForm] = useState({ line: '', description: '', type: 'interno_chimbas', frequency: '', neighborhoods: '', stops: '', stops_vuelta: '', schedule: '' });
-  const [eventForm, setEventForm] = useState({ title: '', description: '', date: '', time: '', location: '', category: 'Cultura', image_url: '', price: '0' });
-  const [jobForm, setJobForm] = useState({ title: '', description: '', type: 'oferta_laboral', category: '', price: '0', company: '', contact_name: '', whatsapp: '' });
-  const [businessForm, setBusinessForm] = useState({ name: '', description: '', category: 'Gastronomía', address: '', neighborhood: '', phone: '', whatsapp: '', latitude: '', longitude: '', image_url: '', hours_lunes_viernes: '09:00 - 13:00, 17:00 - 21:00', hours_sabado_domingo: 'Cerrado' });
+  // Estados para formularios
+  const [pharmacyForm, setPharmacyForm] = useState(emptyPharmacyForm);
+  const [kioskForm, setKioskForm] = useState(emptyKioskForm);
+  const [busForm, setBusForm] = useState(emptyBusForm);
+  const [eventForm, setEventForm] = useState(emptyEventForm);
+  const [jobForm, setJobForm] = useState(emptyJobForm);
+  const [businessForm, setBusinessForm] = useState(emptyBusinessForm);
+  const [classifiedForm, setClassifiedForm] = useState(emptyClassifiedForm);
+  const [profileForm, setProfileForm] = useState(emptyProfileForm);
+
+  const closeModal = () => {
+    setShowModal(null);
+    setEditingId(null);
+  };
 
   // Cargar todos los datos del portal
   const loadAllData = async () => {
     setLoadingData(true);
     try {
       const bizData = await db.getAllBusinessesAdmin();
-      const adsData = await db.getClassifieds();
+      const adsData = await db.getAllClassifiedsAdmin();
       const pharData = await db.getPharmacies();
       const kiosData = await db.getKiosks();
       const busData = await db.getBuses();
       const eveData = await db.getEvents();
       const jobData = await db.getJobs();
+      const profilesData = await db.getProfilesAdmin();
 
       setBusinesses(bizData || []);
       setClassifieds(adsData || []);
@@ -82,6 +102,7 @@ export default function AdminDashboard() {
       setBuses(busData || []);
       setEvents(eveData || []);
       setJobs(jobData || []);
+      setProfiles(profilesData || []);
     } catch (error) {
       console.error('Error al cargar datos del administrador:', error);
       setMessage({ type: 'error', text: 'Error al conectar con la base de datos.' });
@@ -91,14 +112,171 @@ export default function AdminDashboard() {
   };
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    loadAllData();
-  }, []);
+    if (!loading && user && (user.is_admin || user.email === 'admin@elchimbero.com')) {
+      loadAllData();
+    }
+  }, [loading, user]);
 
   // Mostrar mensaje de éxito/error temporal
   const showFeedback = (type, text) => {
     setMessage({ type, text });
     setTimeout(() => setMessage(null), 5000);
+  };
+
+  // --- ABRIR CREAR (limpia editingId + form) ---
+  const openCreateBusiness = () => {
+    setEditingId(null);
+    setBusinessForm(emptyBusinessForm);
+    setShowModal('business');
+  };
+  const openCreateClassified = () => {
+    setEditingId(null);
+    setClassifiedForm(emptyClassifiedForm);
+    setShowModal('classified');
+  };
+  const openCreatePharmacy = () => {
+    setEditingId(null);
+    setPharmacyForm(emptyPharmacyForm);
+    setShowModal('pharmacy');
+  };
+  const openCreateKiosk = () => {
+    setEditingId(null);
+    setKioskForm(emptyKioskForm);
+    setShowModal('kiosk');
+  };
+  const openCreateBus = () => {
+    setEditingId(null);
+    setBusForm(emptyBusForm);
+    setShowModal('bus');
+  };
+  const openCreateEvent = () => {
+    setEditingId(null);
+    setEventForm(emptyEventForm);
+    setShowModal('event');
+  };
+  const openCreateJob = () => {
+    setEditingId(null);
+    setJobForm(emptyJobForm);
+    setShowModal('job');
+  };
+
+  // --- ABRIR EDITAR ---
+  const openEditBusiness = (biz) => {
+    setEditingId(biz.id);
+    setBusinessForm({
+      name: biz.name || '',
+      description: biz.description || '',
+      category: biz.category || 'Gastronomía',
+      address: biz.address || '',
+      neighborhood: biz.neighborhood || '',
+      phone: biz.phone || '',
+      whatsapp: biz.whatsapp || '',
+      latitude: biz.latitude != null ? String(biz.latitude) : '',
+      longitude: biz.longitude != null ? String(biz.longitude) : '',
+      image_url: biz.image_url || '',
+      hours_lunes_viernes: biz.hours?.lunes_a_viernes || '09:00 - 13:00, 17:00 - 21:00',
+      hours_sabado_domingo: biz.hours?.sabado_y_domingo || 'Cerrado',
+    });
+    setShowModal('business');
+  };
+
+  const openEditClassified = (ad) => {
+    setEditingId(ad.id);
+    setClassifiedForm({
+      title: ad.title || '',
+      description: ad.description || '',
+      price: ad.price != null ? String(ad.price) : '',
+      category: ad.category || 'sale',
+      condition: ad.condition || 'used',
+      image_url: ad.image_url || '',
+      whatsapp: ad.whatsapp || '',
+      status: ad.status || 'active',
+    });
+    setShowModal('classified');
+  };
+
+  const openEditPharmacy = (phar) => {
+    setEditingId(phar.id);
+    setPharmacyForm({
+      name: phar.name || '',
+      address: phar.address || '',
+      phone: phar.phone || '',
+      latitude: phar.latitude != null ? String(phar.latitude) : '',
+      longitude: phar.longitude != null ? String(phar.longitude) : '',
+      duty_dates: (phar.duty_dates || []).join(', '),
+      is_open_24h: !!phar.is_open_24h,
+    });
+    setShowModal('pharmacy');
+  };
+
+  const openEditKiosk = (kio) => {
+    setEditingId(kio.id);
+    setKioskForm({
+      name: kio.name || '',
+      address: kio.address || '',
+      neighborhood: kio.neighborhood || '',
+      phone: kio.phone || '',
+      latitude: kio.latitude != null ? String(kio.latitude) : '',
+      longitude: kio.longitude != null ? String(kio.longitude) : '',
+      is_open_24h: !!kio.is_open_24h,
+      hours_description: kio.hours_description || '',
+    });
+    setShowModal('kiosk');
+  };
+
+  const openEditBus = (bus) => {
+    setEditingId(bus.id);
+    setBusForm({
+      line: bus.line || '',
+      description: bus.description || '',
+      type: bus.type || 'interno_chimbas',
+      frequency: bus.frequency || '',
+      neighborhoods: (bus.neighborhoods || []).join(', '),
+      stops: (bus.stops || []).join(', '),
+      stops_vuelta: (bus.stops_vuelta || []).join(', '),
+      schedule: bus.schedule || '',
+    });
+    setShowModal('bus');
+  };
+
+  const openEditEvent = (eve) => {
+    setEditingId(eve.id);
+    setEventForm({
+      title: eve.title || '',
+      description: eve.description || '',
+      date: eve.date || '',
+      time: eve.time || '',
+      location: eve.location || '',
+      category: eve.category || 'Cultura',
+      image_url: eve.image_url || '',
+      price: eve.price != null ? String(eve.price) : '0',
+    });
+    setShowModal('event');
+  };
+
+  const openEditJob = (job) => {
+    setEditingId(job.id);
+    setJobForm({
+      title: job.title || '',
+      description: job.description || '',
+      type: job.type || 'oferta_laboral',
+      category: job.category || '',
+      price: job.price != null ? String(job.price) : '0',
+      company: job.company || '',
+      contact_name: job.contact_name || '',
+      whatsapp: job.whatsapp || '',
+    });
+    setShowModal('job');
+  };
+
+  const openEditProfile = (profile) => {
+    setEditingId(profile.id);
+    setProfileForm({
+      full_name: profile.full_name || '',
+      phone: profile.phone || '',
+      is_admin: !!profile.is_admin,
+    });
+    setShowModal('user');
   };
 
   // --- ACCIONES DE GESTIÓN ---
@@ -198,102 +376,132 @@ export default function AdminDashboard() {
     }
   };
 
-  // --- ENVÍO DE FORMULARIOS (CREACIÓN) ---
+  // Eliminar Usuario
+  const handleDeleteProfile = async (id) => {
+    if (!window.confirm('¿Estás seguro de que querés eliminar este usuario?')) return;
+    try {
+      await db.deleteProfileAdmin(id);
+      showFeedback('success', 'Usuario eliminado.');
+      loadAllData();
+    } catch (error) {
+      showFeedback('error', error.message || 'Error al borrar el usuario.');
+    }
+  };
 
-  const handleCreatePharmacy = async (e) => {
+  // --- ENVÍO DE FORMULARIOS (CREAR / ACTUALIZAR) ---
+
+  const handleSavePharmacy = async (e) => {
     e.preventDefault();
     try {
-      // Separar fechas por comas
       const datesArray = pharmacyForm.duty_dates
         .split(',')
         .map(d => d.trim())
         .filter(d => d.match(/^\d{4}-\d{2}-\d{2}$/));
 
-      await db.createPharmacy({
-        ...pharmacyForm,
-        duty_dates: datesArray
-      });
-      showFeedback('success', 'Farmacia creada exitosamente.');
-      setShowModal(null);
-      setPharmacyForm({ name: '', address: '', phone: '', latitude: '', longitude: '', duty_dates: '', is_open_24h: false });
+      const payload = { ...pharmacyForm, duty_dates: datesArray };
+      if (editingId) {
+        await db.updatePharmacy(editingId, payload);
+        showFeedback('success', 'Farmacia actualizada exitosamente.');
+      } else {
+        await db.createPharmacy(payload);
+        showFeedback('success', 'Farmacia creada exitosamente.');
+      }
+      closeModal();
+      setPharmacyForm(emptyPharmacyForm);
       loadAllData();
     } catch (error) {
-      showFeedback('error', 'Error al crear la farmacia.');
+      showFeedback('error', editingId ? 'Error al actualizar la farmacia.' : 'Error al crear la farmacia.');
     }
   };
 
-  const handleCreateKiosk = async (e) => {
+  const handleSaveKiosk = async (e) => {
     e.preventDefault();
     try {
-      await db.createKiosk(kioskForm);
-      showFeedback('success', 'Kiosco agregado correctamente.');
-      setShowModal(null);
-      setKioskForm({ name: '', address: '', neighborhood: '', phone: '', latitude: '', longitude: '', is_open_24h: true, hours_description: '' });
+      if (editingId) {
+        await db.updateKiosk(editingId, kioskForm);
+        showFeedback('success', 'Kiosco actualizado correctamente.');
+      } else {
+        await db.createKiosk(kioskForm);
+        showFeedback('success', 'Kiosco agregado correctamente.');
+      }
+      closeModal();
+      setKioskForm(emptyKioskForm);
       loadAllData();
     } catch (error) {
-      showFeedback('error', 'Error al registrar el kiosco.');
+      showFeedback('error', editingId ? 'Error al actualizar el kiosco.' : 'Error al registrar el kiosco.');
     }
   };
 
-  const handleCreateBus = async (e) => {
+  const handleSaveBus = async (e) => {
     e.preventDefault();
     try {
-      // Formatear barrios y paradas
       const neighborhoodsArray = busForm.neighborhoods.split(',').map(n => n.trim()).filter(Boolean);
       const stopsArray = busForm.stops.split(',').map(s => s.trim()).filter(Boolean);
       const stopsVueltaArray = busForm.stops_vuelta.split(',').map(s => s.trim()).filter(Boolean);
 
-      await db.createBus({
+      const payload = {
         ...busForm,
         neighborhoods: neighborhoodsArray,
         stops: stopsArray,
         stops_vuelta: stopsVueltaArray
-      });
-      showFeedback('success', 'Línea de colectivo registrada.');
-      setShowModal(null);
-      setBusForm({ line: '', description: '', type: 'interno_chimbas', frequency: '', neighborhoods: '', stops: '', stops_vuelta: '', schedule: '' });
+      };
+      if (editingId) {
+        await db.updateBus(editingId, payload);
+        showFeedback('success', 'Línea de colectivo actualizada.');
+      } else {
+        await db.createBus(payload);
+        showFeedback('success', 'Línea de colectivo registrada.');
+      }
+      closeModal();
+      setBusForm(emptyBusForm);
       loadAllData();
     } catch (error) {
-      showFeedback('error', 'Error al registrar la línea de colectivo.');
+      showFeedback('error', editingId ? 'Error al actualizar la línea de colectivo.' : 'Error al registrar la línea de colectivo.');
     }
   };
 
-  const handleCreateEvent = async (e) => {
+  const handleSaveEvent = async (e) => {
     e.preventDefault();
     try {
-      await db.createEvent({
-        ...eventForm,
-        price: parseFloat(eventForm.price) || 0
-      });
-      showFeedback('success', 'Evento programado exitosamente.');
-      setShowModal(null);
-      setEventForm({ title: '', description: '', date: '', time: '', location: '', category: 'Cultura', image_url: '', price: '0' });
+      const payload = { ...eventForm, price: parseFloat(eventForm.price) || 0 };
+      if (editingId) {
+        await db.updateEvent(editingId, payload);
+        showFeedback('success', 'Evento actualizado exitosamente.');
+      } else {
+        await db.createEvent(payload);
+        showFeedback('success', 'Evento programado exitosamente.');
+      }
+      closeModal();
+      setEventForm(emptyEventForm);
       loadAllData();
     } catch (error) {
-      showFeedback('error', 'Error al registrar el evento.');
+      showFeedback('error', editingId ? 'Error al actualizar el evento.' : 'Error al registrar el evento.');
     }
   };
 
-  const handleCreateJob = async (e) => {
+  const handleSaveJob = async (e) => {
     e.preventDefault();
     try {
-      await db.createJob({
-        ...jobForm,
-        price: parseFloat(jobForm.price) || 0
-      });
-      showFeedback('success', 'Puesto de trabajo / servicio vecinal agregado.');
-      setShowModal(null);
-      setJobForm({ title: '', description: '', type: 'oferta_laboral', category: '', price: '0', company: '', contact_name: '', whatsapp: '' });
+      const payload = { ...jobForm, price: parseFloat(jobForm.price) || 0 };
+      if (editingId) {
+        await db.updateJob(editingId, payload);
+        showFeedback('success', 'Publicación de empleo actualizada.');
+      } else {
+        await db.createJob(payload);
+        showFeedback('success', 'Puesto de trabajo / servicio vecinal agregado.');
+      }
+      closeModal();
+      setJobForm(emptyJobForm);
       loadAllData();
     } catch (error) {
-      showFeedback('error', 'Error al publicar en la bolsa de empleo.');
+      showFeedback('error', editingId ? 'Error al actualizar el empleo.' : 'Error al publicar en la bolsa de empleo.');
     }
   };
 
-  const handleCreateBusiness = async (e) => {
+  const handleSaveBusiness = async (e) => {
     e.preventDefault();
     try {
-      await db.createBusiness({
+      const payload = {
         name: businessForm.name,
         description: businessForm.description,
         category: businessForm.category,
@@ -308,13 +516,58 @@ export default function AdminDashboard() {
           lunes_a_viernes: businessForm.hours_lunes_viernes,
           sabado_y_domingo: businessForm.hours_sabado_domingo
         }
-      });
-      showFeedback('success', 'Comercio agregado y auto-aprobado exitosamente.');
-      setShowModal(null);
-      setBusinessForm({ name: '', description: '', category: 'Gastronomía', address: '', neighborhood: '', phone: '', whatsapp: '', latitude: '', longitude: '', image_url: '', hours_lunes_viernes: '09:00 - 13:00, 17:00 - 21:00', hours_sabado_domingo: 'Cerrado' });
+      };
+      if (editingId) {
+        await db.updateBusiness(editingId, payload);
+        showFeedback('success', 'Comercio actualizado exitosamente.');
+      } else {
+        await db.createBusiness(payload);
+        showFeedback('success', 'Comercio agregado y auto-aprobado exitosamente.');
+      }
+      closeModal();
+      setBusinessForm(emptyBusinessForm);
       loadAllData();
     } catch (error) {
-      showFeedback('error', 'Error al registrar el comercio.');
+      showFeedback('error', editingId ? 'Error al actualizar el comercio.' : 'Error al registrar el comercio.');
+    }
+  };
+
+  const handleSaveClassified = async (e) => {
+    e.preventDefault();
+    try {
+      const payload = {
+        ...classifiedForm,
+        price: parseFloat(classifiedForm.price) || 0,
+      };
+      if (editingId) {
+        await db.updateClassified(editingId, payload);
+        showFeedback('success', 'Clasificado actualizado exitosamente.');
+      } else {
+        await db.createClassified(payload);
+        showFeedback('success', 'Clasificado creado exitosamente.');
+      }
+      closeModal();
+      setClassifiedForm(emptyClassifiedForm);
+      loadAllData();
+    } catch (error) {
+      showFeedback('error', editingId ? 'Error al actualizar el clasificado.' : 'Error al crear el clasificado.');
+    }
+  };
+
+  const handleSaveProfile = async (e) => {
+    e.preventDefault();
+    try {
+      await db.updateProfileAdmin(editingId, {
+        full_name: profileForm.full_name,
+        phone: profileForm.phone,
+        is_admin: profileForm.is_admin,
+      });
+      showFeedback('success', 'Usuario actualizado exitosamente.');
+      closeModal();
+      setProfileForm(emptyProfileForm);
+      loadAllData();
+    } catch (error) {
+      showFeedback('error', error.message || 'Error al actualizar el usuario.');
     }
   };
 
@@ -394,6 +647,7 @@ export default function AdminDashboard() {
           { id: 'buses', label: `Colectivos (${buses.length})`, icon: <Bus size={16} /> },
           { id: 'events', label: `Eventos (${events.length})`, icon: <Calendar size={16} /> },
           { id: 'jobs', label: `Empleos (${jobs.length})`, icon: <Briefcase size={16} /> },
+          { id: 'users', label: `Usuarios (${profiles.length})`, icon: <Users size={16} /> },
         ].map(tab => (
           <button
             key={tab.id}
@@ -455,6 +709,7 @@ export default function AdminDashboard() {
                   { title: 'Eventos Agenda', value: events.length, desc: 'Actividades programadas', icon: <Calendar size={22} />, color: '#ec4899' },
                   { title: 'Ofertas Laborales', value: jobs.length, desc: 'Bolsa de trabajo activa', icon: <Briefcase size={22} />, color: '#a78bfa' },
                   { title: 'Líneas Colectivo', value: buses.length, desc: 'Recorridos RedTulum', icon: <Bus size={22} />, color: '#10b981' },
+                  { title: 'Usuarios', value: profiles.length, desc: 'Perfiles registrados', icon: <Users size={22} />, color: '#60a5fa' },
                 ].map((stat, i) => (
                   <div key={i} className="glass" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.75rem', position: 'relative', overflow: 'hidden' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -475,12 +730,13 @@ export default function AdminDashboard() {
               <h2 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '1.5rem' }}>Agregar nuevo contenido al portal</h2>
               <div className="grid-cards" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '1.5rem' }}>
                 {[
-                  { title: 'Registrar Comercio', desc: 'Suma un negocio o servicio a la guía.', action: () => setShowModal('business'), icon: <Store /> },
-                  { title: 'Programar Farmacia', desc: 'Asigna fechas de guardia de turno.', action: () => setShowModal('pharmacy'), icon: <HeartPulse /> },
-                  { title: 'Registrar Kiosco 24h', desc: 'Suma un maxikiosco al mapa nocturno.', action: () => setShowModal('kiosk'), icon: <Clock /> },
-                  { title: 'Sumar Recorrido Colectivo', desc: 'Configura una línea de RedTulum.', action: () => setShowModal('bus'), icon: <Bus /> },
-                  { title: 'Agenda de Eventos', desc: 'Promociona festivales o talleres.', action: () => setShowModal('event'), icon: <Calendar /> },
-                  { title: 'Publicar Vacante / Servicio', desc: 'Agrega a la bolsa de empleo.', action: () => setShowModal('job'), icon: <Briefcase /> }
+                  { title: 'Registrar Comercio', desc: 'Suma un negocio o servicio a la guía.', action: openCreateBusiness, icon: <Store /> },
+                  { title: 'Nuevo Clasificado', desc: 'Publicá un aviso en la cartelera.', action: openCreateClassified, icon: <Tag /> },
+                  { title: 'Programar Farmacia', desc: 'Asigna fechas de guardia de turno.', action: openCreatePharmacy, icon: <HeartPulse /> },
+                  { title: 'Registrar Kiosco 24h', desc: 'Suma un maxikiosco al mapa nocturno.', action: openCreateKiosk, icon: <Clock /> },
+                  { title: 'Sumar Recorrido Colectivo', desc: 'Configura una línea de RedTulum.', action: openCreateBus, icon: <Bus /> },
+                  { title: 'Agenda de Eventos', desc: 'Promociona festivales o talleres.', action: openCreateEvent, icon: <Calendar /> },
+                  { title: 'Publicar Vacante / Servicio', desc: 'Agrega a la bolsa de empleo.', action: openCreateJob, icon: <Briefcase /> }
                 ].map((item, idx) => (
                   <div 
                     key={idx} 
@@ -507,7 +763,7 @@ export default function AdminDashboard() {
             <div className="fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
                 <h2 style={{ fontSize: '1.5rem', fontWeight: 800 }}>Listado de Comercios</h2>
-                <button onClick={() => setShowModal('business')} className="btn btn-primary" style={{ gap: '0.35rem', fontSize: '0.85rem' }}>
+                <button onClick={openCreateBusiness} className="btn btn-primary" style={{ gap: '0.35rem', fontSize: '0.85rem' }}>
                   <Plus size={16} /> Agregar Comercio
                 </button>
               </div>
@@ -561,6 +817,13 @@ export default function AdminDashboard() {
                           Ficha
                         </Link>
                         <button 
+                          onClick={() => openEditBusiness(biz)} 
+                          className="btn btn-secondary" 
+                          style={{ padding: '0.45rem 0.8rem', fontSize: '0.8rem' }}
+                        >
+                          <Pencil size={14} />
+                        </button>
+                        <button 
                           onClick={() => handleDeleteBusiness(biz.id)} 
                           className="btn btn-primary" 
                           style={{ padding: '0.45rem 0.8rem', fontSize: '0.8rem', background: 'var(--color-closed)', boxShadow: 'none' }}
@@ -578,7 +841,12 @@ export default function AdminDashboard() {
           {/* TAB 3: CLASIFICADOS */}
           {activeTab === 'classifieds' && (
             <div className="fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-              <h2 style={{ fontSize: '1.5rem', fontWeight: 800 }}>Clasificados Activos</h2>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+                <h2 style={{ fontSize: '1.5rem', fontWeight: 800 }}>Clasificados Activos</h2>
+                <button onClick={openCreateClassified} className="btn btn-primary" style={{ gap: '0.35rem', fontSize: '0.85rem' }}>
+                  <Plus size={16} /> Nuevo clasificado
+                </button>
+              </div>
 
               {classifieds.length === 0 ? (
                 <div className="glass" style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-secondary)' }}>No hay avisos clasificados publicados.</div>
@@ -591,7 +859,7 @@ export default function AdminDashboard() {
                         <div>
                           <h3 style={{ fontSize: '1.15rem', fontWeight: 700 }}>{ad.title}</h3>
                           <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '0.25rem' }}>
-                            Precio: <strong>${ad.price.toLocaleString('es-AR')}</strong> | Rubro: <strong>{ad.category}</strong> | Contacto: {ad.whatsapp}
+                            Precio: <strong>${Number(ad.price || 0).toLocaleString('es-AR')}</strong> | Rubro: <strong>{ad.category}</strong> | Contacto: {ad.whatsapp}
                           </p>
                         </div>
                       </div>
@@ -600,6 +868,13 @@ export default function AdminDashboard() {
                         <Link href={`/clasificados/${ad.id}`} className="btn btn-secondary" style={{ padding: '0.45rem 0.8rem', fontSize: '0.8rem' }}>
                           Ver Detalle
                         </Link>
+                        <button 
+                          onClick={() => openEditClassified(ad)} 
+                          className="btn btn-secondary" 
+                          style={{ padding: '0.45rem 0.8rem', fontSize: '0.8rem' }}
+                        >
+                          <Pencil size={14} />
+                        </button>
                         <button 
                           onClick={() => handleDeleteClassified(ad.id)} 
                           className="btn btn-primary" 
@@ -620,7 +895,7 @@ export default function AdminDashboard() {
             <div className="fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
                 <h2 style={{ fontSize: '1.5rem', fontWeight: 800 }}>Farmacias y Calendario de Guardia</h2>
-                <button onClick={() => setShowModal('pharmacy')} className="btn btn-primary" style={{ gap: '0.35rem', fontSize: '0.85rem' }}>
+                <button onClick={openCreatePharmacy} className="btn btn-primary" style={{ gap: '0.35rem', fontSize: '0.85rem' }}>
                   <Plus size={16} /> Programar Turno
                 </button>
               </div>
@@ -641,19 +916,28 @@ export default function AdminDashboard() {
                         </p>
                         <div style={{ marginTop: '0.5rem', display: 'flex', gap: '0.35rem', flexWrap: 'wrap' }}>
                           <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', alignSelf: 'center' }}>Fechas de turno:</span>
-                          {phar.duty_dates.map((date, idx) => (
+                          {(phar.duty_dates || []).map((date, idx) => (
                             <span key={idx} className="badge badge-open" style={{ fontSize: '0.7rem', background: 'rgba(16, 185, 129, 0.1)', color: '#34d399', border: 'none' }}>{date}</span>
                           ))}
                         </div>
                       </div>
                       
-                      <button 
-                        onClick={() => handleDeletePharmacy(phar.id)} 
-                        className="btn btn-primary" 
-                        style={{ padding: '0.45rem 0.8rem', fontSize: '0.8rem', background: 'var(--color-closed)', boxShadow: 'none' }}
-                      >
-                        <Trash2 size={14} />
-                      </button>
+                      <div style={{ display: 'flex', gap: '0.5rem' }}>
+                        <button 
+                          onClick={() => openEditPharmacy(phar)} 
+                          className="btn btn-secondary" 
+                          style={{ padding: '0.45rem 0.8rem', fontSize: '0.8rem' }}
+                        >
+                          <Pencil size={14} />
+                        </button>
+                        <button 
+                          onClick={() => handleDeletePharmacy(phar.id)} 
+                          className="btn btn-primary" 
+                          style={{ padding: '0.45rem 0.8rem', fontSize: '0.8rem', background: 'var(--color-closed)', boxShadow: 'none' }}
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -666,7 +950,7 @@ export default function AdminDashboard() {
             <div className="fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
                 <h2 style={{ fontSize: '1.5rem', fontWeight: 800 }}>Kioscos de Turno Nocturno / 24h</h2>
-                <button onClick={() => setShowModal('kiosk')} className="btn btn-primary" style={{ gap: '0.35rem', fontSize: '0.85rem' }}>
+                <button onClick={openCreateKiosk} className="btn btn-primary" style={{ gap: '0.35rem', fontSize: '0.85rem' }}>
                   <Plus size={16} /> Agregar Kiosco
                 </button>
               </div>
@@ -694,13 +978,22 @@ export default function AdminDashboard() {
                         </p>
                       </div>
                       
-                      <button 
-                        onClick={() => handleDeleteKiosk(kio.id)} 
-                        className="btn btn-primary" 
-                        style={{ padding: '0.45rem 0.8rem', fontSize: '0.8rem', background: 'var(--color-closed)', boxShadow: 'none' }}
-                      >
-                        <Trash2 size={14} />
-                      </button>
+                      <div style={{ display: 'flex', gap: '0.5rem' }}>
+                        <button 
+                          onClick={() => openEditKiosk(kio)} 
+                          className="btn btn-secondary" 
+                          style={{ padding: '0.45rem 0.8rem', fontSize: '0.8rem' }}
+                        >
+                          <Pencil size={14} />
+                        </button>
+                        <button 
+                          onClick={() => handleDeleteKiosk(kio.id)} 
+                          className="btn btn-primary" 
+                          style={{ padding: '0.45rem 0.8rem', fontSize: '0.8rem', background: 'var(--color-closed)', boxShadow: 'none' }}
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -713,7 +1006,7 @@ export default function AdminDashboard() {
             <div className="fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
                 <h2 style={{ fontSize: '1.5rem', fontWeight: 800 }}>Colectivos RedTulum</h2>
-                <button onClick={() => setShowModal('bus')} className="btn btn-primary" style={{ gap: '0.35rem', fontSize: '0.85rem' }}>
+                <button onClick={openCreateBus} className="btn btn-primary" style={{ gap: '0.35rem', fontSize: '0.85rem' }}>
                   <Plus size={16} /> Registrar Colectivo
                 </button>
               </div>
@@ -734,10 +1027,10 @@ export default function AdminDashboard() {
                         </div>
                         <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '0.25rem' }}>{bus.description}</p>
                         <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
-                          <strong>Zonas:</strong> {bus.neighborhoods.join(', ')}
+                          <strong>Zonas:</strong> {(bus.neighborhoods || []).join(', ')}
                         </p>
                         <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                          <strong>Paradas clave (Ida):</strong> {bus.stops.join(' ➔ ')}
+                          <strong>Paradas clave (Ida):</strong> {(bus.stops || []).join(' ➔ ')}
                         </p>
                         {bus.stops_vuelta && bus.stops_vuelta.length > 0 && (
                           <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
@@ -746,13 +1039,22 @@ export default function AdminDashboard() {
                         )}
                       </div>
                       
-                      <button 
-                        onClick={() => handleDeleteBus(bus.id)} 
-                        className="btn btn-primary" 
-                        style={{ padding: '0.45rem 0.8rem', fontSize: '0.8rem', background: 'var(--color-closed)', boxShadow: 'none' }}
-                      >
-                        <Trash2 size={14} />
-                      </button>
+                      <div style={{ display: 'flex', gap: '0.5rem' }}>
+                        <button 
+                          onClick={() => openEditBus(bus)} 
+                          className="btn btn-secondary" 
+                          style={{ padding: '0.45rem 0.8rem', fontSize: '0.8rem' }}
+                        >
+                          <Pencil size={14} />
+                        </button>
+                        <button 
+                          onClick={() => handleDeleteBus(bus.id)} 
+                          className="btn btn-primary" 
+                          style={{ padding: '0.45rem 0.8rem', fontSize: '0.8rem', background: 'var(--color-closed)', boxShadow: 'none' }}
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -765,7 +1067,7 @@ export default function AdminDashboard() {
             <div className="fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
                 <h2 style={{ fontSize: '1.5rem', fontWeight: 800 }}>Agenda de Eventos</h2>
-                <button onClick={() => setShowModal('event')} className="btn btn-primary" style={{ gap: '0.35rem', fontSize: '0.85rem' }}>
+                <button onClick={openCreateEvent} className="btn btn-primary" style={{ gap: '0.35rem', fontSize: '0.85rem' }}>
                   <Plus size={16} /> Crear Evento
                 </button>
               </div>
@@ -790,13 +1092,22 @@ export default function AdminDashboard() {
                         </div>
                       </div>
                       
-                      <button 
-                        onClick={() => handleDeleteEvent(eve.id)} 
-                        className="btn btn-primary" 
-                        style={{ padding: '0.45rem 0.8rem', fontSize: '0.8rem', background: 'var(--color-closed)', boxShadow: 'none' }}
-                      >
-                        <Trash2 size={14} />
-                      </button>
+                      <div style={{ display: 'flex', gap: '0.5rem' }}>
+                        <button 
+                          onClick={() => openEditEvent(eve)} 
+                          className="btn btn-secondary" 
+                          style={{ padding: '0.45rem 0.8rem', fontSize: '0.8rem' }}
+                        >
+                          <Pencil size={14} />
+                        </button>
+                        <button 
+                          onClick={() => handleDeleteEvent(eve.id)} 
+                          className="btn btn-primary" 
+                          style={{ padding: '0.45rem 0.8rem', fontSize: '0.8rem', background: 'var(--color-closed)', boxShadow: 'none' }}
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -809,7 +1120,7 @@ export default function AdminDashboard() {
             <div className="fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
                 <h2 style={{ fontSize: '1.5rem', fontWeight: 800 }}>Bolsa de Empleo y Servicios</h2>
-                <button onClick={() => setShowModal('job')} className="btn btn-primary" style={{ gap: '0.35rem', fontSize: '0.85rem' }}>
+                <button onClick={openCreateJob} className="btn btn-primary" style={{ gap: '0.35rem', fontSize: '0.85rem' }}>
                   <Plus size={16} /> Publicar Empleo/Servicio
                 </button>
               </div>
@@ -833,13 +1144,69 @@ export default function AdminDashboard() {
                         <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Categoría: {job.category}</p>
                       </div>
                       
-                      <button 
-                        onClick={() => handleDeleteJob(job.id)} 
-                        className="btn btn-primary" 
-                        style={{ padding: '0.45rem 0.8rem', fontSize: '0.8rem', background: 'var(--color-closed)', boxShadow: 'none' }}
-                      >
-                        <Trash2 size={14} />
-                      </button>
+                      <div style={{ display: 'flex', gap: '0.5rem' }}>
+                        <button 
+                          onClick={() => openEditJob(job)} 
+                          className="btn btn-secondary" 
+                          style={{ padding: '0.45rem 0.8rem', fontSize: '0.8rem' }}
+                        >
+                          <Pencil size={14} />
+                        </button>
+                        <button 
+                          onClick={() => handleDeleteJob(job.id)} 
+                          className="btn btn-primary" 
+                          style={{ padding: '0.45rem 0.8rem', fontSize: '0.8rem', background: 'var(--color-closed)', boxShadow: 'none' }}
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* TAB 9: USUARIOS */}
+          {activeTab === 'users' && (
+            <div className="fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              <h2 style={{ fontSize: '1.5rem', fontWeight: 800 }}>Usuarios Registrados</h2>
+
+              {profiles.length === 0 ? (
+                <div className="glass" style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-secondary)' }}>No hay usuarios registrados.</div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  {profiles.map(profile => (
+                    <div key={profile.id} className="glass" style={{ padding: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+                      <div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+                          <h3 style={{ fontSize: '1.15rem', fontWeight: 700 }}>{profile.full_name || 'Sin nombre'}</h3>
+                          {profile.is_admin && (
+                            <span className="badge badge-open" style={{ fontSize: '0.7rem', background: 'rgba(139, 92, 246, 0.1)', color: '#a78bfa', borderColor: '#a78bfa' }}>Admin</span>
+                          )}
+                        </div>
+                        <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '0.25rem' }}>
+                          📞 {profile.phone || 'Sin teléfono'}
+                          {profile.email ? ` | ✉️ ${profile.email}` : ''}
+                        </p>
+                      </div>
+                      
+                      <div style={{ display: 'flex', gap: '0.5rem' }}>
+                        <button 
+                          onClick={() => openEditProfile(profile)} 
+                          className="btn btn-secondary" 
+                          style={{ padding: '0.45rem 0.8rem', fontSize: '0.8rem' }}
+                        >
+                          <Pencil size={14} />
+                        </button>
+                        <button 
+                          onClick={() => handleDeleteProfile(profile.id)} 
+                          className="btn btn-primary" 
+                          style={{ padding: '0.45rem 0.8rem', fontSize: '0.8rem', background: 'var(--color-closed)', boxShadow: 'none' }}
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -849,11 +1216,11 @@ export default function AdminDashboard() {
         </>
       )}
 
-      {/* --- MODALES DE CREACIÓN DE CONTENIDO --- */}
+      {/* --- MODALES DE CREACIÓN / EDICIÓN --- */}
 
       {showModal && (
         <div 
-          onClick={() => setShowModal(null)}
+          onClick={closeModal}
           style={{
             position: 'fixed',
             top: 0,
@@ -886,7 +1253,7 @@ export default function AdminDashboard() {
           >
             {/* Botón Cerrar */}
             <button 
-              onClick={() => setShowModal(null)}
+              onClick={closeModal}
               style={{
                 position: 'absolute',
                 top: '1.5rem',
@@ -902,9 +1269,9 @@ export default function AdminDashboard() {
 
             {/* FORMULARIO 1: COMERCIO */}
             {showModal === 'business' && (
-              <form onSubmit={handleCreateBusiness} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+              <form onSubmit={handleSaveBusiness} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                 <h2 style={{ fontSize: '1.75rem', fontWeight: 800, marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }} className="gradient-text">
-                  <Store /> Registrar Nuevo Comercio
+                  <Store /> {editingId ? 'Editar Comercio' : 'Registrar Nuevo Comercio'}
                 </h2>
                 
                 <div>
@@ -963,16 +1330,16 @@ export default function AdminDashboard() {
                 </div>
 
                 <button type="submit" className="btn btn-primary" style={{ padding: '0.75rem', fontWeight: 700, marginTop: '0.5rem', background: 'var(--primary-gradient)' }}>
-                  Registrar Comercio
+                  {editingId ? 'Guardar Cambios' : 'Registrar Comercio'}
                 </button>
               </form>
             )}
 
             {/* FORMULARIO 2: FARMACIA */}
             {showModal === 'pharmacy' && (
-              <form onSubmit={handleCreatePharmacy} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+              <form onSubmit={handleSavePharmacy} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                 <h2 style={{ fontSize: '1.75rem', fontWeight: 800, marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }} className="gradient-text">
-                  <HeartPulse /> Programar Guardia de Farmacia
+                  <HeartPulse /> {editingId ? 'Editar Farmacia' : 'Programar Guardia de Farmacia'}
                 </h2>
 
                 <div>
@@ -1016,16 +1383,16 @@ export default function AdminDashboard() {
                 </div>
 
                 <button type="submit" className="btn btn-primary" style={{ padding: '0.75rem', fontWeight: 700, marginTop: '0.5rem', background: 'var(--primary-gradient)' }}>
-                  Registrar Turno de Farmacia
+                  {editingId ? 'Guardar Cambios' : 'Registrar Turno de Farmacia'}
                 </button>
               </form>
             )}
 
             {/* FORMULARIO 3: KIOSCO */}
             {showModal === 'kiosk' && (
-              <form onSubmit={handleCreateKiosk} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+              <form onSubmit={handleSaveKiosk} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                 <h2 style={{ fontSize: '1.75rem', fontWeight: 800, marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }} className="gradient-text">
-                  <Clock /> Sumar Kiosco Abierto Tarde/24hs
+                  <Clock /> {editingId ? 'Editar Kiosco' : 'Sumar Kiosco Abierto Tarde/24hs'}
                 </h2>
 
                 <div>
@@ -1061,16 +1428,16 @@ export default function AdminDashboard() {
                 </div>
 
                 <button type="submit" className="btn btn-primary" style={{ padding: '0.75rem', fontWeight: 700, marginTop: '0.5rem', background: 'var(--primary-gradient)' }}>
-                  Registrar Kiosco
+                  {editingId ? 'Guardar Cambios' : 'Registrar Kiosco'}
                 </button>
               </form>
             )}
 
             {/* FORMULARIO 4: COLECTIVO */}
             {showModal === 'bus' && (
-              <form onSubmit={handleCreateBus} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+              <form onSubmit={handleSaveBus} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                 <h2 style={{ fontSize: '1.75rem', fontWeight: 800, marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }} className="gradient-text">
-                  <Bus /> Configurar Línea de Colectivo (RedTulum)
+                  <Bus /> {editingId ? 'Editar Colectivo' : 'Configurar Línea de Colectivo (RedTulum)'}
                 </h2>
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
@@ -1120,16 +1487,16 @@ export default function AdminDashboard() {
                 </div>
 
                 <button type="submit" className="btn btn-primary" style={{ padding: '0.75rem', fontWeight: 700, marginTop: '0.5rem', background: 'var(--primary-gradient)' }}>
-                  Registrar Línea
+                  {editingId ? 'Guardar Cambios' : 'Registrar Línea'}
                 </button>
               </form>
             )}
 
             {/* FORMULARIO 5: EVENTO */}
             {showModal === 'event' && (
-              <form onSubmit={handleCreateEvent} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+              <form onSubmit={handleSaveEvent} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                 <h2 style={{ fontSize: '1.75rem', fontWeight: 800, marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }} className="gradient-text">
-                  <Calendar /> Programar Evento en Agenda
+                  <Calendar /> {editingId ? 'Editar Evento' : 'Programar Evento en Agenda'}
                 </h2>
 
                 <div>
@@ -1182,16 +1549,16 @@ export default function AdminDashboard() {
                 </div>
 
                 <button type="submit" className="btn btn-primary" style={{ padding: '0.75rem', fontWeight: 700, marginTop: '0.5rem', background: 'var(--primary-gradient)' }}>
-                  Registrar Evento
+                  {editingId ? 'Guardar Cambios' : 'Registrar Evento'}
                 </button>
               </form>
             )}
 
             {/* FORMULARIO 6: EMPLEO */}
             {showModal === 'job' && (
-              <form onSubmit={handleCreateJob} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+              <form onSubmit={handleSaveJob} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                 <h2 style={{ fontSize: '1.75rem', fontWeight: 800, marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }} className="gradient-text">
-                  <Briefcase /> Registrar Oferta de Trabajo / Servicio
+                  <Briefcase /> {editingId ? 'Editar Empleo / Servicio' : 'Registrar Oferta de Trabajo / Servicio'}
                 </h2>
 
                 <div>
@@ -1241,7 +1608,104 @@ export default function AdminDashboard() {
                 </div>
 
                 <button type="submit" className="btn btn-primary" style={{ padding: '0.75rem', fontWeight: 700, marginTop: '0.5rem', background: 'var(--primary-gradient)' }}>
-                  Publicar
+                  {editingId ? 'Guardar Cambios' : 'Publicar'}
+                </button>
+              </form>
+            )}
+
+            {/* FORMULARIO 7: CLASIFICADO */}
+            {showModal === 'classified' && (
+              <form onSubmit={handleSaveClassified} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                <h2 style={{ fontSize: '1.75rem', fontWeight: 800, marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }} className="gradient-text">
+                  <Tag /> {editingId ? 'Editar Clasificado' : 'Nuevo Clasificado'}
+                </h2>
+
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.4rem', fontWeight: 700 }}>Título *</label>
+                  <input required type="text" placeholder="Ej: Vendo Smart TV 42''" style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-glass)', color: 'white' }} value={classifiedForm.title} onChange={e => setClassifiedForm({...classifiedForm, title: e.target.value})} />
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.4rem', fontWeight: 700 }}>Descripción *</label>
+                  <textarea required placeholder="Detalles del aviso..." style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-glass)', color: 'white', height: '80px', resize: 'none' }} value={classifiedForm.description} onChange={e => setClassifiedForm({...classifiedForm, description: e.target.value})} />
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.4rem', fontWeight: 700 }}>Precio *</label>
+                    <input required type="number" placeholder="Ej: 45000" style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-glass)', color: 'white' }} value={classifiedForm.price} onChange={e => setClassifiedForm({...classifiedForm, price: e.target.value})} />
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.4rem', fontWeight: 700 }}>Categoría *</label>
+                    <select style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', background: 'rgba(15,23,42,0.9)', border: '1px solid var(--border-glass)', color: 'white' }} value={classifiedForm.category} onChange={e => setClassifiedForm({...classifiedForm, category: e.target.value})}>
+                      <option value="sale">Venta</option>
+                      <option value="rent">Alquiler</option>
+                      <option value="service">Servicio</option>
+                      <option value="job">Búsqueda Laboral</option>
+                      <option value="other">Otros</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.4rem', fontWeight: 700 }}>Condición *</label>
+                    <select style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', background: 'rgba(15,23,42,0.9)', border: '1px solid var(--border-glass)', color: 'white' }} value={classifiedForm.condition} onChange={e => setClassifiedForm({...classifiedForm, condition: e.target.value})}>
+                      <option value="used">Usado</option>
+                      <option value="new">Nuevo</option>
+                      <option value="not_applicable">No Aplica</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.4rem', fontWeight: 700 }}>Estado *</label>
+                    <select style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', background: 'rgba(15,23,42,0.9)', border: '1px solid var(--border-glass)', color: 'white' }} value={classifiedForm.status} onChange={e => setClassifiedForm({...classifiedForm, status: e.target.value})}>
+                      <option value="active">Activo</option>
+                      <option value="sold">Vendido</option>
+                      <option value="inactive">Inactivo</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.4rem', fontWeight: 700 }}>URL de Imagen</label>
+                  <input type="text" placeholder="URL de la imagen" style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-glass)', color: 'white' }} value={classifiedForm.image_url} onChange={e => setClassifiedForm({...classifiedForm, image_url: e.target.value})} />
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.4rem', fontWeight: 700 }}>WhatsApp *</label>
+                  <input required type="text" placeholder="Ej: 542645112233" style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-glass)', color: 'white' }} value={classifiedForm.whatsapp} onChange={e => setClassifiedForm({...classifiedForm, whatsapp: e.target.value})} />
+                </div>
+
+                <button type="submit" className="btn btn-primary" style={{ padding: '0.75rem', fontWeight: 700, marginTop: '0.5rem', background: 'var(--primary-gradient)' }}>
+                  {editingId ? 'Guardar Cambios' : 'Crear Clasificado'}
+                </button>
+              </form>
+            )}
+
+            {/* FORMULARIO 8: USUARIO */}
+            {showModal === 'user' && (
+              <form onSubmit={handleSaveProfile} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                <h2 style={{ fontSize: '1.75rem', fontWeight: 800, marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }} className="gradient-text">
+                  <Users /> Editar Usuario
+                </h2>
+
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.4rem', fontWeight: 700 }}>Nombre completo *</label>
+                  <input required type="text" placeholder="Ej: Juan Pérez" style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-glass)', color: 'white' }} value={profileForm.full_name} onChange={e => setProfileForm({...profileForm, full_name: e.target.value})} />
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.4rem', fontWeight: 700 }}>Teléfono</label>
+                  <input type="text" placeholder="Ej: 2645123456" style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-glass)', color: 'white' }} value={profileForm.phone} onChange={e => setProfileForm({...profileForm, phone: e.target.value})} />
+                </div>
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <input type="checkbox" id="isAdmin" style={{ transform: 'scale(1.3)' }} checked={profileForm.is_admin} onChange={e => setProfileForm({...profileForm, is_admin: e.target.checked})} />
+                  <label htmlFor="isAdmin" style={{ fontSize: '0.85rem', fontWeight: 700, cursor: 'pointer' }}>Es administrador</label>
+                </div>
+
+                <button type="submit" className="btn btn-primary" style={{ padding: '0.75rem', fontWeight: 700, marginTop: '0.5rem', background: 'var(--primary-gradient)' }}>
+                  Guardar Cambios
                 </button>
               </form>
             )}
@@ -1253,3 +1717,4 @@ export default function AdminDashboard() {
     </div>
   );
 }
+

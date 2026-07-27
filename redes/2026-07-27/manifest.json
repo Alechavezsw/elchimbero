@@ -1,0 +1,13 @@
+﻿{
+    "date":  "2026-07-27",
+    "target_dir":  "C:\\Users\\Usuario\\Desktop\\Proyectos\\El Chimbero\\redes\\2026-07-27",
+    "file_count":  4,
+    "files":  [
+                  "2026-07-27-alerta-por-zonda-en-san-juan-chimbas-y-otros-ocho-departamentos-quedaron-bajo-aviso-amarillo.png",
+                  "2026-07-27-caucete-hallaron-un-explosivo-sobre-ruta-150-y-trabajo-una-brigada-especializada.png",
+                  "2026-07-27-operativo-en-capital-retiraron-un-objeto-sospechoso-frente-a-la-fiscalia-de-estado.png",
+                  "2026-07-27-ullum-rescataron-a-cuatro-turistas-que-se-perdieron-en-los-cerros.png"
+              ],
+    "drive_base_folder":  "https://drive.google.com/drive/folders/1R-d-e59qzodnnOiJ40LHmtO1guOHzrUJ?usp=drive_link",
+    "note":  "Drive upload pending connector support for folder creation and raw file upload."
+}
