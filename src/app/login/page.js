@@ -1,12 +1,37 @@
 'use client';
 
-import React, { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect, Suspense } from 'react';
+import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/components/AuthProvider';
-import { LogIn, UserPlus, Mail, Lock, User, Phone, Check } from 'lucide-react';
+import { LogIn, UserPlus, Mail, Lock, User, Phone } from 'lucide-react';
+import styles from './login.module.css';
+
+function mapAuthError(err) {
+  const msg = (err?.message || '').toLowerCase();
+  if (msg.includes('invalid login credentials') || msg.includes('invalid_credentials')) {
+    return 'Correo o contraseña incorrectos.';
+  }
+  if (msg.includes('email not confirmed')) {
+    return 'Confirmá tu correo antes de ingresar. Revisá tu bandeja de entrada.';
+  }
+  if (msg.includes('user already registered') || msg.includes('already been registered')) {
+    return 'Ya existe una cuenta con ese correo. Probá iniciar sesión.';
+  }
+  if (msg.includes('password should be at least')) {
+    return 'La contraseña debe tener al menos 6 caracteres.';
+  }
+  if (msg.includes('unable to validate email') || msg.includes('invalid email')) {
+    return 'El correo no es válido.';
+  }
+  if (msg.includes('rate limit') || msg.includes('too many')) {
+    return 'Demasiados intentos. Esperá un momento e intentá de nuevo.';
+  }
+  return err?.message || 'No se pudo completar la operación. Intentá nuevamente.';
+}
 
 function LoginContent() {
-  const { user, signIn, signUp } = useAuth();
+  const { user, loading: authLoading, signIn, signUp } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectPath = searchParams.get('redirect') || '/dashboard';
@@ -16,132 +41,147 @@ function LoginContent() {
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
   const [phone, setPhone] = useState('');
-
   const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // Redirigir inmediatamente si ya está logueado
   useEffect(() => {
-    if (user) {
-      router.push(redirectPath);
+    if (!authLoading && user) {
+      router.replace(redirectPath);
     }
-  }, [user, router, redirectPath]);
+  }, [user, authLoading, router, redirectPath]);
+
+  const resetMessages = () => {
+    setError(null);
+    setSuccess(null);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null);
+    resetMessages();
     setLoading(true);
 
     try {
       if (isSignUp) {
-        if (!fullName || !phone) {
-          throw new Error('Por favor completa tu nombre y número de teléfono.');
+        if (!fullName.trim() || !phone.trim()) {
+          throw new Error('Completá tu nombre y teléfono para crear la cuenta.');
         }
-        await signUp(email, password, fullName, phone);
+        if (password.length < 6) {
+          throw new Error('La contraseña debe tener al menos 6 caracteres.');
+        }
+
+        const result = await signUp(email.trim(), password, fullName.trim(), phone.trim());
+        if (result?.needsEmailConfirmation) {
+          setSuccess('Cuenta creada. Revisá tu email para confirmarla y después iniciá sesión.');
+          setIsSignUp(false);
+          setPassword('');
+          return;
+        }
+        router.replace(redirectPath);
       } else {
-        await signIn(email, password);
+        await signIn(email.trim(), password);
+        router.replace(redirectPath);
       }
-      router.push(redirectPath);
     } catch (err) {
       console.error('Error de autenticación:', err);
-      setError(err.message || 'Credenciales incorrectas. Intentá nuevamente.');
+      setError(mapAuthError(err));
     } finally {
       setLoading(false);
     }
   };
 
+  if (authLoading) {
+    return (
+      <div className={styles.page}>
+        <div className={styles.card}>
+          <p className={styles.subtitle} style={{ margin: 0 }}>Cargando sesión…</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div style={{ display: 'flex', flex: 1, alignItems: 'center', justifyContent: 'center', padding: '4rem 1rem' }}>
-      <div className="glass" style={{ maxWidth: '420px', width: '100%', padding: '2.5rem' }}>
-        
-        {/* PESTAÑAS */}
-        <div style={{ display: 'flex', borderBottom: '1px solid var(--border-glass)', marginBottom: '2rem' }}>
-          <button 
-            onClick={() => { setIsSignUp(false); setError(null); }}
-            style={{ 
-              flex: 1, 
-              paddingBottom: '1rem', 
-              background: 'none', 
-              border: 'none', 
-              color: !isSignUp ? 'var(--text-primary)' : 'var(--text-muted)',
-              fontWeight: 700,
-              fontSize: '1rem',
-              cursor: 'pointer',
-              borderBottom: !isSignUp ? '2px solid var(--primary)' : 'none',
-              transition: 'var(--transition-smooth)'
+    <div className={styles.page}>
+      <div className={styles.card}>
+        <div className={styles.brand}>
+          <Link href="/">
+            <img
+              src="/logo-el-chimbero.png?v=2"
+              alt="El Chimbero"
+              className={styles.logo}
+              width={220}
+              height={44}
+            />
+          </Link>
+          <p className={styles.subtitle}>
+            {isSignUp
+              ? 'Creá tu cuenta para publicar comercios, clasificados y más.'
+              : 'Ingresá para administrar tu perfil y tus publicaciones.'}
+          </p>
+        </div>
+
+        <div className={styles.tabs} role="tablist">
+          <button
+            type="button"
+            role="tab"
+            aria-selected={!isSignUp}
+            className={`${styles.tab} ${!isSignUp ? styles.tabActive : ''}`}
+            onClick={() => {
+              setIsSignUp(false);
+              resetMessages();
             }}
           >
-            Iniciar Sesión
+            Iniciar sesión
           </button>
-          <button 
-            onClick={() => { setIsSignUp(true); setError(null); }}
-            style={{ 
-              flex: 1, 
-              paddingBottom: '1rem', 
-              background: 'none', 
-              border: 'none', 
-              color: isSignUp ? 'var(--text-primary)' : 'var(--text-muted)',
-              fontWeight: 700,
-              fontSize: '1rem',
-              cursor: 'pointer',
-              borderBottom: isSignUp ? '2px solid var(--primary)' : 'none',
-              transition: 'var(--transition-smooth)'
+          <button
+            type="button"
+            role="tab"
+            aria-selected={isSignUp}
+            className={`${styles.tab} ${isSignUp ? styles.tabActive : ''}`}
+            onClick={() => {
+              setIsSignUp(true);
+              resetMessages();
             }}
           >
-            Crear Cuenta
+            Crear cuenta
           </button>
         </div>
 
-        {/* MENSAJE DE DEMO */}
-        <div className="badge badge-warning" style={{ width: '100%', display: 'flex', justifyContent: 'center', padding: '0.5rem', borderRadius: '8px', marginBottom: '1.5rem', textTransform: 'none', letterSpacing: 'normal', fontSize: '0.8rem' }}>
-          💡 Demo: <strong>test@elchimbero.com</strong> / <strong>chimbero123</strong> (vecino) · <strong>admin@elchimbero.com</strong> / <strong>chimbero123</strong> (admin)
-        </div>
+        {error && <div className={`${styles.alert} ${styles.alertError}`}>{error}</div>}
+        {success && <div className={`${styles.alert} ${styles.alertSuccess}`}>{success}</div>}
 
-        {error && (
-          <div style={{ 
-            padding: '0.75rem 1rem', 
-            background: 'rgba(239, 68, 68, 0.1)', 
-            color: 'var(--color-closed)', 
-            borderRadius: '8px', 
-            border: '1px solid rgba(239, 68, 68, 0.2)', 
-            marginBottom: '1.5rem', 
-            fontSize: '0.85rem' 
-          }}>
-            ⚠️ {error}
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-          
+        <form onSubmit={handleSubmit} className={styles.form} noValidate>
           {isSignUp && (
             <>
-              <div className="form-group" style={{ marginBottom: 0 }}>
-                <label className="form-label">Nombre Completo</label>
-                <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-                  <User size={16} style={{ position: 'absolute', left: '1rem', color: 'var(--text-muted)' }} />
+              <div className={styles.field}>
+                <label className={styles.label} htmlFor="fullName">Nombre completo</label>
+                <div className={styles.inputWrap}>
+                  <User size={16} className={styles.inputIcon} />
                   <input
+                    id="fullName"
                     type="text"
-                    className="form-input"
+                    className={styles.input}
                     placeholder="Ej: Juan Pérez"
-                    style={{ paddingLeft: '2.5rem' }}
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
+                    autoComplete="name"
                     required
                   />
                 </div>
               </div>
 
-              <div className="form-group" style={{ marginBottom: 0 }}>
-                <label className="form-label">Teléfono / Celular</label>
-                <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-                  <Phone size={16} style={{ position: 'absolute', left: '1rem', color: 'var(--text-muted)' }} />
+              <div className={styles.field}>
+                <label className={styles.label} htmlFor="phone">Teléfono / celular</label>
+                <div className={styles.inputWrap}>
+                  <Phone size={16} className={styles.inputIcon} />
                   <input
-                    type="text"
-                    className="form-input"
+                    id="phone"
+                    type="tel"
+                    className={styles.input}
                     placeholder="Ej: 2645123456"
-                    style={{ paddingLeft: '2.5rem' }}
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
+                    autoComplete="tel"
                     required
                   />
                 </div>
@@ -149,51 +189,60 @@ function LoginContent() {
             </>
           )}
 
-          <div className="form-group" style={{ marginBottom: 0 }}>
-            <label className="form-label">Correo Electrónico</label>
-            <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-              <Mail size={16} style={{ position: 'absolute', left: '1rem', color: 'var(--text-muted)' }} />
+          <div className={styles.field}>
+            <label className={styles.label} htmlFor="email">Correo electrónico</label>
+            <div className={styles.inputWrap}>
+              <Mail size={16} className={styles.inputIcon} />
               <input
+                id="email"
                 type="email"
-                className="form-input"
+                className={styles.input}
                 placeholder="correo@ejemplo.com"
-                style={{ paddingLeft: '2.5rem' }}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                autoComplete="email"
                 required
               />
             </div>
           </div>
 
-          <div className="form-group" style={{ marginBottom: 0 }}>
-            <label className="form-label">Contraseña</label>
-            <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-              <Lock size={16} style={{ position: 'absolute', left: '1rem', color: 'var(--text-muted)' }} />
+          <div className={styles.field}>
+            <label className={styles.label} htmlFor="password">Contraseña</label>
+            <div className={styles.inputWrap}>
+              <Lock size={16} className={styles.inputIcon} />
               <input
+                id="password"
                 type="password"
-                className="form-input"
+                className={styles.input}
                 placeholder="Mínimo 6 caracteres"
-                style={{ paddingLeft: '2.5rem' }}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                autoComplete={isSignUp ? 'new-password' : 'current-password'}
                 required
                 minLength={6}
               />
             </div>
           </div>
 
-          <button 
-            type="submit" 
-            className="btn btn-primary"
-            style={{ width: '100%', marginTop: '1rem', gap: '0.5rem' }}
-            disabled={loading}
-          >
+          <button type="submit" className={`btn btn-primary ${styles.submit}`} disabled={loading}>
             {isSignUp ? <UserPlus size={18} /> : <LogIn size={18} />}
-            {loading ? 'Procesando...' : isSignUp ? 'Registrarse' : 'Ingresar'}
+            {loading ? 'Procesando…' : isSignUp ? 'Crear cuenta' : 'Ingresar'}
           </button>
-
         </form>
 
+        <p className={styles.switchHint}>
+          {isSignUp ? '¿Ya tenés cuenta?' : '¿No tenés cuenta?'}
+          <button
+            type="button"
+            className={styles.switchBtn}
+            onClick={() => {
+              setIsSignUp(!isSignUp);
+              resetMessages();
+            }}
+          >
+            {isSignUp ? 'Iniciá sesión' : 'Registrate'}
+          </button>
+        </p>
       </div>
     </div>
   );
@@ -201,11 +250,15 @@ function LoginContent() {
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={
-      <div className="container" style={{ padding: '6rem 2rem', textAlign: 'center' }}>
-        <h2 style={{ fontSize: '1.5rem', fontWeight: 700 }}>Cargando Login...</h2>
-      </div>
-    }>
+    <Suspense
+      fallback={
+        <div className={styles.page}>
+          <div className={styles.card}>
+            <p className={styles.subtitle} style={{ margin: 0 }}>Cargando…</p>
+          </div>
+        </div>
+      }
+    >
       <LoginContent />
     </Suspense>
   );

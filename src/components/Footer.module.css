@@ -21,8 +21,17 @@
 }
 
 .logoText {
-  font-size: 1.4rem;
-  font-weight: 800;
+  display: inline-flex;
+  line-height: 0;
+  width: fit-content;
+}
+
+.logoImage {
+  height: 40px;
+  width: auto;
+  max-width: 220px;
+  display: block;
+  object-fit: contain;
 }
 
 .tagline {

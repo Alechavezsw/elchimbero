@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from './AuthProvider';
@@ -25,14 +25,79 @@ import {
   ChevronDown
 } from 'lucide-react';
 
+const COMMUNITY_PATHS = [
+  '/farmacias',
+  '/kioscos',
+  '/colectivos',
+  '/clima',
+  '/eventos',
+  '/servicios',
+  '/empleo',
+];
+
 export default function Navbar() {
   const { user, signOut } = useAuth();
   const pathname = usePathname();
   const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+  const closeTimerRef = useRef(null);
 
   const isActive = (path) => pathname === path;
+  const isCommunityActive = COMMUNITY_PATHS.some((path) => pathname === path || pathname.startsWith(`${path}/`));
+
+  const clearCloseTimer = () => {
+    if (closeTimerRef.current) {
+      clearTimeout(closeTimerRef.current);
+      closeTimerRef.current = null;
+    }
+  };
+
+  const openDropdown = () => {
+    clearCloseTimer();
+    setDropdownOpen(true);
+  };
+
+  const scheduleCloseDropdown = () => {
+    clearCloseTimer();
+    closeTimerRef.current = setTimeout(() => {
+      setDropdownOpen(false);
+      closeTimerRef.current = null;
+    }, 160);
+  };
+
+  const closeDropdown = () => {
+    clearCloseTimer();
+    setDropdownOpen(false);
+  };
+
+  useEffect(() => {
+    if (!dropdownOpen) return undefined;
+
+    const onPointerDown = (event) => {
+      if (!dropdownRef.current?.contains(event.target)) {
+        closeDropdown();
+      }
+    };
+
+    const onKeyDown = (event) => {
+      if (event.key === 'Escape') closeDropdown();
+    };
+
+    document.addEventListener('pointerdown', onPointerDown);
+    document.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.removeEventListener('pointerdown', onPointerDown);
+      document.removeEventListener('keydown', onKeyDown);
+    };
+  }, [dropdownOpen]);
+
+  useEffect(() => () => clearCloseTimer(), []);
+
+  useEffect(() => {
+    closeDropdown();
+  }, [pathname]);
 
   const handleSignOut = async () => {
     await signOut();
@@ -58,7 +123,13 @@ export default function Navbar() {
       <div className={`${styles.navContainer} container`}>
         {/* LOGO */}
         <Link href="/" className={styles.logo} onClick={() => setMobileMenuOpen(false)}>
-          <span className="gradient-text font-extrabold logo-animate">El Chimbero</span>
+          <img
+            src="/logo-el-chimbero.png?v=2"
+            alt="El Chimbero"
+            className={styles.logoImage}
+            width={240}
+            height={44}
+          />
           {isMock && <span className={styles.demoBadge}>Demo</span>}
         </Link>
 
@@ -95,42 +166,52 @@ export default function Navbar() {
           </Link>
 
           {/* SERVICIOS DROPDOWN */}
-          <div 
+          <div
+            ref={dropdownRef}
             className={styles.dropdownContainer}
-            onMouseEnter={() => setDropdownOpen(true)}
-            onMouseLeave={() => setDropdownOpen(false)}
+            onMouseEnter={openDropdown}
+            onMouseLeave={scheduleCloseDropdown}
           >
-            <button 
-              className={`${styles.dropdownTrigger} ${dropdownOpen ? styles.dropdownActive : ''}`}
-              onClick={() => setDropdownOpen(!dropdownOpen)}
+            <button
+              type="button"
+              className={`${styles.dropdownTrigger} ${dropdownOpen || isCommunityActive ? styles.dropdownActive : ''}`}
+              onClick={() => (dropdownOpen ? closeDropdown() : openDropdown())}
+              aria-expanded={dropdownOpen}
+              aria-haspopup="menu"
+              aria-controls="comunidad-menu"
             >
-              Comunidad y Servicios <ChevronDown size={14} />
+              Comunidad y Servicios
+              <ChevronDown size={14} className={dropdownOpen ? styles.chevronOpen : undefined} aria-hidden />
             </button>
-            {dropdownOpen && (
-              <div className={styles.dropdownMenu}>
-                <Link href="/farmacias" className={styles.dropdownItem} onClick={() => setDropdownOpen(false)}>
+            <div
+              id="comunidad-menu"
+              role="menu"
+              className={`${styles.dropdownMenu} ${dropdownOpen ? styles.dropdownMenuOpen : ''}`}
+            >
+              <div className={styles.dropdownPanel}>
+                <Link href="/farmacias" role="menuitem" className={`${styles.dropdownItem} ${isActive('/farmacias') ? styles.dropdownItemActive : ''}`} onClick={closeDropdown}>
                   <HeartPulse size={16} style={{ color: 'var(--color-open)' }} /> Farmacias de Turno
                 </Link>
-                <Link href="/kioscos" className={styles.dropdownItem} onClick={() => setDropdownOpen(false)}>
+                <Link href="/kioscos" role="menuitem" className={`${styles.dropdownItem} ${isActive('/kioscos') ? styles.dropdownItemActive : ''}`} onClick={closeDropdown}>
                   <Clock size={16} style={{ color: 'var(--secondary)' }} /> Kioscos Abiertos
                 </Link>
-                <Link href="/colectivos" className={styles.dropdownItem} onClick={() => setDropdownOpen(false)}>
+                <Link href="/colectivos" role="menuitem" className={`${styles.dropdownItem} ${isActive('/colectivos') ? styles.dropdownItemActive : ''}`} onClick={closeDropdown}>
                   <Bus size={16} style={{ color: 'var(--primary)' }} /> Colectivos RedTulum
                 </Link>
-                <Link href="/clima" className={styles.dropdownItem} onClick={() => setDropdownOpen(false)}>
+                <Link href="/clima" role="menuitem" className={`${styles.dropdownItem} ${isActive('/clima') ? styles.dropdownItemActive : ''}`} onClick={closeDropdown}>
                   <CloudSun size={16} style={{ color: 'var(--secondary)' }} /> Clima y Alertas
                 </Link>
-                <Link href="/eventos" className={styles.dropdownItem} onClick={() => setDropdownOpen(false)}>
+                <Link href="/eventos" role="menuitem" className={`${styles.dropdownItem} ${isActive('/eventos') ? styles.dropdownItemActive : ''}`} onClick={closeDropdown}>
                   <Calendar size={16} style={{ color: 'var(--accent-pink)' }} /> Agenda de Eventos
                 </Link>
-                <Link href="/servicios" className={styles.dropdownItem} onClick={() => setDropdownOpen(false)}>
+                <Link href="/servicios" role="menuitem" className={`${styles.dropdownItem} ${isActive('/servicios') ? styles.dropdownItemActive : ''}`} onClick={closeDropdown}>
                   <ShieldAlert size={16} style={{ color: 'var(--color-warning)' }} /> Servicios Municipales
                 </Link>
-                <Link href="/empleo" className={styles.dropdownItem} onClick={() => setDropdownOpen(false)}>
+                <Link href="/empleo" role="menuitem" className={`${styles.dropdownItem} ${isActive('/empleo') ? styles.dropdownItemActive : ''}`} onClick={closeDropdown}>
                   <Briefcase size={16} style={{ color: '#a78bfa' }} /> Bolsa de Empleo
                 </Link>
               </div>
-            )}
+            </div>
           </div>
 
           <div className={styles.authContainer}>

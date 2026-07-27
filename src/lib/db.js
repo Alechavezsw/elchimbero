@@ -327,7 +327,13 @@ export const db = {
         }
       });
       if (error) throw error;
-      return data.user;
+
+      // Si Supabase exige confirmación de email, no hay sesión todavía
+      if (!data.session) {
+        return { needsEmailConfirmation: true, email };
+      }
+
+      return await this.getCurrentUser();
     } else {
       const profiles = getMockData('chimbero_profiles', initialProfiles);
       const existingUser = profiles.find(p => p.email === email);

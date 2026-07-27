@@ -162,7 +162,7 @@ export default function MapaUnificado() {
                   checked={layerBusinesses}
                   onChange={() => {}} // Manejado por onClick del contenedor
                 />
-                <span className={`${styles.dot} styles.dotViolet`} style={{ backgroundColor: '#8b5cf6', boxShadow: '0 0 8px #8b5cf6' }} />
+                <span className={`${styles.dot} ${styles.dotViolet}`} />
                 <span className={styles.layerLabel}>Comercios ({businesses.length})</span>
               </div>
 
@@ -177,7 +177,7 @@ export default function MapaUnificado() {
                   checked={layerPharmacies}
                   onChange={() => {}}
                 />
-                <span className={`${styles.dot} styles.dotEmerald`} style={{ backgroundColor: '#10b981', boxShadow: '0 0 8px #10b981' }} />
+                <span className={`${styles.dot} ${styles.dotEmerald}`} />
                 <span className={styles.layerLabel}>Farmacias ({pharmacies.length})</span>
               </div>
 
@@ -192,7 +192,7 @@ export default function MapaUnificado() {
                   checked={layerKiosks}
                   onChange={() => {}}
                 />
-                <span className={`${styles.dot} styles.dotAmber`} style={{ backgroundColor: '#f59e0b', boxShadow: '0 0 8px #f59e0b' }} />
+                <span className={`${styles.dot} ${styles.dotAmber}`} />
                 <span className={styles.layerLabel}>Kioscos ({kiosks.length})</span>
               </div>
 

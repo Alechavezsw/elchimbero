@@ -61,7 +61,9 @@ export function AuthProvider({ children }) {
     setLoading(true);
     try {
       const newUser = await db.signUp(email, password, fullName, phone);
-      setUser(newUser);
+      if (newUser && !newUser.needsEmailConfirmation) {
+        setUser(newUser);
+      }
       return newUser;
     } catch (error) {
       setLoading(false);

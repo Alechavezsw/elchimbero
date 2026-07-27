@@ -109,52 +109,35 @@ export default function ColectivosPage() {
       {/* HERO */}
       <div className={styles.hero}>
         <div className={styles.heroGlow} />
-        <div className={styles.heroPattern} />
-        {/* Ruta decorativa con paradas */}
-        <svg className={styles.heroRoute} viewBox="0 0 320 150" fill="none" aria-hidden="true">
-          <path className={styles.heroRoutePath} d="M8 130 C 70 30, 130 160, 190 70 S 290 40, 312 14" />
-          <circle cx="8" cy="130" r="5" className={styles.heroStopStart} />
-          <circle cx="190" cy="70" r="4" className={styles.heroStopMid} />
-          <circle cx="312" cy="14" r="5" className={styles.heroStopEnd} />
-        </svg>
         <div className={styles.heroContent}>
-          <div className={styles.heroIcon}>
-            <Bus size={30} />
-          </div>
-          <div>
+          <div className={styles.heroText}>
             <span className={styles.heroBadge}>
-              <span className={styles.liveDot} /> Transporte Público · RedTulum
+              <Bus size={14} />
+              RedTulum · Chimbas
             </span>
             <h1 className={styles.heroTitle}>
-              Guía de <span className="gradient-text-teal">Colectivos</span>
+              Guía de <span className="gradient-text">Colectivos</span>
             </h1>
             <p className={styles.heroSubtitle}>
-              Recorridos, frecuencias y paradas de todas las líneas que circulan por Chimbas.
+              Elegí una línea, mirá el recorrido y las paradas en el mapa.
             </p>
           </div>
-        </div>
-        {!loading && (
-          <div className={styles.heroStats}>
-            <div className={styles.statChip}>
-              <strong>{buses.length}</strong>
-              <span>Líneas activas</span>
+          {!loading && (
+            <div className={styles.heroStats}>
+              <div className={styles.statChip}>
+                <strong>{buses.length}</strong>
+                <span>Líneas</span>
+              </div>
+              <div className={styles.statChip}>
+                <strong>{totalStops}</strong>
+                <span>Paradas</span>
+              </div>
+              <div className={styles.statChip}>
+                <strong>{totalNeighborhoods}</strong>
+                <span>Barrios</span>
+              </div>
             </div>
-            <div className={styles.statChip}>
-              <strong>{totalStops}</strong>
-              <span>Paradas mapeadas</span>
-            </div>
-            <div className={styles.statChip}>
-              <strong>{totalNeighborhoods}</strong>
-              <span>Barrios cubiertos</span>
-            </div>
-          </div>
-        )}
-        {/* Carretera animada con colectivo en movimiento */}
-        <div className={styles.heroRoad}>
-          <div className={styles.roadLines} />
-          <div className={styles.roadBus}>
-            <Bus size={15} />
-          </div>
+          )}
         </div>
       </div>
 
@@ -200,9 +183,10 @@ export default function ColectivosPage() {
           
           {/* COLUMNA IZQUIERDA: LISTADO DE LÍNEAS */}
           <div className={styles.listSection}>
-            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '1rem', color: 'var(--text-secondary)' }}>
-              Líneas Disponibles ({filteredBuses.length})
-            </h3>
+            <div className={styles.listHeader}>
+              <h3 className={styles.listTitle}>Líneas</h3>
+              <span className={styles.listCount}>{filteredBuses.length}</span>
+            </div>
             
             {filteredBuses.length === 0 ? (
               <div className={`glass ${styles.emptyState}`}>
@@ -212,15 +196,21 @@ export default function ColectivosPage() {
               </div>
             ) : (
               <div className={styles.busList}>
-                {filteredBuses.map((bus, idx) => (
-                  <div
-                    key={bus.id}
-                    className={`${styles.busCard} glass ${selectedBus?.id === bus.id ? `${styles.selectedBusCard} ${styles['selected_' + bus.type]}` : ''}`}
-                    onClick={() => handleSelectBus(bus)}
-                    style={{ animationDelay: `${Math.min(idx, 10) * 45}ms` }}
-                  >
-                    <div className={styles.busCardHeader}>
-                      <div className={styles.busIdentity}>
+                {filteredBuses.map((bus, idx) => {
+                  const stops = Array.isArray(bus.stops) ? bus.stops : [];
+                  const firstStop = stops[0] || 'Origen';
+                  const lastStop = stops[stops.length - 1] || 'Destino';
+                  const isSelected = selectedBus?.id === bus.id;
+
+                  return (
+                    <button
+                      key={bus.id}
+                      type="button"
+                      className={`${styles.busCard} ${isSelected ? `${styles.selectedBusCard} ${styles['selected_' + bus.type]}` : ''}`}
+                      onClick={() => handleSelectBus(bus)}
+                      style={{ animationDelay: `${Math.min(idx, 10) * 40}ms` }}
+                    >
+                      <div className={styles.busCardHeader}>
                         <span className={`${styles.linePlate} ${styles['plate_' + bus.type]}`}>
                           {getLineCode(bus.line)}
                         </span>
@@ -230,30 +220,36 @@ export default function ColectivosPage() {
                             {getTypeName(bus.type)}
                           </span>
                         </div>
+                        {isSelected && (
+                          <span className={styles.selectedMark} aria-hidden>
+                            <ArrowRight size={16} />
+                          </span>
+                        )}
                       </div>
-                    </div>
 
-                    <div className={styles.routePreview}>
-                      <div className={styles.routeRow}>
-                        <span className={`${styles.routeDot} ${styles.routeDotStart}`} />
-                        <span className={styles.routeStop}>{bus.stops[0]}</span>
+                      <div className={styles.routePreview}>
+                        <div className={styles.routeRow}>
+                          <span className={`${styles.routeDot} ${styles.routeDotStart}`} />
+                          <span className={styles.routeStop}>{firstStop}</span>
+                        </div>
+                        <div className={styles.routeRow}>
+                          <span className={`${styles.routeDot} ${styles.routeDotEnd}`} />
+                          <span className={styles.routeStop}>{lastStop}</span>
+                        </div>
                       </div>
-                      <div className={styles.routeRow}>
-                        <span className={`${styles.routeDot} ${styles.routeDotEnd}`} />
-                        <span className={styles.routeStop}>{bus.stops[bus.stops.length - 1]}</span>
-                      </div>
-                    </div>
 
-                    <div className={styles.busCardFooter}>
-                      <span className={styles.freqChip}>
-                        <Clock size={12} /> {bus.frequency}
-                      </span>
-                      <span className={styles.viewRouteLink}>
-                        Ver Recorrido <ArrowRight size={12} />
-                      </span>
-                    </div>
-                  </div>
-                ))}
+                      <div className={styles.busCardFooter}>
+                        <span className={styles.freqChip}>
+                          <Clock size={12} /> {bus.frequency}
+                        </span>
+                        <span className={styles.viewRouteLink}>
+                          {isSelected ? 'En mapa' : 'Ver recorrido'}
+                          <ArrowRight size={12} />
+                        </span>
+                      </div>
+                    </button>
+                  );
+                })}
               </div>
             )}
           </div>

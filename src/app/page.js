@@ -96,6 +96,7 @@ export default function Home() {
   const [showEmergencyModal, setShowEmergencyModal] = useState(false);
   const [loading, setLoading] = useState(true);
   const [showAlert, setShowAlert] = useState(true);
+  const [weatherAlert, setWeatherAlert] = useState(null);
 
   // Estados para noticias de El Chimbero
   const [news, setNews] = useState([]);
@@ -104,8 +105,7 @@ export default function Home() {
   const [activeNewsIndex, setActiveNewsIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
-  // Weather simulation matching June winter night in San Juan (approx 8°C - 12°C)
-  const [weather] = useState({ temp: '11°C', status: 'Despejado, Frío', icon: '🌌' });
+  const [weather, setWeather] = useState({ temp: '—', status: 'Cargando clima…', icon: '🌡️' });
   const [currentDate, setCurrentDate] = useState('');
   const [currentTime, setCurrentTime] = useState('');
 
@@ -154,6 +154,31 @@ export default function Home() {
           setNewsLoading(false);
         }
 
+        // Clima y alertas reales (SMN + Open-Meteo)
+        try {
+          const weatherRes = await fetch('/api/weather');
+          if (weatherRes.ok) {
+            const weatherJson = await weatherRes.json();
+            if (weatherJson.weather) {
+              const w = weatherJson.weather;
+              setWeather({
+                temp: `${w.temp}°C`,
+                status: w.status,
+                icon: w.icon,
+              });
+            }
+            if (weatherJson.primaryAlert) {
+              setWeatherAlert(weatherJson.primaryAlert);
+              setShowAlert(true);
+            } else {
+              setWeatherAlert(null);
+              setShowAlert(false);
+            }
+          }
+        } catch (err) {
+          console.error('Error al cargar clima:', err);
+        }
+
       } catch (error) {
         console.error('Error al cargar datos de portada:', error);
       } finally {
@@ -195,25 +220,52 @@ export default function Home() {
   return (
     <div className="fade-in" style={{ paddingBottom: '4rem' }}>
       
-      {/* ALERT BANNER */}
-      {showAlert && (
+      {/* ALERT BANNER — datos reales SMN */}
+      {showAlert && weatherAlert && (
         <div className="container" style={{ marginTop: '1.5rem', marginBottom: '-1rem' }}>
-          <div className="glass" style={{ padding: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', background: 'rgba(239, 68, 68, 0.1)', borderColor: 'rgba(239, 68, 68, 0.3)' }}>
+          <div
+            className="glass"
+            style={{
+              padding: '1rem',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: '1rem',
+              background: weatherAlert.colors?.bg || 'rgba(234, 179, 8, 0.12)',
+              borderColor: weatherAlert.colors?.border || 'rgba(234, 179, 8, 0.4)',
+            }}
+          >
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flex: 1 }}>
-              <AlertTriangle size={20} className="urgency-pulse" style={{ color: 'var(--accent-pink)', flexShrink: 0 }} />
+              <AlertTriangle size={20} className="urgency-pulse" style={{ color: weatherAlert.colors?.color || '#eab308', flexShrink: 0 }} />
               <div>
-                <strong style={{ color: 'var(--text-primary)', fontSize: '0.95rem' }}>ALERTA METEOROLÓGICA: Viento Zonda Naranja</strong>
+                <strong style={{ color: 'var(--text-primary)', fontSize: '0.95rem' }}>
+                  ALERTA {weatherAlert.severityLabel?.toUpperCase()}: {weatherAlert.event}
+                </strong>
                 <p style={{ fontSize: '0.825rem', color: 'var(--text-secondary)', margin: '0.15rem 0 0 0' }}>
-                  Se esperan ráfagas de viento Zonda que pueden superar los 85 km/h en Chimbas. Suspensión preventiva de clases en turno tarde y noche.
+                  {weatherAlert.description}
+                  {weatherAlert.validity ? ` · ${weatherAlert.validity}` : ''}
+                </p>
+                <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)', margin: '0.25rem 0 0 0' }}>
+                  Fuente: Servicio Meteorológico Nacional
                 </p>
               </div>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-              <Link href="/clima" className="btn btn-primary" style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem', background: 'var(--accent-pink)', boxShadow: '0 4px 14px rgba(255, 0, 127, 0.25)', color: 'white' }}>
-                Ver Recomendaciones
+              <Link
+                href="/clima"
+                className="btn btn-primary"
+                style={{
+                  padding: '0.4rem 0.8rem',
+                  fontSize: '0.8rem',
+                  background: weatherAlert.colors?.color || 'var(--primary)',
+                  boxShadow: `0 4px 14px ${weatherAlert.colors?.bg || 'rgba(248, 120, 0, 0.25)'}`,
+                  color: '#140800',
+                }}
+              >
+                Ver detalles
               </Link>
-              <button 
-                onClick={() => setShowAlert(false)} 
+              <button
+                onClick={() => setShowAlert(false)}
                 style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0.25rem' }}
                 aria-label="Cerrar alerta"
               >

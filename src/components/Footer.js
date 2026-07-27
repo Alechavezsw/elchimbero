@@ -8,9 +8,15 @@ export default function Footer() {
     <footer className={styles.footer}>
       <div className={`${styles.grid} container`}>
         <div className={styles.brandCol}>
-          <div className={styles.logoText}>
-            <span className="gradient-text font-extrabold">El Chimbero</span>
-          </div>
+          <Link href="/" className={styles.logoText}>
+            <img
+              src="/logo-el-chimbero.png?v=2"
+              alt="El Chimbero"
+              className={styles.logoImage}
+              width={200}
+              height={37}
+            />
+          </Link>
           <p className={styles.tagline}>
             La guía comercial, mercado y servicios de referencia para todos los chimberos. 
             Conectando comercios, vecinos y emprendedores del departamento de Chimbas, San Juan.

@@ -36,7 +36,7 @@
   background: var(--primary);
   color: #090a0f;
   border-color: var(--primary);
-  box-shadow: 0 4px 14px rgba(175, 255, 0, 0.2);
+  box-shadow: 0 4px 14px rgba(248, 120, 0, 0.2);
 }
 
 .activeTabBtn:hover {
@@ -67,7 +67,7 @@
   background: linear-gradient(#0e1017, #0e1017) padding-box,
               linear-gradient(135deg, var(--primary) 0%, rgba(255, 255, 255, 0.02) 100%) border-box;
   border: 1px solid transparent;
-  box-shadow: var(--shadow-card), 0 0 25px rgba(175, 255, 0, 0.03);
+  box-shadow: var(--shadow-card), 0 0 25px rgba(248, 120, 0, 0.03);
 }
 
 .scheduleInfo {

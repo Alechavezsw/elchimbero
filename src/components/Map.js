@@ -57,35 +57,54 @@ export default function Map({ points = [], center = [-31.4958, -68.5352], zoom =
         }
       });
 
-      // Cargar nuevos pines
+      // Cargar globos / pines
       points.forEach((point) => {
         if (!point.latitude || !point.longitude) return;
 
-        // Definir color de pin por tipo
         let pinColorClass = 'violet-pin';
-        if (point.type === 'pharmacy') pinColorClass = 'emerald-pin';
-        if (point.type === 'kiosk') pinColorClass = 'amber-pin';
+        let icon = '🏪';
+        let accent = '#f87800';
 
-        // Crear elemento HTML personalizado para el marcador
+        if (point.type === 'pharmacy') {
+          pinColorClass = 'emerald-pin';
+          icon = '💊';
+          accent = '#22c55e';
+        } else if (point.type === 'kiosk') {
+          pinColorClass = 'amber-pin';
+          icon = '🌙';
+          accent = '#f59e0b';
+        }
+
+        const showPulse = point.type === 'pharmacy';
         const customIcon = L.divIcon({
           className: 'custom-div-icon',
-          html: `<div class="marker-pin ${pinColorClass}"></div>`,
-          iconSize: [16, 16],
-          iconAnchor: [8, 8]
+          html: `
+            <div class="map-balloon ${pinColorClass}" title="${String(point.name || '').replace(/"/g, '&quot;')}">
+              ${showPulse ? '<span class="map-balloon-pulse"></span>' : ''}
+              <div class="map-balloon-head">
+                <span class="map-balloon-icon">${icon}</span>
+              </div>
+            </div>
+          `,
+          iconSize: [40, 52],
+          iconAnchor: [20, 50],
+          popupAnchor: [0, -42],
         });
 
-        const marker = L.marker([point.latitude, point.longitude], { icon: customIcon }).addTo(map);
+        const marker = L.marker([point.latitude, point.longitude], {
+          icon: customIcon,
+          riseOnHover: true,
+        }).addTo(map);
 
-        // Diseñar ventana emergente al hacer click en el pin
         const popupContent = `
-          <div style="font-family: 'Outfit', sans-serif; color: white; padding: 4px; line-height: 1.4;">
+          <div style="font-family: 'Outfit', sans-serif; color: white; padding: 4px; line-height: 1.4; min-width: 160px;">
             <h4 style="margin: 0 0 4px 0; font-weight: 700; font-size: 0.95rem; color: #f8fafc;">${point.name}</h4>
             <p style="margin: 0 0 6px 0; font-size: 0.8rem; color: #94a3b8;">📍 ${point.address}</p>
-            ${point.phone ? `<p style="margin: 0 0 6px 0; font-size: 0.8rem; color: #14b8a6; font-weight: 500;">📞 ${point.phone}</p>` : ''}
-            ${point.url ? `<a href="${point.url}" style="display: inline-block; margin-top: 4px; font-size: 0.8rem; color: #8b5cf6; font-weight: 600; text-decoration: underline;">Ver ficha comercial →</a>` : ''}
+            ${point.phone ? `<p style="margin: 0 0 6px 0; font-size: 0.8rem; color: ${accent}; font-weight: 500;">📞 ${point.phone}</p>` : ''}
+            ${point.url ? `<a href="${point.url}" style="display: inline-block; margin-top: 4px; font-size: 0.8rem; color: ${accent}; font-weight: 600; text-decoration: underline;">Ver detalle →</a>` : ''}
           </div>
         `;
-        
+
         marker.bindPopup(popupContent);
       });
     };
