@@ -29,8 +29,31 @@ import {
   AlertTriangle,
   Info,
   Bike,
-  Calculator
+  Calculator,
+  Home,
+  Map,
+  CloudSun,
+  ShieldAlert,
+  ExternalLink,
 } from 'lucide-react';
+
+const PORTAL_ROUTES = [
+  { name: 'Inicio', path: '/', icon: Home },
+  { name: 'Guía Comercial', path: '/guia', icon: Store },
+  { name: 'Delivery', path: '/delivery', icon: Bike },
+  { name: 'Clasificados', path: '/clasificados', icon: Tag },
+  { name: 'Mapa Chimbas', path: '/mapa', icon: Map },
+  { name: 'Farmacias de Turno', path: '/farmacias', icon: HeartPulse },
+  { name: 'Kioscos Abiertos', path: '/kioscos', icon: Clock },
+  { name: 'Colectivos RedTulum', path: '/colectivos', icon: Bus },
+  { name: 'Clima y Alertas', path: '/clima', icon: CloudSun },
+  { name: 'Agenda de Eventos', path: '/eventos', icon: Calendar },
+  { name: 'Servicios Municipales', path: '/servicios', icon: ShieldAlert },
+  { name: 'Bolsa de Empleo', path: '/empleo', icon: Briefcase },
+  { name: 'Panel Comercio', path: '/dashboard', icon: LayoutDashboard },
+  { name: 'Alta comercio', path: '/guia/nuevo', icon: Plus },
+  { name: 'Alta clasificado', path: '/clasificados/nuevo', icon: Plus },
+];
 
 const LocationPicker = dynamic(() => import('@/components/LocationPicker'), {
   ssr: false,
@@ -794,6 +817,61 @@ export default function AdminDashboard() {
           </button>
         ))}
       </div>
+
+      {/* RUTAS DEL PORTAL — acceso rápido a todas las secciones públicas */}
+      <section
+        className="modal-panel"
+        style={{
+          padding: '1.25rem 1.5rem',
+          marginBottom: '2rem',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '0.85rem',
+        }}
+      >
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', flexWrap: 'wrap', gap: '0.5rem' }}>
+          <h2 style={{ fontSize: '1.05rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
+            <ExternalLink size={18} style={{ color: 'var(--primary)' }} />
+            Rutas del portal
+          </h2>
+          <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+            Abrí cualquier sección pública sin salir del admin
+          </span>
+        </div>
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))',
+            gap: '0.6rem',
+          }}
+        >
+          {PORTAL_ROUTES.map((route) => {
+            const Icon = route.icon;
+            return (
+              <Link
+                key={route.path}
+                href={route.path}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-secondary"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  justifyContent: 'flex-start',
+                  fontSize: '0.8rem',
+                  fontWeight: 700,
+                  padding: '0.65rem 0.85rem',
+                  textAlign: 'left',
+                }}
+              >
+                <Icon size={15} style={{ flexShrink: 0, color: 'var(--primary)' }} />
+                <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{route.name}</span>
+              </Link>
+            );
+          })}
+        </div>
+      </section>
 
       {/* DETALLES DE CARGA */}
       {loadingData ? (
