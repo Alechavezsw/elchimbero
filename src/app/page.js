@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { db } from '@/lib/db';
+import AdBannerSlot from '@/components/AdBannerSlot';
 import styles from './page.module.css';
 import { 
   Search, 
@@ -405,6 +406,8 @@ export default function Home() {
         </div>
       </section>
 
+      <AdBannerSlot placement="home_top" />
+
       {/* QUICK ACTIONS GRID */}
       <section className="container">
         <div className={styles.actionsGrid}>
@@ -463,6 +466,8 @@ export default function Home() {
 
         </div>
       </section>
+
+      <AdBannerSlot placement="home_mid" />
 
       {/* GEN-Z MARQUEE TICKER */}
       <div className={styles.marqueeContainer}>
@@ -688,7 +693,16 @@ export default function Home() {
         ) : (
           <div className="grid-cards" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))' }}>
             {recentClassifieds.map((ad) => (
-              <div key={ad.id} className="glass glass-hover card-pink" style={{ overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+              <div
+                key={ad.id}
+                className="glass glass-hover card-pink"
+                style={{
+                  overflow: 'hidden',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  border: ad.is_featured ? '1px solid rgba(248,120,0,0.45)' : undefined,
+                }}
+              >
                 <div style={{ height: '140px', position: 'relative', overflow: 'hidden' }}>
                   <div className="zoom-container">
                     <img 
@@ -697,12 +711,29 @@ export default function Home() {
                       style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                     />
                   </div>
+                  {ad.is_featured && (
+                    <span
+                      style={{
+                        position: 'absolute',
+                        top: '0.5rem',
+                        right: '0.5rem',
+                        background: 'var(--primary-gradient)',
+                        color: '#140800',
+                        fontWeight: 800,
+                        padding: '0.2rem 0.5rem',
+                        borderRadius: '4px',
+                        fontSize: '0.7rem',
+                      }}
+                    >
+                      Destacado
+                    </span>
+                  )}
                   <span 
                     style={{ 
                       position: 'absolute', 
                       bottom: '0.5rem', 
                       left: '0.5rem', 
-                      background: 'rgba(139, 92, 246, 0.95)',
+                      background: 'rgba(248, 120, 0, 0.95)',
                       color: 'white',
                       fontWeight: 700,
                       padding: '0.2rem 0.5rem',

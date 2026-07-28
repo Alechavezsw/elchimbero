@@ -1,10 +1,13 @@
 ﻿'use client';
 
 import { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/components/AuthProvider';
 import { db } from '@/lib/db';
+import ImageUploadField from '@/components/ImageUploadField';
+import ContaduriaTab from './ContaduriaTab';
 import { 
   LayoutDashboard, 
   Store, 
@@ -24,17 +27,30 @@ import {
   Phone, 
   DollarSign, 
   AlertTriangle,
-  Info
+  Info,
+  Bike,
+  Calculator
 } from 'lucide-react';
 
-const emptyPharmacyForm = { name: '', address: '', phone: '', latitude: '', longitude: '', duty_dates: '', is_open_24h: false };
-const emptyKioskForm = { name: '', address: '', neighborhood: '', phone: '', latitude: '', longitude: '', is_open_24h: true, hours_description: '' };
+const LocationPicker = dynamic(() => import('@/components/LocationPicker'), {
+  ssr: false,
+  loading: () => (
+    <div style={{ height: 240, borderRadius: 10, background: '#0b0c12', border: '1px solid var(--border-glass)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
+      Cargando mapa…
+    </div>
+  ),
+});
+
+const emptyPharmacyForm = { name: '', address: '', phone: '', latitude: '', longitude: '', duty_dates: '', is_open_24h: false, image_url: '' };
+const emptyKioskForm = { name: '', address: '', neighborhood: '', phone: '', latitude: '', longitude: '', is_open_24h: true, hours_description: '', image_url: '' };
 const emptyBusForm = { line: '', description: '', type: 'interno_chimbas', frequency: '', neighborhoods: '', stops: '', stops_vuelta: '', schedule: '' };
-const emptyEventForm = { title: '', description: '', date: '', time: '', location: '', category: 'Cultura', image_url: '', price: '0' };
-const emptyJobForm = { title: '', description: '', type: 'oferta_laboral', category: '', price: '0', company: '', contact_name: '', whatsapp: '' };
+const emptyEventForm = { title: '', description: '', date: '', time: '', location: '', category: 'Cultura', image_url: '', price: '0', latitude: '', longitude: '' };
+const emptyJobForm = { title: '', description: '', type: 'oferta_laboral', category: '', price: '0', company: '', contact_name: '', whatsapp: '', image_url: '' };
 const emptyBusinessForm = { name: '', description: '', category: 'Gastronomía', address: '', neighborhood: '', phone: '', whatsapp: '', latitude: '', longitude: '', image_url: '', hours_lunes_viernes: '09:00 - 13:00, 17:00 - 21:00', hours_sabado_domingo: 'Cerrado' };
 const emptyClassifiedForm = { title: '', description: '', price: '', category: 'sale', condition: 'used', image_url: '', whatsapp: '', status: 'active' };
-const emptyProfileForm = { full_name: '', phone: '', is_admin: false };
+const emptyProfileForm = { full_name: '', phone: '', is_admin: false, avatar_url: '' };
+
+const labelStyle = { display: 'block', fontSize: '0.85rem', marginBottom: '0.4rem', fontWeight: 700 };
 
 export default function AdminDashboard() {
   const { user, loading } = useAuth();
@@ -46,8 +62,9 @@ export default function AdminDashboard() {
     }
   }, [user, loading, router]);
 
-  // Tab activo: 'stats' | 'businesses' | 'classifieds' | 'pharmacies' | 'kiosks' | 'buses' | 'events' | 'jobs' | 'users'
+  // Tab activo: 'stats' | 'businesses' | 'classifieds' | 'pharmacies' | 'kiosks' | 'buses' | 'events' | 'jobs' | 'users' | 'contaduria'
   const [activeTab, setActiveTab] = useState('stats');
+  const [billingAlertCount, setBillingAlertCount] = useState(0);
 
   // Datos del dashboard
   const [businesses, setBusinesses] = useState([]);
@@ -103,6 +120,12 @@ export default function AdminDashboard() {
       setEvents(eveData || []);
       setJobs(jobData || []);
       setProfiles(profilesData || []);
+      try {
+        const billing = await db.getBillingSummary();
+        setBillingAlertCount(Number(billing.overdue_count || 0) + Number(billing.due_soon_count || 0));
+      } catch {
+        // Contaduría opcional si falla RLS/tablas
+      }
     } catch (error) {
       console.error('Error al cargar datos del administrador:', error);
       setMessage({ type: 'error', text: 'Error al conectar con la base de datos.' });
@@ -113,6 +136,7 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     if (!loading && user && (user.is_admin || user.email === 'admin@elchimbero.com')) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       loadAllData();
     }
   }, [loading, user]);
@@ -205,6 +229,7 @@ export default function AdminDashboard() {
       longitude: phar.longitude != null ? String(phar.longitude) : '',
       duty_dates: (phar.duty_dates || []).join(', '),
       is_open_24h: !!phar.is_open_24h,
+      image_url: phar.image_url || '',
     });
     setShowModal('pharmacy');
   };
@@ -220,6 +245,7 @@ export default function AdminDashboard() {
       longitude: kio.longitude != null ? String(kio.longitude) : '',
       is_open_24h: !!kio.is_open_24h,
       hours_description: kio.hours_description || '',
+      image_url: kio.image_url || '',
     });
     setShowModal('kiosk');
   };
@@ -250,6 +276,8 @@ export default function AdminDashboard() {
       category: eve.category || 'Cultura',
       image_url: eve.image_url || '',
       price: eve.price != null ? String(eve.price) : '0',
+      latitude: eve.latitude != null ? String(eve.latitude) : '',
+      longitude: eve.longitude != null ? String(eve.longitude) : '',
     });
     setShowModal('event');
   };
@@ -265,6 +293,7 @@ export default function AdminDashboard() {
       company: job.company || '',
       contact_name: job.contact_name || '',
       whatsapp: job.whatsapp || '',
+      image_url: job.image_url || '',
     });
     setShowModal('job');
   };
@@ -275,6 +304,7 @@ export default function AdminDashboard() {
       full_name: profile.full_name || '',
       phone: profile.phone || '',
       is_admin: !!profile.is_admin,
+      avatar_url: profile.avatar_url || '',
     });
     setShowModal('user');
   };
@@ -301,6 +331,91 @@ export default function AdminDashboard() {
       loadAllData();
     } catch (error) {
       showFeedback('error', 'Error al eliminar el comercio.');
+    }
+  };
+
+  // Activar / pausar / cambiar plan Delivery Chimbero
+  const handleSetDeliveryPlan = async (biz, plan) => {
+    try {
+      const enabled = plan !== 'off';
+      await db.adminSetDeliveryPlan(biz.id, {
+        delivery_enabled: enabled,
+        delivery_plan: enabled ? plan : 'paused',
+      });
+      // Contaduría: alta automática al activar trial/active
+      if (plan === 'trial' || plan === 'active') {
+        try {
+          await db.enrollPaidService({
+            product_code: 'delivery',
+            business: biz,
+            entity_type: 'business',
+            entity_id: biz.id,
+            create_charge: true,
+          });
+        } catch (billingErr) {
+          console.warn('Billing delivery:', billingErr);
+        }
+      } else if (plan === 'paused' || plan === 'off') {
+        try {
+          const subs = await db.getBillingSubscriptions();
+          const sub = subs.find(
+            (s) => s.product_code === 'delivery' && s.business_id === biz.id && s.status === 'active'
+          );
+          if (sub) await db.updateBillingSubscription(sub.id, { status: plan === 'off' ? 'cancelled' : 'paused' });
+        } catch (billingErr) {
+          console.warn('Billing pause delivery:', billingErr);
+        }
+      }
+      const labels = { trial: 'trial activado', active: 'activado', paused: 'pausado', off: 'desactivado' };
+      showFeedback('success', `Delivery ${labels[plan] || 'actualizado'} para ${biz.name}.`);
+      loadAllData();
+    } catch (error) {
+      showFeedback('error', error.message || 'Error al actualizar Delivery.');
+    }
+  };
+
+  const handleEnrollService = async (productCode, entity) => {
+    try {
+      const asBusiness = ['guia_comercial', 'delivery', 'turnos'].includes(productCode);
+      const entityType =
+        productCode === 'farmacia_turno' ? 'pharmacy'
+          : productCode === 'kiosco_abierto' ? 'kiosk'
+            : productCode === 'clasificado_destacado' ? 'classified'
+              : 'business';
+      const clientName = asBusiness ? null : (entity.name || entity.title);
+      const result = await db.enrollPaidService({
+        product_code: productCode,
+        business: asBusiness ? entity : null,
+        client_name: clientName,
+        client_phone: entity.phone || entity.whatsapp || null,
+        entity_type: entityType,
+        entity_id: entity.id,
+        create_charge: true,
+      });
+      showFeedback(
+        'success',
+        result.already
+          ? `${clientName || entity.name} ya tenía este servicio en contaduría.`
+          : `Cobro generado para ${clientName || entity.name}.`
+      );
+    } catch (error) {
+      showFeedback('error', error.message || 'Error al registrar en contaduría.');
+    }
+  };
+
+  const handleToggleFeaturedClassified = async (ad) => {
+    try {
+      const next = !ad.is_featured;
+      const { charge } = await db.setClassifiedFeatured(ad.id, next, { create_charge: true });
+      showFeedback(
+        'success',
+        next
+          ? `Clasificado destacado${charge ? ' + cobro generado' : ''}.`
+          : 'Se quitó el destacado del clasificado.'
+      );
+      loadAllData();
+    } catch (error) {
+      showFeedback('error', error.message || 'Error al actualizar destacado.');
     }
   };
 
@@ -561,6 +676,7 @@ export default function AdminDashboard() {
         full_name: profileForm.full_name,
         phone: profileForm.phone,
         is_admin: profileForm.is_admin,
+        avatar_url: profileForm.avatar_url,
       });
       showFeedback('success', 'Usuario actualizado exitosamente.');
       closeModal();
@@ -648,6 +764,11 @@ export default function AdminDashboard() {
           { id: 'events', label: `Eventos (${events.length})`, icon: <Calendar size={16} /> },
           { id: 'jobs', label: `Empleos (${jobs.length})`, icon: <Briefcase size={16} /> },
           { id: 'users', label: `Usuarios (${profiles.length})`, icon: <Users size={16} /> },
+          {
+            id: 'contaduria',
+            label: billingAlertCount > 0 ? `Contaduría (${billingAlertCount})` : 'Contaduría',
+            icon: <Calculator size={16} />,
+          },
         ].map(tab => (
           <button
             key={tab.id}
@@ -655,7 +776,7 @@ export default function AdminDashboard() {
             className="btn"
             style={{
               background: activeTab === tab.id ? 'var(--primary-gradient)' : 'none',
-              color: activeTab === tab.id ? 'white' : 'var(--text-secondary)',
+              color: activeTab === tab.id ? 'white' : (tab.id === 'contaduria' && billingAlertCount > 0 ? '#fbbf24' : 'var(--text-secondary)'),
               borderBottom: activeTab === tab.id ? 'none' : 'none',
               padding: '0.6rem 1.2rem',
               fontWeight: 700,
@@ -787,6 +908,12 @@ export default function AdminDashboard() {
                               <span className="badge badge-closed" style={{ fontSize: '0.7rem', background: 'rgba(239, 68, 68, 0.1)', color: '#f87171' }}>Rechazado</span>
                             )}
                             {biz.is_featured && <span className="badge badge-open" style={{ fontSize: '0.7rem', background: 'rgba(139, 92, 246, 0.1)', color: '#a78bfa', borderColor: '#a78bfa' }}>Destacado</span>}
+                            {biz.delivery_enabled && (
+                              <span className="badge badge-open" style={{ fontSize: '0.7rem', background: 'rgba(248,120,0,0.15)', color: '#ffb020', borderColor: 'rgba(248,120,0,0.35)' }}>
+                                <Bike size={12} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 3 }} />
+                                Delivery {biz.delivery_plan || ''}
+                              </span>
+                            )}
                           </div>
                           <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '0.25rem' }}>
                             📍 {biz.neighborhood} - {biz.address} | Categoría: <strong>{biz.category}</strong>
@@ -794,7 +921,7 @@ export default function AdminDashboard() {
                         </div>
                       </div>
                       
-                      <div style={{ display: 'flex', gap: '0.5rem' }}>
+                      <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
                         {biz.status === 'pending' && (
                           <>
                             <button 
@@ -810,6 +937,85 @@ export default function AdminDashboard() {
                               style={{ padding: '0.45rem 0.8rem', fontSize: '0.8rem', color: '#f87171', borderColor: 'rgba(239,68,68,0.2)', gap: '0.25rem' }}
                             >
                               <X size={14} /> Rechazar
+                            </button>
+                          </>
+                        )}
+                        {biz.status === 'approved' && (
+                          biz.delivery_enabled ? (
+                            <>
+                              {biz.delivery_plan !== 'active' && (
+                                <button
+                                  type="button"
+                                  onClick={() => handleSetDeliveryPlan(biz, 'active')}
+                                  className="btn btn-primary"
+                                  style={{ padding: '0.45rem 0.8rem', fontSize: '0.75rem', gap: '0.25rem' }}
+                                  title="Plan activo"
+                                >
+                                  <Bike size={14} /> Activo
+                                </button>
+                              )}
+                              {biz.delivery_plan !== 'trial' && (
+                                <button
+                                  type="button"
+                                  onClick={() => handleSetDeliveryPlan(biz, 'trial')}
+                                  className="btn btn-secondary"
+                                  style={{ padding: '0.45rem 0.8rem', fontSize: '0.75rem' }}
+                                >
+                                  Trial
+                                </button>
+                              )}
+                              {biz.delivery_plan !== 'paused' && (
+                                <button
+                                  type="button"
+                                  onClick={() => handleSetDeliveryPlan(biz, 'paused')}
+                                  className="btn btn-secondary"
+                                  style={{ padding: '0.45rem 0.8rem', fontSize: '0.75rem' }}
+                                >
+                                  Pausar
+                                </button>
+                              )}
+                              <button
+                                type="button"
+                                onClick={() => handleSetDeliveryPlan(biz, 'off')}
+                                className="btn btn-secondary"
+                                style={{ padding: '0.45rem 0.8rem', fontSize: '0.75rem', color: '#f87171' }}
+                              >
+                                Quitar
+                              </button>
+                              <Link href={`/dashboard/delivery/${biz.id}`} className="btn btn-secondary" style={{ padding: '0.45rem 0.8rem', fontSize: '0.75rem' }}>
+                                Panel
+                              </Link>
+                            </>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={() => handleSetDeliveryPlan(biz, 'trial')}
+                              className="btn btn-primary"
+                              style={{ padding: '0.45rem 0.8rem', fontSize: '0.75rem', gap: '0.25rem' }}
+                            >
+                              <Bike size={14} /> Activar Delivery
+                            </button>
+                          )
+                        )}
+                        {biz.status === 'approved' && (
+                          <>
+                            <button
+                              type="button"
+                              onClick={() => handleEnrollService('guia_comercial', biz)}
+                              className="btn btn-secondary"
+                              style={{ padding: '0.45rem 0.8rem', fontSize: '0.75rem' }}
+                              title="Cobrar Guía Comercial"
+                            >
+                              <DollarSign size={14} /> Guía
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleEnrollService('turnos', biz)}
+                              className="btn btn-secondary"
+                              style={{ padding: '0.45rem 0.8rem', fontSize: '0.75rem' }}
+                              title="Cobrar Sistema de Turnos"
+                            >
+                              Turnos
                             </button>
                           </>
                         )}
@@ -857,14 +1063,32 @@ export default function AdminDashboard() {
                       <div style={{ display: 'flex', gap: '1.25rem', alignItems: 'center' }}>
                         <img src={ad.image_url} alt={ad.title} style={{ width: '60px', height: '60px', borderRadius: '8px', objectFit: 'cover' }} />
                         <div>
-                          <h3 style={{ fontSize: '1.15rem', fontWeight: 700 }}>{ad.title}</h3>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+                            <h3 style={{ fontSize: '1.15rem', fontWeight: 700 }}>{ad.title}</h3>
+                            {ad.is_featured && (
+                              <span className="badge badge-open" style={{ fontSize: '0.7rem', background: 'rgba(248,120,0,0.15)', color: '#ffb020', borderColor: 'rgba(248,120,0,0.35)' }}>
+                                Destacado
+                              </span>
+                            )}
+                          </div>
                           <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '0.25rem' }}>
                             Precio: <strong>${Number(ad.price || 0).toLocaleString('es-AR')}</strong> | Rubro: <strong>{ad.category}</strong> | Contacto: {ad.whatsapp}
+                            {ad.featured_until ? ` | Hasta ${ad.featured_until}` : ''}
                           </p>
                         </div>
                       </div>
                       
-                      <div style={{ display: 'flex', gap: '0.5rem' }}>
+                      <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                        <button
+                          type="button"
+                          onClick={() => handleToggleFeaturedClassified(ad)}
+                          className={ad.is_featured ? 'btn btn-secondary' : 'btn btn-primary'}
+                          style={{ padding: '0.45rem 0.8rem', fontSize: '0.75rem', gap: 4 }}
+                          title={ad.is_featured ? 'Quitar destacado' : 'Destacar y cobrar'}
+                        >
+                          <DollarSign size={14} />
+                          {ad.is_featured ? 'Quitar destacado' : 'Destacar + cobrar'}
+                        </button>
                         <Link href={`/clasificados/${ad.id}`} className="btn btn-secondary" style={{ padding: '0.45rem 0.8rem', fontSize: '0.8rem' }}>
                           Ver Detalle
                         </Link>
@@ -922,7 +1146,16 @@ export default function AdminDashboard() {
                         </div>
                       </div>
                       
-                      <div style={{ display: 'flex', gap: '0.5rem' }}>
+                      <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                        <button
+                          type="button"
+                          onClick={() => handleEnrollService('farmacia_turno', phar)}
+                          className="btn btn-secondary"
+                          style={{ padding: '0.45rem 0.8rem', fontSize: '0.75rem', gap: 4 }}
+                          title="Registrar cobro Farmacia de Turno"
+                        >
+                          <DollarSign size={14} /> Cobrar
+                        </button>
                         <button 
                           onClick={() => openEditPharmacy(phar)} 
                           className="btn btn-secondary" 
@@ -978,7 +1211,16 @@ export default function AdminDashboard() {
                         </p>
                       </div>
                       
-                      <div style={{ display: 'flex', gap: '0.5rem' }}>
+                      <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                        <button
+                          type="button"
+                          onClick={() => handleEnrollService('kiosco_abierto', kio)}
+                          className="btn btn-secondary"
+                          style={{ padding: '0.45rem 0.8rem', fontSize: '0.75rem', gap: 4 }}
+                          title="Registrar cobro Kiosco Abierto"
+                        >
+                          <DollarSign size={14} /> Cobrar
+                        </button>
                         <button 
                           onClick={() => openEditKiosk(kio)} 
                           className="btn btn-secondary" 
@@ -1213,6 +1455,15 @@ export default function AdminDashboard() {
               )}
             </div>
           )}
+
+          {/* TAB 10: CONTADURÍA */}
+          {activeTab === 'contaduria' && (
+            <ContaduriaTab
+              businesses={businesses}
+              onFeedback={showFeedback}
+              onAlertCount={setBillingAlertCount}
+            />
+          )}
         </>
       )}
 
@@ -1227,8 +1478,8 @@ export default function AdminDashboard() {
             left: 0,
             width: '100%',
             height: '100%',
-            background: 'rgba(0, 0, 0, 0.7)',
-            backdropFilter: 'blur(8px)',
+            background: 'rgba(0, 0, 0, 0.82)',
+            backdropFilter: 'blur(6px)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -1239,16 +1490,14 @@ export default function AdminDashboard() {
         >
           <div 
             onClick={e => e.stopPropagation()}
-            className="glass"
+            className="modal-panel"
             style={{
               width: '100%',
-              maxWidth: '600px',
+              maxWidth: '640px',
               padding: '2.5rem',
-              borderRadius: '16px',
               position: 'relative',
               maxHeight: '90vh',
               overflowY: 'auto',
-              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)'
             }}
           >
             {/* Botón Cerrar */}
@@ -1324,9 +1573,24 @@ export default function AdminDashboard() {
                   </div>
                 </div>
 
+                <ImageUploadField
+                  label="Foto del comercio"
+                  folder="businesses"
+                  value={businessForm.image_url}
+                  onChange={(url) => setBusinessForm({ ...businessForm, image_url: url })}
+                />
+
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.4rem', fontWeight: 700 }}>URL de Imagen</label>
-                  <input type="text" placeholder="URL de Unsplash o similar" style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-glass)', color: 'white' }} value={businessForm.image_url} onChange={e => setBusinessForm({...businessForm, image_url: e.target.value})} />
+                  <label style={labelStyle}>
+                    <MapPin size={14} style={{ display: 'inline', marginRight: 4, verticalAlign: 'middle' }} />
+                    Ubicación en el mapa
+                  </label>
+                  <LocationPicker
+                    key={`biz-${editingId || 'new'}`}
+                    latitude={businessForm.latitude}
+                    longitude={businessForm.longitude}
+                    onChange={({ latitude, longitude }) => setBusinessForm((f) => ({ ...f, latitude, longitude }))}
+                  />
                 </div>
 
                 <button type="submit" className="btn btn-primary" style={{ padding: '0.75rem', fontWeight: 700, marginTop: '0.5rem', background: 'var(--primary-gradient)' }}>
@@ -1371,15 +1635,24 @@ export default function AdminDashboard() {
                   </small>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                  <div>
-                    <label style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.4rem', fontWeight: 700 }}>Latitud (Opcional)</label>
-                    <input type="text" placeholder="-31.4951" style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-glass)', color: 'white' }} value={pharmacyForm.latitude} onChange={e => setPharmacyForm({...pharmacyForm, latitude: e.target.value})} />
-                  </div>
-                  <div>
-                    <label style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.4rem', fontWeight: 700 }}>Longitud (Opcional)</label>
-                    <input type="text" placeholder="-68.5345" style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-glass)', color: 'white' }} value={pharmacyForm.longitude} onChange={e => setPharmacyForm({...pharmacyForm, longitude: e.target.value})} />
-                  </div>
+                <ImageUploadField
+                  label="Foto de la farmacia"
+                  folder="pharmacies"
+                  value={pharmacyForm.image_url}
+                  onChange={(url) => setPharmacyForm({ ...pharmacyForm, image_url: url })}
+                />
+
+                <div>
+                  <label style={labelStyle}>
+                    <MapPin size={14} style={{ display: 'inline', marginRight: 4, verticalAlign: 'middle' }} />
+                    Ubicación en el mapa
+                  </label>
+                  <LocationPicker
+                    key={`phar-${editingId || 'new'}`}
+                    latitude={pharmacyForm.latitude}
+                    longitude={pharmacyForm.longitude}
+                    onChange={({ latitude, longitude }) => setPharmacyForm((f) => ({ ...f, latitude, longitude }))}
+                  />
                 </div>
 
                 <button type="submit" className="btn btn-primary" style={{ padding: '0.75rem', fontWeight: 700, marginTop: '0.5rem', background: 'var(--primary-gradient)' }}>
@@ -1425,6 +1698,26 @@ export default function AdminDashboard() {
                 <div>
                   <label style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.4rem', fontWeight: 700 }}>Detalle de horario / Oferta *</label>
                   <input required type="text" placeholder="Ej: Carga sube, bebidas frías, cigarrillos, golosinas..." style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-glass)', color: 'white' }} value={kioskForm.hours_description} onChange={e => setKioskForm({...kioskForm, hours_description: e.target.value})} />
+                </div>
+
+                <ImageUploadField
+                  label="Foto del kiosco"
+                  folder="kiosks"
+                  value={kioskForm.image_url}
+                  onChange={(url) => setKioskForm({ ...kioskForm, image_url: url })}
+                />
+
+                <div>
+                  <label style={labelStyle}>
+                    <MapPin size={14} style={{ display: 'inline', marginRight: 4, verticalAlign: 'middle' }} />
+                    Ubicación en el mapa
+                  </label>
+                  <LocationPicker
+                    key={`kio-${editingId || 'new'}`}
+                    latitude={kioskForm.latitude}
+                    longitude={kioskForm.longitude}
+                    onChange={({ latitude, longitude }) => setKioskForm((f) => ({ ...f, latitude, longitude }))}
+                  />
                 </div>
 
                 <button type="submit" className="btn btn-primary" style={{ padding: '0.75rem', fontWeight: 700, marginTop: '0.5rem', background: 'var(--primary-gradient)' }}>
@@ -1537,15 +1830,29 @@ export default function AdminDashboard() {
                   </div>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                  <div>
-                    <label style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.4rem', fontWeight: 700 }}>Precio de entrada (AR$)</label>
-                    <input type="number" placeholder="Ej: 0 para gratis" style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-glass)', color: 'white' }} value={eventForm.price} onChange={e => setEventForm({...eventForm, price: e.target.value})} />
-                  </div>
-                  <div>
-                    <label style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.4rem', fontWeight: 700 }}>Imagen (Opcional)</label>
-                    <input type="text" placeholder="URL de la imagen" style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-glass)', color: 'white' }} value={eventForm.image_url} onChange={e => setEventForm({...eventForm, image_url: e.target.value})} />
-                  </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.4rem', fontWeight: 700 }}>Precio de entrada (AR$)</label>
+                  <input type="number" placeholder="Ej: 0 para gratis" style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-glass)', color: 'white' }} value={eventForm.price} onChange={e => setEventForm({...eventForm, price: e.target.value})} />
+                </div>
+
+                <ImageUploadField
+                  label="Foto del evento"
+                  folder="events"
+                  value={eventForm.image_url}
+                  onChange={(url) => setEventForm({ ...eventForm, image_url: url })}
+                />
+
+                <div>
+                  <label style={labelStyle}>
+                    <MapPin size={14} style={{ display: 'inline', marginRight: 4, verticalAlign: 'middle' }} />
+                    Ubicación en el mapa
+                  </label>
+                  <LocationPicker
+                    key={`eve-${editingId || 'new'}`}
+                    latitude={eventForm.latitude}
+                    longitude={eventForm.longitude}
+                    onChange={({ latitude, longitude }) => setEventForm((f) => ({ ...f, latitude, longitude }))}
+                  />
                 </div>
 
                 <button type="submit" className="btn btn-primary" style={{ padding: '0.75rem', fontWeight: 700, marginTop: '0.5rem', background: 'var(--primary-gradient)' }}>
@@ -1607,6 +1914,13 @@ export default function AdminDashboard() {
                   </div>
                 </div>
 
+                <ImageUploadField
+                  label="Foto de la publicación"
+                  folder="jobs"
+                  value={jobForm.image_url}
+                  onChange={(url) => setJobForm({ ...jobForm, image_url: url })}
+                />
+
                 <button type="submit" className="btn btn-primary" style={{ padding: '0.75rem', fontWeight: 700, marginTop: '0.5rem', background: 'var(--primary-gradient)' }}>
                   {editingId ? 'Guardar Cambios' : 'Publicar'}
                 </button>
@@ -1666,10 +1980,12 @@ export default function AdminDashboard() {
                   </div>
                 </div>
 
-                <div>
-                  <label style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.4rem', fontWeight: 700 }}>URL de Imagen</label>
-                  <input type="text" placeholder="URL de la imagen" style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-glass)', color: 'white' }} value={classifiedForm.image_url} onChange={e => setClassifiedForm({...classifiedForm, image_url: e.target.value})} />
-                </div>
+                <ImageUploadField
+                  label="Foto del clasificado"
+                  folder="classifieds"
+                  value={classifiedForm.image_url}
+                  onChange={(url) => setClassifiedForm({ ...classifiedForm, image_url: url })}
+                />
 
                 <div>
                   <label style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.4rem', fontWeight: 700 }}>WhatsApp *</label>
@@ -1698,6 +2014,13 @@ export default function AdminDashboard() {
                   <label style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.4rem', fontWeight: 700 }}>Teléfono</label>
                   <input type="text" placeholder="Ej: 2645123456" style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-glass)', color: 'white' }} value={profileForm.phone} onChange={e => setProfileForm({...profileForm, phone: e.target.value})} />
                 </div>
+
+                <ImageUploadField
+                  label="Foto de perfil"
+                  folder="avatars"
+                  value={profileForm.avatar_url}
+                  onChange={(url) => setProfileForm({ ...profileForm, avatar_url: url })}
+                />
 
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                   <input type="checkbox" id="isAdmin" style={{ transform: 'scale(1.3)' }} checked={profileForm.is_admin} onChange={e => setProfileForm({...profileForm, is_admin: e.target.checked})} />

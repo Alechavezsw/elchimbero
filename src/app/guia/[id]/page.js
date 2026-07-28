@@ -5,7 +5,7 @@ import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { db } from '@/lib/db';
 import styles from './detail.module.css';
-import { ArrowLeft, MapPin, Phone, MessageCircle, Clock, Calendar, User, Store } from 'lucide-react';
+import { ArrowLeft, MapPin, Phone, MessageCircle, Clock, Calendar, User, Store, Bike } from 'lucide-react';
 
 // Cargar el mapa de forma dinámica (solo en cliente) para evitar errores de SSR
 const Map = dynamic(() => import('@/components/Map'), {
@@ -125,6 +125,16 @@ export default function BusinessDetail({ params }) {
 
             {/* BOTONES DE ACCIÓN RÁPIDA */}
             <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginBottom: '2.5rem' }}>
+              {db.isDeliveryOpen(business) && (
+                <Link
+                  href={`/guia/${business.id}/pedir`}
+                  className="btn btn-primary"
+                  style={{ gap: '0.5rem', flex: 1, minWidth: '180px' }}
+                >
+                  <Bike size={20} />
+                  Pedir delivery
+                </Link>
+              )}
               {business.whatsapp && (
                 <a 
                   href={`https://wa.me/${business.whatsapp}?text=Hola!%20Vi%20tu%20comercio%20"${encodeURIComponent(business.name)}"%20en%20El%20Chimbero.%20Te%20quería%20hacer%20una%20consulta.`}

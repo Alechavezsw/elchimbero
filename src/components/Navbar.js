@@ -21,7 +21,8 @@ import {
   Calendar,
   Briefcase,
   ShieldAlert,
-  ChevronDown
+  ChevronDown,
+  Bike
 } from 'lucide-react';
 
 const COMMUNITY_PATHS = [
@@ -32,6 +33,7 @@ const COMMUNITY_PATHS = [
   '/eventos',
   '/servicios',
   '/empleo',
+  '/delivery',
 ];
 
 export default function Navbar() {
@@ -106,6 +108,7 @@ export default function Navbar() {
 
   const mobileNavItems = [
     { name: 'Guía Comercial', path: '/guia', icon: <Store size={18} /> },
+    { name: 'Delivery', path: '/delivery', icon: <Bike size={18} /> },
     { name: 'Clasificados', path: '/clasificados', icon: <Tag size={18} /> },
     { name: 'Mapa Chimbas', path: '/mapa', icon: <Map size={18} /> },
     { name: 'Farmacias de Turno', path: '/farmacias', icon: <HeartPulse size={18} /> },
@@ -135,11 +138,21 @@ export default function Navbar() {
         <nav className={styles.menuDesktop}>
           <Link 
             href="/guia" 
-            className={`${styles.navLink} ${isActive('/guia') ? styles.activeLink : ''}`}
+            className={`${styles.navLink} ${isActive('/guia') || pathname.startsWith('/guia/') ? styles.activeLink : ''}`}
           >
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
               <Store size={18} />
               Guía Comercial
+            </span>
+          </Link>
+
+          <Link 
+            href="/delivery" 
+            className={`${styles.navLink} ${isActive('/delivery') ? styles.activeLink : ''}`}
+          >
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
+              <Bike size={18} />
+              Delivery
             </span>
           </Link>
           

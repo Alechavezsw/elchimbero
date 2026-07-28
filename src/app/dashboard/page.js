@@ -15,7 +15,8 @@ import {
   LogOut, 
   User, 
   Phone, 
-  Mail 
+  Mail,
+  Bike
 } from 'lucide-react';
 
 export default function UserDashboard() {
@@ -209,7 +210,12 @@ export default function UserDashboard() {
                   </div>
                 </div>
                 
-                <div style={{ display: 'flex', gap: '0.75rem' }}>
+                <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+                  {biz.delivery_enabled && (
+                    <Link href={`/dashboard/delivery/${biz.id}`} className="btn btn-primary" style={{ padding: '0.45rem 1rem', fontSize: '0.85rem', gap: '0.25rem' }}>
+                      <Bike size={14} /> Delivery
+                    </Link>
+                  )}
                   <Link href={`/guia/${biz.id}`} className="btn btn-secondary" style={{ padding: '0.45rem 1rem', fontSize: '0.85rem', gap: '0.25rem' }}>
                     <Eye size={14} /> Ver Ficha
                   </Link>

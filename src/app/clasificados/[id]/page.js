@@ -87,7 +87,23 @@ export default function ClassifiedDetail({ params }) {
           </div>
 
           <div className={styles.adInfo}>
-            <span className={styles.category}>{getCategoryLabel(ad.category)}</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+              <span className={styles.category}>{getCategoryLabel(ad.category)}</span>
+              {ad.is_featured && (
+                <span
+                  className="badge"
+                  style={{
+                    background: 'var(--primary-gradient)',
+                    color: '#140800',
+                    border: 'none',
+                    fontWeight: 800,
+                    fontSize: '0.7rem',
+                  }}
+                >
+                  Destacado
+                </span>
+              )}
+            </div>
             <h1 className={styles.title}>{ad.title}</h1>
             
             <div className={styles.price}>

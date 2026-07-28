@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { db } from '@/lib/db';
+import AdBannerSlot from '@/components/AdBannerSlot';
 import styles from './guia.module.css';
 import { Search, MapPin, Store, MessageCircle, Plus } from 'lucide-react';
 
@@ -80,6 +81,7 @@ function GuiaContent() {
 
   return (
     <div className="container" style={{ paddingBottom: '5rem' }}>
+      <AdBannerSlot placement="guia_top" style={{ margin: '1rem 0 0' }} />
       
       {/* HEADER */}
       <header className={styles.header}>

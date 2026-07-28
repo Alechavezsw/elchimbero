@@ -74,13 +74,14 @@ function ClasificadosContent() {
       );
     }
 
-    // Ordenar resultados
+    // Destacados primero, luego el criterio elegido
+    const featuredFirst = (a, b) => (b.is_featured ? 1 : 0) - (a.is_featured ? 1 : 0);
     if (sortBy === 'newest') {
-      result.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      result.sort((a, b) => featuredFirst(a, b) || new Date(b.created_at) - new Date(a.created_at));
     } else if (sortBy === 'price_asc') {
-      result.sort((a, b) => a.price - b.price);
+      result.sort((a, b) => featuredFirst(a, b) || a.price - b.price);
     } else if (sortBy === 'price_desc') {
-      result.sort((a, b) => b.price - a.price);
+      result.sort((a, b) => featuredFirst(a, b) || b.price - a.price);
     }
 
     return result;
@@ -193,7 +194,17 @@ function ClasificadosContent() {
       ) : filteredAds.length > 0 ? (
         <div className="grid-cards" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))' }}>
           {filteredAds.map((ad) => (
-            <div key={ad.id} className="glass glass-hover card-pink" style={{ overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+            <div
+              key={ad.id}
+              className="glass glass-hover card-pink"
+              style={{
+                overflow: 'hidden',
+                display: 'flex',
+                flexDirection: 'column',
+                border: ad.is_featured ? '1px solid rgba(248,120,0,0.45)' : undefined,
+                boxShadow: ad.is_featured ? '0 0 24px rgba(248,120,0,0.18)' : undefined,
+              }}
+            >
               <div style={{ height: '160px', position: 'relative', overflow: 'hidden' }}>
                 <div className="zoom-container">
                   <img
@@ -206,6 +217,24 @@ function ClasificadosContent() {
                 <span className={styles.priceTag}>
                   {ad.price > 0 ? `$${ad.price.toLocaleString('es-AR')}` : 'Consultar'}
                 </span>
+
+                {ad.is_featured && (
+                  <span
+                    className="badge"
+                    style={{
+                      position: 'absolute',
+                      top: '1rem',
+                      left: '1rem',
+                      background: 'var(--primary-gradient)',
+                      color: '#140800',
+                      border: 'none',
+                      fontWeight: 800,
+                      fontSize: '0.7rem',
+                    }}
+                  >
+                    Destacado
+                  </span>
+                )}
 
                 <span
                   className="badge badge-warning"
