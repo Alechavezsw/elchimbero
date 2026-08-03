@@ -8,6 +8,7 @@ import { useAuth } from '@/components/AuthProvider';
 import { db } from '@/lib/db';
 import ImageUploadField from '@/components/ImageUploadField';
 import ContaduriaTab from './ContaduriaTab';
+import { ROLE_LABELS, ROLES, canAccessAdmin } from '@/lib/roles';
 import { 
   LayoutDashboard, 
   Store, 
@@ -71,7 +72,7 @@ const emptyEventForm = { title: '', description: '', date: '', time: '', locatio
 const emptyJobForm = { title: '', description: '', type: 'oferta_laboral', category: '', price: '0', company: '', contact_name: '', whatsapp: '', image_url: '' };
 const emptyBusinessForm = { name: '', description: '', category: 'Gastronomía', address: '', neighborhood: '', phone: '', whatsapp: '', latitude: '', longitude: '', image_url: '', hours_lunes_viernes: '09:00 - 13:00, 17:00 - 21:00', hours_sabado_domingo: 'Cerrado' };
 const emptyClassifiedForm = { title: '', description: '', price: '', category: 'sale', condition: 'used', image_url: '', whatsapp: '', status: 'active' };
-const emptyProfileForm = { full_name: '', phone: '', is_admin: false, avatar_url: '' };
+const emptyProfileForm = { full_name: '', phone: '', role: ROLES.CLIENT, is_admin: false, avatar_url: '' };
 
 const labelStyle = { display: 'block', fontSize: '0.85rem', marginBottom: '0.4rem', fontWeight: 700 };
 
@@ -80,7 +81,7 @@ export default function AdminDashboard() {
   const router = useRouter();
 
   useEffect(() => {
-    if (!loading && (!user || !(user.is_admin || user.email === 'admin@elchimbero.com'))) {
+    if (!loading && !canAccessAdmin(user)) {
       router.push('/');
     }
   }, [user, loading, router]);
@@ -158,7 +159,7 @@ export default function AdminDashboard() {
   };
 
   useEffect(() => {
-    if (!loading && user && (user.is_admin || user.email === 'admin@elchimbero.com')) {
+    if (!loading && canAccessAdmin(user)) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       loadAllData();
     }
@@ -326,6 +327,7 @@ export default function AdminDashboard() {
     setProfileForm({
       full_name: profile.full_name || '',
       phone: profile.phone || '',
+      role: profile.role || (profile.is_admin ? ROLES.ADMIN : ROLES.CLIENT),
       is_admin: !!profile.is_admin,
       avatar_url: profile.avatar_url || '',
     });
@@ -698,7 +700,8 @@ export default function AdminDashboard() {
       await db.updateProfileAdmin(editingId, {
         full_name: profileForm.full_name,
         phone: profileForm.phone,
-        is_admin: profileForm.is_admin,
+        role: profileForm.role || ROLES.CLIENT,
+        is_admin: profileForm.role === ROLES.ADMIN,
         avatar_url: profileForm.avatar_url,
       });
       showFeedback('success', 'Usuario actualizado exitosamente.');
@@ -714,7 +717,7 @@ export default function AdminDashboard() {
   const pendingBusinesses = businesses.filter(b => b.status === 'pending');
   const approvedBusinesses = businesses.filter(b => b.status === 'approved');
 
-  if (loading || !user || !(user.is_admin || user.email === 'admin@elchimbero.com')) {
+  if (loading || !canAccessAdmin(user)) {
     return (
       <div className="container" style={{ padding: '6rem 2rem', textAlign: 'center' }}>
         <h2 style={{ fontSize: '1.5rem', fontWeight: 700 }}>Cargando administrador...</h2>
@@ -1501,9 +1504,25 @@ export default function AdminDashboard() {
                       <div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
                           <h3 style={{ fontSize: '1.15rem', fontWeight: 700 }}>{profile.full_name || 'Sin nombre'}</h3>
-                          {profile.is_admin && (
-                            <span className="badge badge-open" style={{ fontSize: '0.7rem', background: 'rgba(139, 92, 246, 0.1)', color: '#a78bfa', borderColor: '#a78bfa' }}>Admin</span>
-                          )}
+                          <span
+                            className="badge badge-open"
+                            style={{
+                              fontSize: '0.7rem',
+                              background: profile.role === 'admin' || profile.is_admin
+                                ? 'rgba(139, 92, 246, 0.15)'
+                                : profile.role === 'business'
+                                  ? 'rgba(248, 120, 0, 0.15)'
+                                  : 'rgba(96, 165, 250, 0.12)',
+                              color: profile.role === 'admin' || profile.is_admin
+                                ? '#a78bfa'
+                                : profile.role === 'business'
+                                  ? '#ffb020'
+                                  : '#60a5fa',
+                              borderColor: 'currentColor',
+                            }}
+                          >
+                            {ROLE_LABELS[profile.role] || (profile.is_admin ? ROLE_LABELS.admin : ROLE_LABELS.client)}
+                          </span>
                         </div>
                         <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '0.25rem' }}>
                           📞 {profile.phone || 'Sin teléfono'}
@@ -2100,9 +2119,22 @@ export default function AdminDashboard() {
                   onChange={(url) => setProfileForm({ ...profileForm, avatar_url: url })}
                 />
 
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <input type="checkbox" id="isAdmin" style={{ transform: 'scale(1.3)' }} checked={profileForm.is_admin} onChange={e => setProfileForm({...profileForm, is_admin: e.target.checked})} />
-                  <label htmlFor="isAdmin" style={{ fontSize: '0.85rem', fontWeight: 700, cursor: 'pointer' }}>Es administrador</label>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.4rem', fontWeight: 700 }}>Rol / tipo de usuario *</label>
+                  <select
+                    required
+                    value={profileForm.role || ROLES.CLIENT}
+                    onChange={(e) => setProfileForm({
+                      ...profileForm,
+                      role: e.target.value,
+                      is_admin: e.target.value === ROLES.ADMIN,
+                    })}
+                    style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-glass)', color: 'white' }}
+                  >
+                    <option value={ROLES.ADMIN}>{ROLE_LABELS.admin} — acceso a todo</option>
+                    <option value={ROLES.BUSINESS}>{ROLE_LABELS.business} — comercios y delivery</option>
+                    <option value={ROLES.CLIENT}>{ROLE_LABELS.client} — app vecinal</option>
+                  </select>
                 </div>
 
                 <button type="submit" className="btn btn-primary" style={{ padding: '0.75rem', fontWeight: 700, marginTop: '0.5rem', background: 'var(--primary-gradient)' }}>

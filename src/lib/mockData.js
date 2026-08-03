@@ -8,6 +8,7 @@ export const initialProfiles = [
     phone: '2645123456',
     avatar_url: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80',
     created_at: new Date().toISOString(),
+    role: 'business',
     is_admin: false,
     email: 'test@elchimbero.com'
   },
@@ -17,6 +18,7 @@ export const initialProfiles = [
     phone: '264000000',
     avatar_url: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=150&q=80',
     created_at: new Date().toISOString(),
+    role: 'admin',
     is_admin: true,
     email: 'admin@elchimbero.com'
   }

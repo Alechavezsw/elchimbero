@@ -124,40 +124,52 @@ export default function Home() {
     updateTime();
     const interval = setInterval(updateTime, 1000);
 
-    // Cargar datos
+    // Noticias en paralelo (no depender de comercios/clasificados)
+    async function loadNews() {
+      try {
+        const res = await fetch('/api/news', {
+          signal: AbortSignal.timeout(20000),
+          cache: 'no-store',
+        });
+        const json = await res.json().catch(() => null);
+        if (res.ok && json?.success && Array.isArray(json.data) && json.data.length > 0) {
+          setNews(json.data.slice(0, 6));
+          setNewsError(false);
+        } else {
+          setNewsError(true);
+        }
+      } catch (err) {
+        console.error('Error al cargar noticias:', err);
+        setNewsError(true);
+      } finally {
+        setNewsLoading(false);
+      }
+    }
+
+    // Cargar datos de portada
     async function loadData() {
       try {
-        const allBusinesses = await db.getBusinesses();
-        const featured = allBusinesses.filter(b => b.is_featured).slice(0, 3);
-        // Si no hay destacados, tomamos los primeros 3
-        setFeaturedBusinesses(featured.length > 0 ? featured : allBusinesses.slice(0, 3));
+        const [allBusinesses, allClassifieds] = await Promise.all([
+          db.getBusinesses().catch((err) => {
+            console.error('Error al cargar comercios:', err);
+            return [];
+          }),
+          db.getClassifieds().catch((err) => {
+            console.error('Error al cargar clasificados:', err);
+            return [];
+          }),
+        ]);
 
-        const allClassifieds = await db.getClassifieds();
-        setRecentClassifieds(allClassifieds.slice(0, 4));
-
-        // Cargar noticias desde API
-        try {
-          const res = await fetch('/api/news');
-          if (res.ok) {
-            const json = await res.json();
-            if (json.success && json.data) {
-              setNews(json.data.slice(0, 6)); // Tomamos las últimas 6 noticias
-            } else {
-              setNewsError(true);
-            }
-          } else {
-            setNewsError(true);
-          }
-        } catch (err) {
-          console.error('Error al cargar noticias:', err);
-          setNewsError(true);
-        } finally {
-          setNewsLoading(false);
-        }
+        const featured = (allBusinesses || []).filter((b) => b.is_featured).slice(0, 3);
+        setFeaturedBusinesses(featured.length > 0 ? featured : (allBusinesses || []).slice(0, 3));
+        setRecentClassifieds((allClassifieds || []).slice(0, 4));
 
         // Clima y alertas reales (SMN + Open-Meteo)
         try {
-          const weatherRes = await fetch('/api/weather');
+          const weatherRes = await fetch('/api/weather', {
+            signal: AbortSignal.timeout(12000),
+            cache: 'no-store',
+          });
           if (weatherRes.ok) {
             const weatherJson = await weatherRes.json();
             if (weatherJson.weather) {
@@ -179,7 +191,6 @@ export default function Home() {
         } catch (err) {
           console.error('Error al cargar clima:', err);
         }
-
       } catch (error) {
         console.error('Error al cargar datos de portada:', error);
       } finally {
@@ -187,6 +198,7 @@ export default function Home() {
       }
     }
 
+    loadNews();
     loadData();
     return () => clearInterval(interval);
   }, []);

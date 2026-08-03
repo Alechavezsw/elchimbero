@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/components/AuthProvider';
 import { db } from '@/lib/db';
+import { ROLE_LABELS, canAccessAdmin, canManageBusiness } from '@/lib/roles';
 import { 
   LayoutDashboard, 
   Store, 
@@ -23,7 +24,7 @@ export default function UserDashboard() {
   const { user, loading, signOut } = useAuth();
   const router = useRouter();
 
-  const [activeTab, setActiveTab] = useState('businesses'); // 'businesses' | 'classifieds'
+  const [activeTab, setActiveTab] = useState('classifieds'); // 'businesses' | 'classifieds'
   const [userBusinesses, setUserBusinesses] = useState([]);
   const [userClassifieds, setUserClassifieds] = useState([]);
   const [fetchingContent, setFetchingContent] = useState(true);
@@ -48,6 +49,7 @@ export default function UserDashboard() {
       router.push('/login?redirect=/dashboard');
     } else if (user) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
+      setActiveTab(canManageBusiness(user) ? 'businesses' : 'classifieds');
       loadUserContent();
     }
   }, [user, loading, router]);
@@ -97,13 +99,24 @@ export default function UserDashboard() {
             <LayoutDashboard size={32} style={{ color: 'var(--primary)' }} />
             <div>
               <h1 style={{ fontSize: '2.25rem', fontWeight: 800 }}>Panel de Control</h1>
-              <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem' }}>Administrá tus comercios publicados y anuncios activos</p>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem' }}>
+                {canManageBusiness(user)
+                  ? 'Administrá tus comercios, delivery y anuncios'
+                  : 'Tu espacio de cliente: clasificados y pedidos'}
+              </p>
             </div>
           </div>
           
-          <button onClick={handleSignOut} className="btn btn-secondary" style={{ gap: '0.5rem' }}>
-            <LogOut size={16} /> Cerrar Sesión
-          </button>
+          <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+            {canAccessAdmin(user) && (
+              <Link href="/admin" className="btn btn-primary" style={{ gap: '0.5rem', fontSize: '0.85rem' }}>
+                Ir a Administración
+              </Link>
+            )}
+            <button onClick={handleSignOut} className="btn btn-secondary" style={{ gap: '0.5rem' }}>
+              <LogOut size={16} /> Cerrar Sesión
+            </button>
+          </div>
         </div>
       </header>
 
@@ -119,7 +132,19 @@ export default function UserDashboard() {
         
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
           <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>Hola, {user.full_name || 'Vecino'}!</h2>
-          <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+          <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', fontSize: '0.85rem', color: 'var(--text-secondary)', alignItems: 'center' }}>
+            <span
+              style={{
+                fontWeight: 800,
+                fontSize: '0.75rem',
+                padding: '0.2rem 0.55rem',
+                borderRadius: 999,
+                background: canAccessAdmin(user) ? 'rgba(139,92,246,0.15)' : canManageBusiness(user) ? 'rgba(248,120,0,0.15)' : 'rgba(96,165,250,0.12)',
+                color: canAccessAdmin(user) ? '#a78bfa' : canManageBusiness(user) ? '#ffb020' : '#60a5fa',
+              }}
+            >
+              {user.role_label || ROLE_LABELS[user.role] || ROLE_LABELS.client}
+            </span>
             <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}><Mail size={14} /> {user.email}</span>
             {user.phone && (
               <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}><Phone size={14} /> {user.phone}</span>
@@ -127,10 +152,12 @@ export default function UserDashboard() {
           </div>
         </div>
 
-        <div style={{ marginLeft: 'auto', display: 'flex', gap: '1rem' }}>
-          <Link href="/guia/nuevo" className="btn btn-secondary" style={{ gap: '0.35rem', fontSize: '0.85rem', padding: '0.5rem 1rem' }}>
-            <Plus size={16} /> Nuevo Comercio
-          </Link>
+        <div style={{ marginLeft: 'auto', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+          {canManageBusiness(user) && (
+            <Link href="/guia/nuevo" className="btn btn-secondary" style={{ gap: '0.35rem', fontSize: '0.85rem', padding: '0.5rem 1rem' }}>
+              <Plus size={16} /> Nuevo Comercio
+            </Link>
+          )}
           <Link href="/clasificados/nuevo" className="btn btn-secondary" style={{ gap: '0.35rem', fontSize: '0.85rem', padding: '0.5rem 1rem' }}>
             <Plus size={16} /> Nuevo Clasificado
           </Link>
@@ -158,22 +185,24 @@ export default function UserDashboard() {
       )}
 
       {/* PESTAÑAS DE CONTENIDO */}
-      <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem', borderBottom: '1px solid var(--border-glass)', paddingBottom: '0.5rem' }}>
-        <button 
-          onClick={() => setActiveTab('businesses')}
-          className="btn"
-          style={{ 
-            background: 'none', 
-            color: activeTab === 'businesses' ? 'white' : 'var(--text-muted)',
-            borderBottom: activeTab === 'businesses' ? '2px solid var(--primary)' : 'none',
-            borderRadius: 0,
-            padding: '0.5rem 1rem',
-            fontWeight: 700,
-            gap: '0.5rem'
-          }}
-        >
-          <Store size={18} /> Mis Comercios ({userBusinesses.length})
-        </button>
+      <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem', borderBottom: '1px solid var(--border-glass)', paddingBottom: '0.5rem', flexWrap: 'wrap' }}>
+        {canManageBusiness(user) && (
+          <button 
+            onClick={() => setActiveTab('businesses')}
+            className="btn"
+            style={{ 
+              background: 'none', 
+              color: activeTab === 'businesses' ? 'white' : 'var(--text-muted)',
+              borderBottom: activeTab === 'businesses' ? '2px solid var(--primary)' : 'none',
+              borderRadius: 0,
+              padding: '0.5rem 1rem',
+              fontWeight: 700,
+              gap: '0.5rem'
+            }}
+          >
+            <Store size={18} /> Mis Comercios ({userBusinesses.length})
+          </button>
+        )}
         
         <button 
           onClick={() => setActiveTab('classifieds')}

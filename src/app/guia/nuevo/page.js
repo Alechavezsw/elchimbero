@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/components/AuthProvider';
 import { db } from '@/lib/db';
+import { canManageBusiness } from '@/lib/roles';
 import { ArrowLeft, Store, Save, LogIn } from 'lucide-react';
 
 const categories = [
@@ -91,10 +92,27 @@ export default function NuevoComercio() {
           <Store size={48} style={{ color: 'var(--primary)', marginBottom: '1.25rem' }} />
           <h2 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '0.75rem' }}>Iniciá sesión para continuar</h2>
           <p style={{ color: 'var(--text-secondary)', marginBottom: '2rem', fontSize: '0.95rem', lineHeight: '1.5' }}>
-            Para registrar tu comercio en la guía comercial de El Chimbero, debés tener una cuenta de usuario activa.
+            Para registrar tu comercio en la guía comercial de El Chimbero, debés tener una cuenta de usuario de negocio.
           </p>
           <Link href="/login?redirect=/guia/nuevo" className="btn btn-primary" style={{ width: '100%', gap: '0.5rem' }}>
             <LogIn size={18} /> Iniciar Sesión / Registrarse
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  if (!canManageBusiness(user)) {
+    return (
+      <div className="container" style={{ padding: '6rem 2rem', display: 'flex', justifyContent: 'center' }}>
+        <div className="glass" style={{ maxWidth: '480px', width: '100%', padding: '2.5rem', textAlign: 'center' }}>
+          <Store size={48} style={{ color: 'var(--primary)', marginBottom: '1.25rem' }} />
+          <h2 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '0.75rem' }}>Cuenta de negocio requerida</h2>
+          <p style={{ color: 'var(--text-secondary)', marginBottom: '2rem', fontSize: '0.95rem', lineHeight: '1.5' }}>
+            Tu usuario es de tipo cliente. Para cargar un comercio, registrate como <strong>Usuario de negocio</strong> o pedile a un admin que te cambie el rol.
+          </p>
+          <Link href="/dashboard" className="btn btn-secondary" style={{ width: '100%' }}>
+            Ir a mi panel
           </Link>
         </div>
       </div>

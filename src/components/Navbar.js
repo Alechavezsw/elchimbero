@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from './AuthProvider';
+import { canAccessAdmin } from '@/lib/roles';
 import styles from './Navbar.module.css';
 import { 
   Menu, 
@@ -238,7 +239,7 @@ export default function Navbar() {
                   </span>
                 </Link>
 
-                {(user.is_admin || user.email === 'admin@elchimbero.com') && (
+                {canAccessAdmin(user) && (
                   <Link 
                     href="/admin" 
                     className={`${styles.navLink} ${isActive('/admin') ? styles.activeLink : ''}`}
@@ -323,7 +324,7 @@ export default function Navbar() {
               Panel de Control
             </Link>
 
-            {(user.is_admin || user.email === 'admin@elchimbero.com') && (
+            {canAccessAdmin(user) && (
               <Link 
                 href="/admin" 
                 className="btn btn-secondary" 

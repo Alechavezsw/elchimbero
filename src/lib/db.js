@@ -3,6 +3,7 @@
 
 import { createClient } from '@supabase/supabase-js';
 import { initialBusinesses, initialClassifieds, initialPharmacies, initialKiosks, initialProfiles, initialEvents, initialBuses, initialJobs } from './mockData';
+import { ROLES, canAccessAdmin, canManageBusiness, normalizeRole, withRoleFlags } from './roles';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -63,8 +64,26 @@ const initMockDB = () => {
   if (!window.localStorage.getItem('chimbero_kiosks')) {
     setStorageItem('chimbero_kiosks', initialKiosks);
   }
-  if (!window.localStorage.getItem('chimbero_profiles')) {
-    setStorageItem('chimbero_profiles', initialProfiles);
+  {
+    const storedProfiles = getStorageItem('chimbero_profiles', null);
+    if (!storedProfiles || !Array.isArray(storedProfiles) || storedProfiles.length === 0) {
+      setStorageItem('chimbero_profiles', initialProfiles);
+    } else {
+      // Asegurar cuentas seed (admin/test) aunque el localStorage sea viejo
+      let changed = false;
+      const merged = [...storedProfiles];
+      for (const seed of initialProfiles) {
+        const idx = merged.findIndex((p) => p.email === seed.email || p.id === seed.id);
+        if (idx === -1) {
+          merged.push(seed);
+          changed = true;
+        } else if (!merged[idx].email) {
+          merged[idx] = { ...seed, ...merged[idx], email: seed.email };
+          changed = true;
+        }
+      }
+      if (changed) setStorageItem('chimbero_profiles', merged);
+    }
   }
   if (!window.localStorage.getItem('chimbero_events')) {
     setStorageItem('chimbero_events', initialEvents);
@@ -151,7 +170,10 @@ export const db = {
   async createBusiness(businessData) {
     const user = await this.getCurrentUser();
     if (!user) throw new Error('Debes estar autenticado para registrar un comercio');
-    const isAdmin = !!(user.is_admin || user.email === 'admin@elchimbero.com');
+    if (!canManageBusiness(user)) {
+      throw new Error('Solo usuarios de negocio o administración pueden registrar comercios.');
+    }
+    const isAdmin = canAccessAdmin(user);
 
     const newBusiness = {
       id: typeof window !== 'undefined' ? crypto.randomUUID() : Math.random().toString(),
@@ -299,25 +321,27 @@ export const db = {
   async getCurrentUser() {
     if (!isMock) {
       const { data: { session } } = await supabaseClient.auth.getSession();
-      if (!session) return null;
-      
+      if (!session?.user?.id) return null;
+
       const { data: profile } = await supabaseClient
         .from('profiles')
         .select('*')
         .eq('id', session.user.id)
-        .single();
-        
-      return {
+        .maybeSingle();
+
+      return withRoleFlags({
+        ...(profile || {}),
         id: session.user.id,
         email: session.user.email,
-        ...profile
-      };
+      });
     } else {
-      return mockCurrentUser;
+      return withRoleFlags(mockCurrentUser);
     }
   },
 
-  async signUp(email, password, fullName, phone) {
+  async signUp(email, password, fullName, phone, role = ROLES.CLIENT) {
+    const signupRole = normalizeRole(role) === ROLES.BUSINESS ? ROLES.BUSINESS : ROLES.CLIENT;
+
     if (!isMock) {
       const { data, error } = await supabaseClient.auth.signUp({
         email,
@@ -325,7 +349,8 @@ export const db = {
         options: {
           data: {
             full_name: fullName,
-            phone: phone
+            phone: phone,
+            role: signupRole,
           }
         }
       });
@@ -334,6 +359,14 @@ export const db = {
       // Si Supabase exige confirmación de email, no hay sesión todavía
       if (!data.session) {
         return { needsEmailConfirmation: true, email };
+      }
+
+      // Asegurar rol en perfil (por si el trigger no corrió aún)
+      if (data.user?.id) {
+        await supabaseClient
+          .from('profiles')
+          .update({ role: signupRole, is_admin: false })
+          .eq('id', data.user.id);
       }
 
       return await this.getCurrentUser();
@@ -348,20 +381,24 @@ export const db = {
         full_name: fullName,
         phone: phone,
         avatar_url: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80',
-        created_at: new Date().toISOString()
+        created_at: new Date().toISOString(),
+        role: signupRole,
+        is_admin: false,
+        email,
       };
 
       profiles.push(newProfile);
       saveMockData('chimbero_profiles', profiles);
 
-      const sessionUser = {
+      const sessionUser = withRoleFlags({
         id: newUserId,
         email,
         full_name: fullName,
         phone,
         avatar_url: newProfile.avatar_url,
-        is_admin: false
-      };
+        role: signupRole,
+        is_admin: false,
+      });
 
       mockCurrentUser = sessionUser;
       if (typeof window !== 'undefined') {
@@ -378,52 +415,61 @@ export const db = {
         password
       });
       if (error) throw error;
-      
+      if (!data?.user?.id) {
+        throw new Error('No se pudo iniciar sesión. Revisá correo y contraseña.');
+      }
+
       const { data: profile } = await supabaseClient
         .from('profiles')
         .select('*')
         .eq('id', data.user.id)
-        .single();
+        .maybeSingle();
 
-      return {
+      return withRoleFlags({
+        ...(profile || {}),
         id: data.user.id,
         email: data.user.email,
-        ...profile
-      };
+      });
     } else {
-      // Para mock, si es test@elchimbero.com o admin@elchimbero.com, buscamos sus respectivos perfiles
-      const profiles = getMockData('chimbero_profiles', initialProfiles);
-      
-      let profile;
-      if (email === 'admin@elchimbero.com') {
-        profile = profiles.find(p => p.email === 'admin@elchimbero.com');
-      } else if (email === 'test@elchimbero.com') {
-        profile = profiles.find(p => p.email === 'test@elchimbero.com');
-      } else {
-        // Buscar si hay otro perfil con ese correo, o creamos uno nuevo rápido para no trabar
-        profile = profiles.find(p => p.email === email) || {
+      // Demo local: cualquier contraseña >= 6 chars; cuentas seed siempre disponibles
+      if (!password || String(password).length < 6) {
+        throw new Error('La contraseña debe tener al menos 6 caracteres.');
+      }
+
+      const profiles = getMockData('chimbero_profiles', initialProfiles) || [];
+      const seed = initialProfiles.find((p) => p.email === email);
+      let profile = profiles.find((p) => p.email === email) || seed || null;
+
+      if (!profile && (email === 'admin@elchimbero.com' || email === 'test@elchimbero.com')) {
+        profile = seed || initialProfiles.find((p) => p.email === email) || null;
+      }
+
+      if (!profile) {
+        profile = {
           id: typeof window !== 'undefined' ? crypto.randomUUID() : Math.random().toString(),
           full_name: email.split('@')[0],
           phone: '264111222',
           avatar_url: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80',
+          role: ROLES.CLIENT,
           is_admin: false,
-          email: email
+          email,
         };
-        
-        if (!profiles.some(p => p.id === profile.id)) {
-          profiles.push(profile);
-          saveMockData('chimbero_profiles', profiles);
-        }
       }
 
-      const sessionUser = {
+      if (!profiles.some((p) => p.id === profile.id || p.email === profile.email)) {
+        profiles.push(profile);
+        saveMockData('chimbero_profiles', profiles);
+      }
+
+      const sessionUser = withRoleFlags({
         id: profile.id,
         email,
         full_name: profile.full_name,
         phone: profile.phone,
         avatar_url: profile.avatar_url,
-        is_admin: !!profile.is_admin
-      };
+        role: profile.role,
+        is_admin: !!profile.is_admin || email === 'admin@elchimbero.com',
+      });
 
       mockCurrentUser = sessionUser;
       if (typeof window !== 'undefined') {
@@ -868,7 +914,7 @@ export const db = {
 
   async requireAdmin() {
     const user = await this.getCurrentUser();
-    if (!user || !(user.is_admin || user.email === 'admin@elchimbero.com')) {
+    if (!canAccessAdmin(user)) {
       throw new Error('Solo administradores');
     }
     return user;
@@ -1150,24 +1196,26 @@ export const db = {
 
   async updateProfileAdmin(id, profileData) {
     await this.requireAdmin();
+    const role = normalizeRole(profileData.role, { isAdmin: !!profileData.is_admin });
     const payload = {
       full_name: profileData.full_name,
       phone: profileData.phone,
-      is_admin: !!profileData.is_admin,
+      role,
+      is_admin: role === ROLES.ADMIN,
       avatar_url: profileData.avatar_url || null,
     };
     if (!isMock) {
       const { data, error } = await supabaseClient.from('profiles').update(payload).eq('id', id).select();
       if (error) throw error;
       if (!data?.length) throw new Error('No se pudo actualizar el usuario');
-      return data[0];
+      return withRoleFlags(data[0]);
     }
     const profiles = getMockData('chimbero_profiles', initialProfiles);
     const idx = profiles.findIndex((p) => p.id === id);
     if (idx === -1) throw new Error('Usuario no encontrado');
     profiles[idx] = { ...profiles[idx], ...payload };
     saveMockData('chimbero_profiles', profiles);
-    return profiles[idx];
+    return withRoleFlags(profiles[idx]);
   },
 
   async deleteProfileAdmin(id) {

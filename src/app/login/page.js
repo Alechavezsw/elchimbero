@@ -4,11 +4,25 @@ import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/components/AuthProvider';
-import { LogIn, UserPlus, Mail, Lock, User, Phone } from 'lucide-react';
+import { LogIn, UserPlus, Mail, Lock, User, Phone, Store } from 'lucide-react';
+import { ROLES, ROLE_DESCRIPTIONS, canAccessAdmin } from '@/lib/roles';
 import styles from './login.module.css';
 
 function mapAuthError(err) {
   const msg = (err?.message || '').toLowerCase();
+  if (
+    msg.includes('fetch failed') ||
+    msg.includes('failed to fetch') ||
+    msg.includes('network') ||
+    msg.includes('enotfound') ||
+    msg.includes('authretryablefetcherror') ||
+    err?.name === 'AuthRetryableFetchError'
+  ) {
+    return 'No se pudo conectar con el servidor de autenticación. Revisá tu conexión o la configuración de Supabase.';
+  }
+  if (msg.includes('cannot read properties of undefined')) {
+    return 'Error de sesión. Recargá la página e intentá de nuevo.';
+  }
   if (msg.includes('invalid login credentials') || msg.includes('invalid_credentials')) {
     return 'Correo o contraseña incorrectos.';
   }
@@ -41,13 +55,20 @@ function LoginContent() {
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
   const [phone, setPhone] = useState('');
+  const [signupRole, setSignupRole] = useState(ROLES.CLIENT);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  const homeForUser = (u) => {
+    if (searchParams.get('redirect')) return redirectPath;
+    if (canAccessAdmin(u)) return '/admin';
+    return '/dashboard';
+  };
+
   useEffect(() => {
     if (!authLoading && user) {
-      router.replace(redirectPath);
+      router.replace(homeForUser(user));
     }
   }, [user, authLoading, router, redirectPath]);
 
@@ -70,17 +91,17 @@ function LoginContent() {
           throw new Error('La contraseña debe tener al menos 6 caracteres.');
         }
 
-        const result = await signUp(email.trim(), password, fullName.trim(), phone.trim());
+        const result = await signUp(email.trim(), password, fullName.trim(), phone.trim(), signupRole);
         if (result?.needsEmailConfirmation) {
           setSuccess('Cuenta creada. Revisá tu email para confirmarla y después iniciá sesión.');
           setIsSignUp(false);
           setPassword('');
           return;
         }
-        router.replace(redirectPath);
+        router.replace(homeForUser(result));
       } else {
-        await signIn(email.trim(), password);
-        router.replace(redirectPath);
+        const logged = await signIn(email.trim(), password);
+        router.replace(homeForUser(logged));
       }
     } catch (err) {
       console.error('Error de autenticación:', err);
@@ -184,6 +205,38 @@ function LoginContent() {
                     autoComplete="tel"
                     required
                   />
+                </div>
+              </div>
+
+              <div className={styles.field}>
+                <label className={styles.label}>Tipo de cuenta</label>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.6rem' }}>
+                  <button
+                    type="button"
+                    onClick={() => setSignupRole(ROLES.CLIENT)}
+                    className={`${styles.tab} ${signupRole === ROLES.CLIENT ? styles.tabActive : ''}`}
+                    style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 4, padding: '0.85rem', height: 'auto', textAlign: 'left' }}
+                  >
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 6, fontWeight: 800 }}>
+                      <User size={15} /> Cliente
+                    </span>
+                    <span style={{ fontSize: '0.72rem', opacity: 0.85, fontWeight: 500, lineHeight: 1.3 }}>
+                      {ROLE_DESCRIPTIONS.client}
+                    </span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setSignupRole(ROLES.BUSINESS)}
+                    className={`${styles.tab} ${signupRole === ROLES.BUSINESS ? styles.tabActive : ''}`}
+                    style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 4, padding: '0.85rem', height: 'auto', textAlign: 'left' }}
+                  >
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 6, fontWeight: 800 }}>
+                      <Store size={15} /> Negocio
+                    </span>
+                    <span style={{ fontSize: '0.72rem', opacity: 0.85, fontWeight: 500, lineHeight: 1.3 }}>
+                      {ROLE_DESCRIPTIONS.business}
+                    </span>
+                  </button>
                 </div>
               </div>
             </>

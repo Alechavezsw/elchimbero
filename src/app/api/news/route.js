@@ -145,13 +145,16 @@ function extractCategories(post) {
 
 async function fetchWordpressNews() {
   const res = await fetch(WP_POSTS_URL, {
-    headers: { 'User-Agent': 'ElChimberoPortalClient/1.0' },
-    signal: AbortSignal.timeout(10000),
-    next: { revalidate: 60 },
+    headers: {
+      'User-Agent': 'ElChimberoPortalClient/1.0',
+      Accept: 'application/json',
+    },
+    signal: AbortSignal.timeout(12000),
+    cache: 'no-store',
   });
   if (!res.ok) throw new Error(`WordPress API ${res.status}`);
   const posts = await res.json();
-  if (!Array.isArray(posts)) throw new Error('Respuesta WP inválida');
+  if (!Array.isArray(posts) || posts.length === 0) throw new Error('Respuesta WP inválida');
 
   const localImages = await loadLocalImageIndex();
 
@@ -191,16 +194,20 @@ async function fetchWordpressNews() {
 /** Fallback RSS sin fotos inventadas */
 async function fetchRssNewsFallback() {
   const res = await fetch('https://elchimbero.com.ar/feed/', {
-    headers: { 'User-Agent': 'ElChimberoPortalClient/1.0' },
-    signal: AbortSignal.timeout(8000),
-    next: { revalidate: 60 },
+    headers: {
+      'User-Agent': 'ElChimberoPortalClient/1.0',
+      Accept: 'application/rss+xml, application/xml, text/xml, */*',
+    },
+    signal: AbortSignal.timeout(10000),
+    cache: 'no-store',
   });
   if (!res.ok) throw new Error(`RSS ${res.status}`);
   const xmlText = await res.text();
   const itemBlocks = xmlText.match(/<item>[\s\S]*?<\/item>/gi) || [];
+  if (!itemBlocks.length) throw new Error('RSS sin ítems');
   const localImages = await loadLocalImageIndex();
 
-  return itemBlocks.map((itemBlock, index) => {
+  return itemBlocks.slice(0, 10).map((itemBlock, index) => {
     const title = cleanText(itemBlock.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1]);
     const link = cleanText(itemBlock.match(/<link[^>]*>([\s\S]*?)<\/link>/i)?.[1]);
     const description = cleanText(itemBlock.match(/<description[^>]*>([\s\S]*?)<\/description>/i)?.[1]);

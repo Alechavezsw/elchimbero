@@ -1,0 +1,11 @@
+﻿{
+    "date":  "2026-08-02",
+    "target_dir":  "C:\\Users\\Usuario\\Desktop\\Proyectos\\El Chimbero\\redes\\2026-08-02",
+    "file_count":  2,
+    "files":  [
+                  "2026-08-02-chimbas-busca-reordenar-comunicacion-con-un-historico-operador-de-prensa-sanjuanino.png",
+                  "2026-08-02-chimbas-investigan-el-robo-a-una-nena-de-12-anos-en-el-loteo-las-margaritas.png"
+              ],
+    "drive_base_folder":  "https://drive.google.com/drive/folders/1R-d-e59qzodnnOiJ40LHmtO1guOHzrUJ?usp=drive_link",
+    "note":  "Drive upload pending connector support for folder creation and raw file upload."
+}
